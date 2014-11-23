@@ -215,7 +215,6 @@ minetest.register_node("protector:protect", {
 			return
 		end
 
-		local objs = minetest.env:get_objects_inside_radius(pos,.5)
 		minetest.env:add_entity(pos, "protector:display")
 		minetest.env:get_node_timer(pos):start(10)
 	end,
@@ -291,7 +290,6 @@ minetest.register_node("protector:protect2", {
 			return
 		end
 
-		local objs = minetest.env:get_objects_inside_radius(pos,.5)
 		minetest.env:add_entity(pos, "protector:display")
 		minetest.env:get_node_timer(pos):start(10)
 	end,
@@ -339,14 +337,6 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
 			if string.sub(field,0,string.len("protector_del_member_"))=="protector_del_member_" then
 				protector.del_member(meta, string.sub(field,string.len("protector_del_member_")+1))
 			end
-		end
-
-		if fields.protector_page_prev then
-			meta:set_int("page",meta:get_int("page")-1)
-		end
-
-		if fields.protector_page_next then
-			meta:set_int("page",meta:get_int("page")+1)
 		end
 
 		if fields.close_me then
