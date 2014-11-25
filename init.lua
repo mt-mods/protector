@@ -353,7 +353,7 @@ minetest.register_entity("protector:display", {
 	visual_size = {x=1.0/1.5,y=1.0/1.5}, -- wielditem seems to be scaled to 1.5 times original node size
 	textures = {"protector:display_node"},
 	on_step = function(self, dtime)
-		nam = minetest.get_node(self.object:getpos()).name
+		local nam = minetest.get_node(self.object:getpos()).name
 		if nam ~= "protector:protect" and nam ~= "protector:protect2" then
 			self.object:remove()
 			return
