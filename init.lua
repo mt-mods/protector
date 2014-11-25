@@ -49,7 +49,7 @@ protector.generate_formspec = function(meta)
 		.."label[0,0;-- Protector interface --]"
 		.."label[0,1;Punch node to show protected area]"
 		.."label[0,2;Members: (type nick, press Enter to add)]"
-	members = protector.get_member_list(meta)
+	local members = protector.get_member_list(meta)
 	
 	local npp = 12 -- was 15, names per page
 	local s = 0
