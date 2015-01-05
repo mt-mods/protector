@@ -184,6 +184,7 @@ minetest.register_node("protector:protect", {
 	},
 	selection_box = { type="regular" },
 	paramtype = "light",
+	light_source = 2,
 
 	after_place_node = function(pos, placer)
 		local meta = minetest.env:get_meta(pos)
@@ -249,6 +250,7 @@ minetest.register_node("protector:protect2", {
 	groups = {dig_immediate=2},
 	paramtype = 'light',
 	paramtype2 = "wallmounted",
+	light_source = 2,
 	drawtype = "nodebox",
 	sunlight_propagates = true,
 	walkable = true,
