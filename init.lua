@@ -1,4 +1,4 @@
-minetest.register_privilege("delprotect","Ignore other players protection")
+minetest.register_privilege("delprotect","Ignore player protection")
 
 protector = {}
 protector.radius = 5
@@ -45,13 +45,13 @@ end
 
 protector.generate_formspec = function(meta)
 	if meta:get_int("page") == nil then meta:set_int("page",0) end
-	local formspec = "size[8,7]"
-		.."label[0,0;-- Protector interface --]"
+	local formspec = "size[8,7]"..default.gui_bg..default.gui_bg_img..default.gui_slots -- Added new formspec defaults
+		.."label[2.5,0;-- Protector interface --]"
 		.."label[0,1;Punch node to show protected area]"
 		.."label[0,2;Members: (type nick, press Enter to add)]"
 	local members = protector.get_member_list(meta)
 	
-	local npp = 12 -- was 15, names per page
+	local npp = 12
 	local s = 0
 	local i = 0
 	for _, member in ipairs(members) do
@@ -199,7 +199,7 @@ minetest.register_node("protector:protect", {
 			return
 		end
 
-		protector.can_dig(5,pointed_thing.under,user:get_player_name(),false,2)
+		protector.can_dig(protector.radius,pointed_thing.under,user:get_player_name(),false,2)
 	end,
 
 	on_rightclick = function(pos, node, clicker, itemstack)
@@ -275,7 +275,7 @@ minetest.register_node("protector:protect2", {
 			return
 		end
 
-		protector.can_dig(5,pointed_thing.under,user:get_player_name(),false,2)
+		protector.can_dig(protector.radius,pointed_thing.under,user:get_player_name(),false,2)
 	end,
 
 	on_rightclick = function(pos, node, clicker, itemstack)
