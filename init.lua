@@ -115,6 +115,7 @@ protector.can_dig = function(r,pos,digger,onlyowner,infolevel)
 					minetest.chat_send_player(whois, "This area is owned by "..owner.." !")
 				elseif infolevel == 2 then
 					minetest.chat_send_player(whois,"This area is owned by "..meta:get_string("owner")..".")
+					minetest.chat_send_player(whois,"Protection located at: "..minetest.pos_to_string(positions[1]))
 					if meta:get_string("members") ~= "" then
 						minetest.chat_send_player(whois,"Members: "..meta:get_string("members")..".")
 					end
