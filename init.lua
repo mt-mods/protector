@@ -106,7 +106,7 @@ protector.can_dig = function(r,pos,digger,onlyowner,infolevel)
 		{"protector:protect", "protector:protect2"})
 
 	for _, pos in ipairs(positions) do
-		local meta = minetest.env:get_meta(pos)
+		local meta = minetest.get_meta(pos)
 		local owner = meta:get_string("owner")
 
 		if owner ~= whois then 
@@ -128,8 +128,9 @@ protector.can_dig = function(r,pos,digger,onlyowner,infolevel)
 		if #positions < 1 then
 			minetest.chat_send_player(whois,"This area is not protected.")
 		else
-			local meta = minetest.env:get_meta(positions[1])
+			local meta = minetest.get_meta(positions[1])
 			minetest.chat_send_player(whois,"This area is owned by "..meta:get_string("owner")..".")
+			minetest.chat_send_player(whois,"Protection located at: "..minetest.pos_to_string(positions[1]))
 			if meta:get_string("members") ~= "" then
 				minetest.chat_send_player(whois,"Members: "..meta:get_string("members")..".")
 			end
@@ -187,22 +188,19 @@ minetest.register_node("protector:protect", {
 	light_source = 2,
 
 	after_place_node = function(pos, placer)
-		local meta = minetest.env:get_meta(pos)
+		local meta = minetest.get_meta(pos)
 		meta:set_string("owner", placer:get_player_name() or "")
 		meta:set_string("infotext", "Protection (owned by "..meta:get_string("owner")..")")
 		meta:set_string("members", "")
 	end,
 
 	on_use = function(itemstack, user, pointed_thing)
-		if pointed_thing.type ~= "node" then
-			return
-		end
-
+		if pointed_thing.type ~= "node" then return end
 		protector.can_dig(protector.radius,pointed_thing.under,user:get_player_name(),false,2)
 	end,
 
 	on_rightclick = function(pos, node, clicker, itemstack)
-		local meta = minetest.env:get_meta(pos)
+		local meta = minetest.get_meta(pos)
 		if protector.can_dig(1,pos,clicker:get_player_name(),true,1) then
 			minetest.show_formspec(clicker:get_player_name(), 
 			"protector:node_"..minetest.pos_to_string(pos), protector.generate_formspec(meta))
@@ -214,12 +212,12 @@ minetest.register_node("protector:protect", {
 			return
 		end
 
-		minetest.env:add_entity(pos, "protector:display")
-		minetest.env:get_node_timer(pos):start(10)
+		minetest.add_entity(pos, "protector:display")
+		minetest.get_node_timer(pos):start(10)
 	end,
 
 	on_timer = function(pos)
-		local objs = minetest.env:get_objects_inside_radius(pos,.5)
+		local objs = minetest.get_objects_inside_radius(pos,.5)
 		for _, o in pairs(objs) do
 			if (not o:is_player()) and o:get_luaentity().name == "protector:display" then
 				o:remove()
@@ -261,22 +259,19 @@ minetest.register_node("protector:protect2", {
 	selection_box = {type = "wallmounted"},
 
 	after_place_node = function(pos, placer)
-		local meta = minetest.env:get_meta(pos)
+		local meta = minetest.get_meta(pos)
 		meta:set_string("owner", placer:get_player_name() or "")
 		meta:set_string("infotext", "Protection (owned by "..meta:get_string("owner")..")")
 		meta:set_string("members", "")
 	end,
 
 	on_use = function(itemstack, user, pointed_thing)
-		if pointed_thing.type ~= "node" then
-			return
-		end
-
+		if pointed_thing.type ~= "node" then return end
 		protector.can_dig(protector.radius,pointed_thing.under,user:get_player_name(),false,2)
 	end,
 
 	on_rightclick = function(pos, node, clicker, itemstack)
-		local meta = minetest.env:get_meta(pos)
+		local meta = minetest.get_meta(pos)
 		if protector.can_dig(1,pos,clicker:get_player_name(),true,1) then
 			minetest.show_formspec(clicker:get_player_name(), 
 			"protector:node_"..minetest.pos_to_string(pos), protector.generate_formspec(meta))
@@ -288,12 +283,12 @@ minetest.register_node("protector:protect2", {
 			return
 		end
 
-		minetest.env:add_entity(pos, "protector:display")
-		minetest.env:get_node_timer(pos):start(10)
+		minetest.add_entity(pos, "protector:display")
+		minetest.get_node_timer(pos):start(10)
 	end,
 
 	on_timer = function(pos)
-		local objs = minetest.env:get_objects_inside_radius(pos,.5)
+		local objs = minetest.get_objects_inside_radius(pos,.5)
 		for _, o in pairs(objs) do
 			if (not o:is_player()) and o:get_luaentity().name == "protector:display" then
 				o:remove()
@@ -318,7 +313,7 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
 
 		local pos_s = string.sub(formname,string.len("protector:node_")+1)
 		local pos = minetest.string_to_pos(pos_s)
-		local meta = minetest.env:get_meta(pos)
+		local meta = minetest.get_meta(pos)
 
 		if not protector.can_dig(1,pos,player:get_player_name(),true,1) then
 			return
@@ -615,7 +610,7 @@ minetest.register_node("protector:chest", {
 	end,
 })
 
--- Proteted Chest formspec buttons
+-- Protected Chest formspec buttons
 
 minetest.register_on_player_receive_fields(function(player,formname,fields)
 
@@ -623,7 +618,7 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
 
 		local pos_s = string.sub(formname,string.len("protector:chest_")+1)
 		local pos = minetest.string_to_pos(pos_s)
-		local meta = minetest.env:get_meta(pos)
+		local meta = minetest.get_meta(pos)
 
 		local chest_inv = meta:get_inventory()
 		local player_inv = player:get_inventory()
