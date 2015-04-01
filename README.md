@@ -13,3 +13,4 @@ Released under WTFPL
 0.5 - Added protector.radius variable in init.lua (default: 5)
 0.6 - Added Protected Doors (wood and steel) and Protected Chest
 0.7 - Protected Chests now have "To Chest" and "To Inventory" buttons to copy contents across, also chests can be named
+0.8 - Updated to work with Minetest 0.4.12, simplified textures

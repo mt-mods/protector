@@ -176,7 +176,7 @@ end
 
 minetest.register_node("protector:protect", {
 	description = "Protection Block",
-	tiles = {"protector_top.png","protector_top.png","protector_side.png"},
+	tiles = {"moreblocks_circle_stone_bricks.png","moreblocks_circle_stone_bricks.png","moreblocks_circle_stone_bricks.png^protector_logo.png"},
 	sounds = default.node_sound_stone_defaults(),
 	groups = {dig_immediate=2},
 	drawtype = "nodebox",
@@ -401,11 +401,11 @@ local function on_rightclick(pos, dir, check_name, replace, replace_dir, params)
 	pos.y = pos.y-dir
 	minetest.swap_node(pos, {name=replace, param2=p2})
 
-	local snd_1 = "door_close"
-	local snd_2 = "door_open" 
+	local snd_1 = "doors_door_close"
+	local snd_2 = "doors_door_open" 
 	if params[1] == 3 then
-		snd_1 = "door_open"
-		snd_2 = "door_close"
+		snd_1 = "doors_door_open"
+		snd_2 = "doors_door_close"
 	end
 
 	if minetest.get_meta(pos):get_int("right") ~= 0 then
@@ -421,10 +421,10 @@ local name = "protector:door_wood"
 
 doors.register_door(name, {
 	description = "Protected Wooden Door",
-	inventory_image = "door_wood.png^protector_logo.png",
+	inventory_image = "doors_wood.png^protector_logo.png",
 	groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=2,door=1},
-	tiles_bottom = {"door_wood_b.png^protector_logo.png", "door_brown.png"},
-	tiles_top = {"door_wood_a.png", "door_brown.png"},
+	tiles_bottom = {"doors_wood_b.png^protector_logo.png", "doors_brown.png"},
+	tiles_top = {"doors_wood_a.png", "doors_brown.png"},
 	sounds = default.node_sound_wood_defaults(),
 	sunlight = false,
 })
@@ -483,10 +483,10 @@ local name = "protector:door_steel"
 
 doors.register_door(name, {
 	description = "Protected Steel Door",
-	inventory_image = "door_steel.png^protector_logo.png",
+	inventory_image = "doors_steel.png^protector_logo.png",
 	groups = {snappy=1,bendy=2,cracky=1,melty=2,level=2,door=1},
-	tiles_bottom = {"door_steel_b.png^protector_logo.png", "door_grey.png"},
-	tiles_top = {"door_steel_a.png", "door_grey.png"},
+	tiles_bottom = {"doors_steel_b.png^protector_logo.png", "doors_grey.png"},
+	tiles_top = {"doors_steel_a.png", "doors_grey.png"},
 	sounds = default.node_sound_wood_defaults(),
 	sunlight = false,
 })
@@ -539,23 +539,6 @@ minetest.register_craft({
 	}
 })
 
-local function get_locked_chest_formspec(pos)
-	local spos = pos.x .. "," .. pos.y .. "," ..pos.z
-	local formspec =
-		"size[8,9]"..
-		default.gui_bg..
-		default.gui_bg_img..
-		default.gui_slots..
-		"list[nodemeta:".. spos .. ";main;0,0.3;8,4;]"..
-		"button[0,4.5;2,0.25;toup;To Chest]"..
-		"field[2.3,4.8;4,0.25;chestname;;]"..
-		"button[6,4.5;2,0.25;todn;To Inventory]"..
-		"list[current_player;main;0,5;8,1;]"..
-		"list[current_player;main;0,6.08;8,3;8]"..
-		default.get_hotbar_bg(0,5)
- return formspec
-end
-
 -- Protected Chest
 
 minetest.register_node("protector:chest", {
@@ -570,6 +553,7 @@ minetest.register_node("protector:chest", {
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("infotext", "Protected Chest")
+		meta:set_string("name", "")
 		local inv = meta:get_inventory()
 		inv:set_size("main", 8*4)
 	end,
@@ -602,10 +586,22 @@ minetest.register_node("protector:chest", {
 	on_rightclick = function(pos, node, clicker)
 		local meta = minetest.get_meta(pos)
 		if not minetest.is_protected(pos, clicker:get_player_name()) then
+
+		local spos = pos.x .. "," .. pos.y .. "," ..pos.z
+		local formspec = "size[8,9]"..
+			default.gui_bg..default.gui_bg_img..default.gui_slots..
+			"list[nodemeta:".. spos .. ";main;0,0.3;8,4;]"..
+			"button[0,4.5;2,0.25;toup;To Chest]"..
+			"field[2.3,4.8;4,0.25;chestname;;"..meta:get_string("name").."]"..
+			"button[6,4.5;2,0.25;todn;To Inventory]"..
+			"list[current_player;main;0,5;8,1;]"..
+			"list[current_player;main;0,6.08;8,3;8]"..
+			default.get_hotbar_bg(0,5)
+
 			minetest.show_formspec(
 				clicker:get_player_name(),
 				"protector:chest_"..minetest.pos_to_string(pos),
-				get_locked_chest_formspec(pos)
+				formspec
 			)
 		end
 	end,
@@ -654,6 +650,7 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
 
 			-- change chest infotext to display name
 			if fields.chestname ~= "" then
+				meta:set_string("name", fields.chestname)
 				meta:set_string("infotext", "Protected Chest ("..fields.chestname..")")
 			else
 				meta:set_string("infotext", "Protected Chest")
