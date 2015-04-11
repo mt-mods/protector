@@ -1,12 +1,10 @@
 minetest.register_privilege("delprotect","Ignore player protection")
 
 protector = {}
-protector.radius = 5
+protector.radius = (tonumber(minetest.setting_get("protector_radius")) or 5)
 
 protector.get_member_list = function(meta)
-	local s = meta:get_string("members")
-	local list = s:split(" ")
-	return list
+	return meta:get_string("members"):split(" ")
 end
 
 protector.set_member_list = function(meta, list)
@@ -14,8 +12,7 @@ protector.set_member_list = function(meta, list)
 end
 
 protector.is_member = function (meta, name)
-	local list = protector.get_member_list(meta)
-	for _, n in ipairs(list) do
+	for _, n in ipairs(protector.get_member_list(meta)) do
 		if n == name then
 			return true
 		end
@@ -88,11 +85,9 @@ protector.can_dig = function(r,pos,digger,onlyowner,infolevel)
 		return false
 	end
 
-	local whois = digger
-
 	-- Delprotect privileged users can override protections
 
-	if minetest.check_player_privs(whois, {delprotect=true}) and infolevel == 1 then
+	if minetest.check_player_privs(digger, {delprotect=true}) and infolevel == 1 then
 		return true
 	end
 
@@ -105,39 +100,43 @@ protector.can_dig = function(r,pos,digger,onlyowner,infolevel)
 		{x=pos.x+r, y=pos.y+r, z=pos.z+r},
 		{"protector:protect", "protector:protect2"})
 
-	for _, pos in ipairs(positions) do
-		local meta = minetest.get_meta(pos)
+	if #positions > 0 then
+		local meta = minetest.get_meta(positions[1])
 		local owner = meta:get_string("owner")
+		local members = meta:get_string("members")
 
-		if owner ~= whois then 
-			if onlyowner or not protector.is_member(meta, whois) then
+		if owner ~= digger then 
+			if onlyowner or not protector.is_member(meta, digger) then
 				if infolevel == 1 then
-					minetest.chat_send_player(whois, "This area is owned by "..owner.." !")
+					minetest.chat_send_player(digger,"This area is owned by "..owner.." !")
 				elseif infolevel == 2 then
-					minetest.chat_send_player(whois,"This area is owned by "..meta:get_string("owner")..".")
-					minetest.chat_send_player(whois,"Protection located at: "..minetest.pos_to_string(positions[1]))
-					if meta:get_string("members") ~= "" then
-						minetest.chat_send_player(whois,"Members: "..meta:get_string("members")..".")
+					minetest.chat_send_player(digger,"This area is owned by "..owner..".")
+					minetest.chat_send_player(digger,"Protection located at: "..minetest.pos_to_string(positions[1]))
+					if members ~= "" then
+						minetest.chat_send_player(digger,"Members: "..members..".")
 					end
 				end
 				return false
 			end
 		end
+
+		if infolevel == 2 then
+			minetest.chat_send_player(digger,"This area is owned by "..owner..".")
+			minetest.chat_send_player(digger,"Protection located at: "..minetest.pos_to_string(positions[1]))
+			if members ~= "" then
+				minetest.chat_send_player(digger,"Members: "..members..".")
+			end
+		end
+
 	end
 
 	if infolevel == 2 then
 		if #positions < 1 then
-			minetest.chat_send_player(whois,"This area is not protected.")
-		else
-			local meta = minetest.get_meta(positions[1])
-			minetest.chat_send_player(whois,"This area is owned by "..meta:get_string("owner")..".")
-			minetest.chat_send_player(whois,"Protection located at: "..minetest.pos_to_string(positions[1]))
-			if meta:get_string("members") ~= "" then
-				minetest.chat_send_player(whois,"Members: "..meta:get_string("members")..".")
-			end
+			minetest.chat_send_player(digger,"This area is not protected.")
 		end
-		minetest.chat_send_player(whois,"You can build here.")
+		minetest.chat_send_player(digger,"You can build here.")
 	end
+
 	return true
 end
 
@@ -162,7 +161,7 @@ function minetest.item_place(itemstack, placer, pointed_thing)
 		local pos = pointed_thing.above
 		local user = placer:get_player_name()
 		if not protector.can_dig(protector.radius * 2, pos, user, true, 3) then
-			minetest.chat_send_player(placer:get_player_name(),"Overlaps into another protected area")
+			minetest.chat_send_player(user, "Overlaps into another protected area")
 			return protector.old_node_place(itemstack, placer, pos)
 		end
 	end
@@ -212,18 +211,7 @@ minetest.register_node("protector:protect", {
 		if not protector.can_dig(1,pos,puncher:get_player_name(),true,1) then
 			return
 		end
-
 		minetest.add_entity(pos, "protector:display")
-		minetest.get_node_timer(pos):start(10)
-	end,
-
-	on_timer = function(pos)
-		local objs = minetest.get_objects_inside_radius(pos,.5)
-		for _, o in pairs(objs) do
-			if (not o:is_player()) and o:get_luaentity().name == "protector:display" then
-				o:remove()
-			end
-		end
 	end,
 })
 
@@ -283,18 +271,7 @@ minetest.register_node("protector:protect2", {
 		if not protector.can_dig(1,pos,puncher:get_player_name(),true,1) then
 			return
 		end
-
 		minetest.add_entity(pos, "protector:display")
-		minetest.get_node_timer(pos):start(10)
-	end,
-
-	on_timer = function(pos)
-		local objs = minetest.get_objects_inside_radius(pos,.5)
-		for _, o in pairs(objs) do
-			if (not o:is_player()) and o:get_luaentity().name == "protector:display" then
-				o:remove()
-			end
-		end
 	end,
 })
 
@@ -347,10 +324,9 @@ minetest.register_entity("protector:display", {
 	visual_size = {x=1.0/1.5,y=1.0/1.5}, -- wielditem seems to be scaled to 1.5 times original node size
 	textures = {"protector:display_node"},
 	on_step = function(self, dtime)
-		local nam = minetest.get_node(self.object:getpos()).name
-		if nam ~= "protector:protect" and nam ~= "protector:protect2" then
+		self.timer = (self.timer or 0) + dtime
+		if self.timer > 10 then
 			self.object:remove()
-			return
 		end
 	end,
 })
