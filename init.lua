@@ -100,8 +100,9 @@ protector.can_dig = function(r,pos,digger,onlyowner,infolevel)
 		{x=pos.x+r, y=pos.y+r, z=pos.z+r},
 		{"protector:protect", "protector:protect2"})
 
-	if #positions > 0 then
-		local meta = minetest.get_meta(positions[1])
+--	if #positions > 0 then
+	for _, pos in ipairs(positions) do
+		local meta = minetest.get_meta(pos) -- positions[1])
 		local owner = meta:get_string("owner")
 		local members = meta:get_string("members")
 
@@ -111,7 +112,7 @@ protector.can_dig = function(r,pos,digger,onlyowner,infolevel)
 					minetest.chat_send_player(digger,"This area is owned by "..owner.." !")
 				elseif infolevel == 2 then
 					minetest.chat_send_player(digger,"This area is owned by "..owner..".")
-					minetest.chat_send_player(digger,"Protection located at: "..minetest.pos_to_string(positions[1]))
+					minetest.chat_send_player(digger,"Protection located at: "..minetest.pos_to_string(pos)) -- positions[1]))
 					if members ~= "" then
 						minetest.chat_send_player(digger,"Members: "..members..".")
 					end
