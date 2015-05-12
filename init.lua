@@ -100,11 +100,11 @@ protector.can_dig = function(r,pos,digger,onlyowner,infolevel)
 		{x=pos.x+r, y=pos.y+r, z=pos.z+r},
 		{"protector:protect", "protector:protect2"})
 
---	if #positions > 0 then
+	local meta, owner, members
 	for _, pos in ipairs(positions) do
-		local meta = minetest.get_meta(pos) -- positions[1])
-		local owner = meta:get_string("owner")
-		local members = meta:get_string("members")
+		meta = minetest.get_meta(pos)
+		owner = meta:get_string("owner")
+		members = meta:get_string("members")
 
 		if owner ~= digger then 
 			if onlyowner or not protector.is_member(meta, digger) then
@@ -112,7 +112,7 @@ protector.can_dig = function(r,pos,digger,onlyowner,infolevel)
 					minetest.chat_send_player(digger,"This area is owned by "..owner.." !")
 				elseif infolevel == 2 then
 					minetest.chat_send_player(digger,"This area is owned by "..owner..".")
-					minetest.chat_send_player(digger,"Protection located at: "..minetest.pos_to_string(pos)) -- positions[1]))
+					minetest.chat_send_player(digger,"Protection located at: "..minetest.pos_to_string(pos))
 					if members ~= "" then
 						minetest.chat_send_player(digger,"Members: "..members..".")
 					end
@@ -158,12 +158,12 @@ end
 protector.old_node_place = minetest.item_place
 function minetest.item_place(itemstack, placer, pointed_thing)
 
-	if itemstack:get_name() == "protector:protect" or itemstack:get_name() == "protector:protect2" then
-		local pos = pointed_thing.above
+	if itemstack:get_name() == "protector:protect"
+	or itemstack:get_name() == "protector:protect2" then
 		local user = placer:get_player_name()
-		if not protector.can_dig(protector.radius * 2, pos, user, true, 3) then
+		if not protector.can_dig(protector.radius * 2, pointed_thing.above, user, true, 3) then
 			minetest.chat_send_player(user, "Overlaps into another protected area")
-			return protector.old_node_place(itemstack, placer, pos)
+			return protector.old_node_place(itemstack, placer, pointed_thing.above)
 		end
 	end
 
