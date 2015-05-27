@@ -58,7 +58,7 @@ protector.generate_formspec = function(meta)
 				formspec = formspec .. "button["..(i%4*2+1.25)..","
 				..math.floor(i/4+3)..";.75,.5;protector_del_member_"..member..";X]"
 			end
-			i = i +1
+			i = i + 1
 	end
 	
 	if i < npp then
@@ -216,9 +216,7 @@ minetest.register_node("protector:protect", {
 	end,
 
 	can_dig = function(pos, player)
-		local meta = minetest.get_meta(pos)
-		local inv = meta:get_inventory()
-		return (meta:get_string("owner") == player:get_player_name())
+		return protector.can_dig(1,pos,player:get_player_name(),true,1)
 	end,
 })
 
@@ -282,9 +280,7 @@ minetest.register_node("protector:protect2", {
 	end,
 
 	can_dig = function(pos, player)
-		local meta = minetest.get_meta(pos)
-		local inv = meta:get_inventory()
-		return (meta:get_string("owner") == player:get_player_name())
+		return protector.can_dig(1,pos,player:get_player_name(),true,1)
 	end,
 })
 
