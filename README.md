@@ -1,6 +1,6 @@
 Protector Redo mod [protect]
 
-Protector redo mod for minetest is based on glomie's mod, remade by Zeg9 and reworked by TenPlus1 to support minetest 0.4.9 and include protected doors and chests
+Protector redo mod for minetest is based on glomie's mod, remade by Zeg9 and reworked by TenPlus1.
 
 https://forum.minetest.net/viewtopic.php?f=11&t=9376
 
@@ -15,3 +15,4 @@ Released under WTFPL
 0.7 - Protected Chests now have "To Chest" and "To Inventory" buttons to copy contents across, also chests can be named
 0.8 - Updated to work with Minetest 0.4.12, simplified textures
 0.9 - Tweaked code
+1.0 - Only owner can remove protector

@@ -214,6 +214,12 @@ minetest.register_node("protector:protect", {
 		end
 		minetest.add_entity(pos, "protector:display")
 	end,
+
+	can_dig = function(pos, player)
+		local meta = minetest.get_meta(pos)
+		local inv = meta:get_inventory()
+		return (meta:get_string("owner") == player:get_player_name())
+	end,
 })
 
 minetest.register_craft({
@@ -273,6 +279,12 @@ minetest.register_node("protector:protect2", {
 			return
 		end
 		minetest.add_entity(pos, "protector:display")
+	end,
+
+	can_dig = function(pos, player)
+		local meta = minetest.get_meta(pos)
+		local inv = meta:get_inventory()
+		return (meta:get_string("owner") == player:get_player_name())
 	end,
 })
 
