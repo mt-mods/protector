@@ -1,6 +1,7 @@
 minetest.register_privilege("delprotect","Ignore player protection")
 
 protector = {}
+protector.mod = "redo"
 protector.radius = (tonumber(minetest.setting_get("protector_radius")) or 5)
 
 protector.get_member_list = function(meta)
@@ -159,6 +160,9 @@ protector.old_is_protected = minetest.is_protected
 function minetest.is_protected(pos, digger)
 
 	if not protector.can_dig(protector.radius, pos, digger, false, 1) then
+-- hurt here
+--player = minetest.get_player_by_name(digger)
+--player:set_hp(player:get_hp()-2)
 		return true
 	end
 	return protector.old_is_protected(pos, digger)
