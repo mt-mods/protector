@@ -1,9 +1,13 @@
 minetest.register_privilege("delprotect","Ignore player protection")
 
+-- get static spawn position
+local statspawn = (minetest.setting_get_pos("static_spawnpoint") or {x = 0, y = 2, z = 0})
+
 protector = {}
 protector.mod = "redo"
 protector.radius = (tonumber(minetest.setting_get("protector_radius")) or 5)
 protector.pvp = minetest.setting_get("protector_pvp") or false
+protector.spawn = (tonumber(minetest.setting_get("protector_pvp_spawn")) or 0)
 
 protector.get_member_list = function(meta)
 	return meta:get_string("members"):split(" ")
@@ -713,7 +717,18 @@ if minetest.setting_getbool("enable_pvp") and protector.pvp == "true" then
 				return false
 			end
 
-			if minetest.is_protected(player:getpos(), hitter:get_player_name()) then
+			-- no pvp at spawn area
+			local pos = player:getpos()
+			if pos.x < statspawn.x + protector.spawn
+			and pos.x > statspawn.x - protector.spawn
+			and pos.y < statspawn.y + protector.spawn
+			and pos.y > statspawn.y - protector.spawn
+			and pos.z < statspawn.z + protector.spawn
+			and pos.z > statspawn.z - protector.spawn then
+				return true
+			end
+
+			if minetest.is_protected(pos, hitter:get_player_name()) then
 				return true
 			else
 				return false
