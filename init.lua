@@ -3,6 +3,7 @@ minetest.register_privilege("delprotect","Ignore player protection")
 protector = {}
 protector.mod = "redo"
 protector.radius = (tonumber(minetest.setting_get("protector_radius")) or 5)
+protector.pvp = minetest.setting_get("protector_pvp") or false
 
 protector.get_member_list = function(meta)
 	return meta:get_string("members"):split(" ")
@@ -695,3 +696,34 @@ minetest.register_craft({
 		{'default:chest', 'default:copper_ingot', ''},
 	}
 })
+
+-- Disable PVP in your own protected areas
+if minetest.setting_getbool("enable_pvp") and protector.pvp == "true" then
+
+	if minetest.register_on_punchplayer then
+
+		minetest.register_on_punchplayer(
+		function(player, hitter, time_from_last_punch, tool_capabilities, dir, damage)
+
+			if not player or not hitter then
+				print("on_punchplayer called with nil objects")
+			end
+
+			if not hitter:is_player() then
+				return false
+			end
+
+			if minetest.is_protected(player:getpos(), hitter:get_player_name()) then
+				return true
+			else
+				return false
+			end
+
+		end)
+	else
+		print("PVP protection not active, update your version of Minetest")
+
+	end
+else
+	print("PVP is disabled in world")
+end

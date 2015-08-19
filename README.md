@@ -16,3 +16,4 @@ Released under WTFPL
 0.8 - Updated to work with Minetest 0.4.12, simplified textures
 0.9 - Tweaked code
 1.0 - Only owner can remove protector
+1.1 - PVP can be disabled for player inside their own protected area using protector_pvp in minetest.conf (requires Minetest 0.4.12 dev and above)
