@@ -143,6 +143,7 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 				minetest.chat_send_player(digger,
 				"Members: " .. members .. ".")
 			end
+			break
 		end
 
 	end
@@ -354,6 +355,9 @@ minetest.register_entity("protector:display", {
 	-- wielditem seems to be scaled to 1.5 times original node size
 	visual_size = {x = 1.0 / 1.5, y = 1.0 / 1.5},
 	textures = {"protector:display_node"},
+	on_activate = function(self, staticdata)
+		if mobs and mobs.entity == false then self.object:remove() end
+	end,
 	on_step = function(self, dtime)
 		self.timer = (self.timer or 0) + dtime
 		if self.timer > 10 then
