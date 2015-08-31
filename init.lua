@@ -6,7 +6,7 @@ local statspawn = (minetest.setting_get_pos("static_spawnpoint") or {x = 0, y = 
 protector = {}
 protector.mod = "redo"
 protector.radius = (tonumber(minetest.setting_get("protector_radius")) or 5)
-protector.pvp = minetest.setting_get("protector_pvp") or false
+protector.pvp = minetest.setting_getbool("protector_pvp")
 protector.spawn = (tonumber(minetest.setting_get("protector_pvp_spawn")) or 0)
 
 protector.get_member_list = function(meta)
@@ -708,7 +708,7 @@ minetest.register_craft({
 })
 
 -- Disable PVP in your own protected areas
-if minetest.setting_getbool("enable_pvp") and protector.pvp == "true" then
+if minetest.setting_getbool("enable_pvp") and protector.pvp then
 
 	if minetest.register_on_punchplayer then
 
@@ -716,7 +716,7 @@ if minetest.setting_getbool("enable_pvp") and protector.pvp == "true" then
 		function(player, hitter, time_from_last_punch, tool_capabilities, dir, damage)
 
 			if not player or not hitter then
-				print("on_punchplayer called with nil objects")
+				print("[Protector] on_punchplayer called with nil objects")
 			end
 
 			if not hitter:is_player() then
@@ -742,9 +742,11 @@ if minetest.setting_getbool("enable_pvp") and protector.pvp == "true" then
 
 		end)
 	else
-		print("PVP protection not active, update your version of Minetest")
+		print("[Protector] pvp_protect not active, update your version of Minetest")
 
 	end
 else
-	print("PVP is disabled in world")
+	print("[Protector] pvp_protect is disabled")
 end
+
+print ("[MOD] Protector loaded")
