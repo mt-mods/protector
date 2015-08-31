@@ -623,6 +623,8 @@ minetest.register_node("protector:chest", {
 			.. "button[6,4.5;2,0.25;todn;To Inventory]"
 			.. "list[current_player;main;0,5;8,1;]"
 			.. "list[current_player;main;0,6.08;8,3;8]"
+			.. "listring[nodemeta:" .. spos .. ";main]"
+			.. "listring[current_player;main]"
 			.. default.get_hotbar_bg(0,5)
 
 			minetest.show_formspec(
