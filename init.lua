@@ -89,7 +89,8 @@ end
 
 protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 
-	if not digger then
+	if not digger
+	or not pos then
 		return false
 	end
 
