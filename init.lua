@@ -202,6 +202,7 @@ end
 
 minetest.register_node("protector:protect", {
 	description = "Protection Block",
+	drawtype = "nodebox",
 	tiles = {
 		"moreblocks_circle_stone_bricks.png",
 		"moreblocks_circle_stone_bricks.png",
@@ -209,8 +210,16 @@ minetest.register_node("protector:protect", {
 	},
 	sounds = default.node_sound_stone_defaults(),
 	groups = {dig_immediate = 2, unbreakable = 1},
+	is_ground_content = false,
 	paramtype = "light",
-	light_source = 2,
+	light_source = 4,
+
+	node_box = {
+		type = "fixed",
+		fixed = {
+			{-0.5 ,-0.5, -0.5, 0.5, 0.5, 0.5},
+		}
+	},
 
 	after_place_node = function(pos, placer)
 		local meta = minetest.get_meta(pos)
@@ -264,7 +273,7 @@ minetest.register_node("protector:protect2", {
 	groups = {dig_immediate = 2, unbreakable = 1},
 	paramtype = 'light',
 	paramtype2 = "wallmounted",
-	light_source = 2,
+	light_source = 4,
 	drawtype = "nodebox",
 	sunlight_propagates = true,
 	walkable = true,
@@ -357,12 +366,15 @@ minetest.register_entity("protector:display", {
 	-- wielditem seems to be scaled to 1.5 times original node size
 	visual_size = {x = 1.0 / 1.5, y = 1.0 / 1.5},
 	textures = {"protector:display_node"},
+	timer = 0,
 	on_activate = function(self, staticdata)
-		if mobs and mobs.entity == false then self.object:remove() end
+		if mobs and mobs.entity and mobs.entity == false then
+			self.object:remove()
+		end
 	end,
 	on_step = function(self, dtime)
-		self.timer = (self.timer or 0) + dtime
-		if self.timer > 10 then
+		self.timer = self.timer + dtime
+		if self.timer > 5 then
 			self.object:remove()
 		end
 	end,
