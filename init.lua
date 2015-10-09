@@ -118,6 +118,7 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 
 		if owner ~= digger then 
 			if onlyowner or not protector.is_member(meta, digger) then
+
 				if infolevel == 1 then
 					minetest.chat_send_player(digger,
 					"This area is owned by " .. owner .. " !")
@@ -131,6 +132,7 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 						"Members: " .. members .. ".")
 					end
 				end
+
 				return false
 			end
 		end
@@ -139,12 +141,13 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 			minetest.chat_send_player(digger,
 			"This area is owned by " .. owner .. ".")
 			minetest.chat_send_player(digger,
-			"Protection located at: " .. minetest.pos_to_string(positions[1]))
+			"Protection located at: " .. minetest.pos_to_string(pos))
 			if members ~= "" then
 				minetest.chat_send_player(digger,
 				"Members: " .. members .. ".")
 			end
-			break
+
+			return false
 		end
 
 	end
@@ -167,36 +170,36 @@ protector.old_is_protected = minetest.is_protected
 function minetest.is_protected(pos, digger)
 
 	if not protector.can_dig(protector.radius, pos, digger, false, 1) then
--- hurt here
---player = minetest.get_player_by_name(digger)
---player:set_hp(player:get_hp()-2)
+
+		-- hurt player here if required
+		--player = minetest.get_player_by_name(digger)
+		--player:set_hp(player:get_hp() - 2)
+
 		return true
 	end
+
 	return protector.old_is_protected(pos, digger)
 
 end
 
 -- Make sure protection block doesn't overlap another protector's area
 
-protector.old_node_place = minetest.item_place
+function protector.check_overlap(itemstack, placer, pointed_thing)
 
-function minetest.item_place(itemstack, placer, pointed_thing)
-
-	if itemstack:get_name() == "protector:protect"
-	or itemstack:get_name() == "protector:protect2" then
-		local user = placer:get_player_name()
-		local pos = pointed_thing.under
-		if not protector.can_dig(protector.radius * 2, pos, user, true, 3) then
-			minetest.chat_send_player(user,
-			"Overlaps into another protected area")
-			return protector.old_node_place(itemstack, placer, pos)
-		end
+	if pointed_thing.type ~= "node" then
+		return itemstack
 	end
 
-	return protector.old_node_place(itemstack, placer, pointed_thing)
-end
+	if not protector.can_dig(protector.radius * 2, pointed_thing.under,
+	placer:get_player_name(), true, 3) then
+		minetest.chat_send_player(placer:get_player_name(),
+			"Overlaps into above players protected area")
+		return
+	end
 
--- END
+	return minetest.item_place(itemstack, placer, pointed_thing, param2)
+
+end
 
 --= Protection Block
 
@@ -220,6 +223,8 @@ minetest.register_node("protector:protect", {
 			{-0.5 ,-0.5, -0.5, 0.5, 0.5, 0.5},
 		}
 	},
+
+	on_place = protector.check_overlap,
 
 	after_place_node = function(pos, placer)
 		local meta = minetest.get_meta(pos)
@@ -285,6 +290,8 @@ minetest.register_node("protector:protect2", {
 	},
 	selection_box = {type = "wallmounted"},
 
+	on_place = protector.check_overlap,
+
 	after_place_node = function(pos, placer)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("owner", placer:get_player_name() or "")
@@ -327,7 +334,8 @@ minetest.register_craft({
 })
 
 -- If name entered or button press
-minetest.register_on_player_receive_fields(function(player,formname,fields)
+
+minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 	if string.sub(formname, 0, string.len("protector:node_")) == "protector:node_" then
 
@@ -359,6 +367,8 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
 
 end)
 
+-- Display entity shown when protector node is punched
+
 minetest.register_entity("protector:display", {
 	physical = false,
 	collisionbox = {0, 0, 0, 0, 0, 0},
@@ -382,6 +392,7 @@ minetest.register_entity("protector:display", {
 
 -- Display-zone node, Do NOT place the display as a node,
 -- it is made to be used as an entity (see above)
+
 local x = protector.radius
 minetest.register_node("protector:display_node", {
 	tiles = {"protector_display.png"},
@@ -421,9 +432,9 @@ local function on_rightclick(pos, dir, check_name, replace, replace_dir, params)
 	end
 	local p2 = minetest.get_node(pos).param2
 	p2 = params[p2 + 1]
-		
+
 	minetest.swap_node(pos, {name = replace_dir, param2 = p2})
-		
+
 	pos.y = pos.y-dir
 	minetest.swap_node(pos, {name = replace, param2 = p2})
 

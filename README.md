@@ -25,3 +25,5 @@ Released under WTFPL
       disable pvp around spawn area with the radius you entered
 1.2 - Shift and click support added with Minetest 0.4.13 to quickly copy stacks
       to and from protected chest
+1.3 - Moved protector on_place into node itself, protector zone display changed
+      from 10 to 5 seconds, general code tidy
