@@ -191,13 +191,15 @@ function protector.check_overlap(itemstack, placer, pointed_thing)
 	end
 
 	if not protector.can_dig(protector.radius * 2, pointed_thing.under,
+	placer:get_player_name(), true, 3)
+	or not protector.can_dig(protector.radius * 2, pointed_thing.above,
 	placer:get_player_name(), true, 3) then
 		minetest.chat_send_player(placer:get_player_name(),
 			"Overlaps into above players protected area")
 		return
 	end
 
-	return minetest.item_place(itemstack, placer, pointed_thing, param2)
+	return minetest.item_place(itemstack, placer, pointed_thing)
 
 end
 
@@ -774,4 +776,4 @@ else
 	print("[Protector] pvp_protect is disabled")
 end
 
-print ("[MOD] Protector loaded")
+print ("[MOD] Protector Redo loaded")
