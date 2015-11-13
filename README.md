@@ -27,3 +27,5 @@ Released under WTFPL
       to and from protected chest
 1.3 - Moved protector on_place into node itself, protector zone display changed
       from 10 to 5 seconds, general code tidy
+1.4 - Changed protector recipes to give single item instead of 4, added + button
+      to interface, tweaked and tidied code
