@@ -30,3 +30,20 @@ Released under WTFPL
 1.4 - Changed protector recipes to give single item instead of 4, added + button
       to interface, tweaked and tidied code, added admin command /delprot to remove
       protectors in bulk from banned/old players
+
+Usage: (requires server privelage)
+
+list names to remove
+
+	/delprot
+
+remove specific user names
+
+	/delprot name1 name2
+
+remove all names from list
+
+	/delprot -
+
+Whenever a player is near any protectors with name1 or name2 then it will be
+replaced by an air block.
