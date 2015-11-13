@@ -499,5 +499,6 @@ minetest.register_node("protector:display_node", {
 
 dofile(minetest.get_modpath("protector") .. "/doors_chest.lua")
 dofile(minetest.get_modpath("protector") .. "/pvp.lua")
+dofile(minetest.get_modpath("protector") .. "/admin.lua")
 
 print ("[MOD] Protector Redo loaded")
