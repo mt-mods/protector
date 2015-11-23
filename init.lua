@@ -332,6 +332,7 @@ minetest.register_node("protector:protect2", {
 	groups = {dig_immediate = 2, unbreakable = 1},
 	paramtype = 'light',
 	paramtype2 = "wallmounted",
+	legacy_wallmounted = true,
 	light_source = 4,
 	drawtype = "nodebox",
 	sunlight_propagates = true,
