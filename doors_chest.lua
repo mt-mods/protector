@@ -3,7 +3,7 @@
 
 local function on_rightclick(pos, dir, check_name, replace, replace_dir, params)
 
-	pos.y = pos.y+dir
+	pos.y = pos.y + dir
 
 	if not minetest.get_node(pos).name == check_name then
 		return
@@ -428,7 +428,7 @@ register_trapdoor("protector:trapdoor", {
 	wield_image = "doors_trapdoor.png^protector_logo.png",
 	tile_front = "doors_trapdoor.png^protector_logo.png",
 	tile_side = "doors_trapdoor_side.png",
-	groups = {snappy=1, choppy=2, oddly_breakable_by_hand=2, flammable=2, door=1},
+	groups = {snappy=1, choppy=2, oddly_breakable_by_hand=2, door=1, unbreakable=1},
 	sounds = default.node_sound_wood_defaults(),
 	sound_open = "doors_door_open",
 	sound_close = "doors_door_close"
