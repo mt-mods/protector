@@ -358,3 +358,94 @@ minetest.register_craft({
 		{'default:chest', 'default:copper_ingot', ''},
 	}
 })
+
+-- Protected Trapdoor
+
+function register_trapdoor(name, def)
+	local name_closed = name
+	local name_opened = name.."_open"
+
+	def.on_rightclick = function (pos, node, clicker)
+
+		if minetest.is_protected(pos, clicker:get_player_name()) then
+			return
+		end
+
+		local newname = node.name == name_closed and name_opened or name_closed
+		local sound = false
+		if node.name == name_closed then sound = def.sound_open end
+		if node.name == name_opened then sound = def.sound_close end
+		if sound then
+			minetest.sound_play(sound, {pos = pos, gain = 0.3, max_hear_distance = 10})
+		end
+		minetest.set_node(pos, {name = newname, param1 = node.param1, param2 = node.param2})
+	end
+
+	def.on_rotate = minetest.get_modpath("screwdriver") and screwdriver.rotate_simple
+
+	-- Common trapdoor configuration
+	def.drawtype = "nodebox"
+	def.paramtype = "light"
+	def.paramtype2 = "facedir"
+	def.is_ground_content = false
+
+	local def_opened = table.copy(def)
+	local def_closed = table.copy(def)
+
+	def_closed.node_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.4, 0.5}
+	}
+	def_closed.selection_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.4, 0.5}
+	}
+	def_closed.tiles = { def.tile_front, def.tile_front, def.tile_side, def.tile_side,
+		def.tile_side, def.tile_side }
+
+	def_opened.node_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, 0.4, 0.5, 0.5, 0.5}
+	}
+	def_opened.selection_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, 0.4, 0.5, 0.5, 0.5}
+	}
+	def_opened.tiles = { def.tile_side, def.tile_side, def.tile_side, def.tile_side,
+		def.tile_front, def.tile_front }
+	def_opened.drop = name_closed
+	def_opened.groups.not_in_creative_inventory = 1
+
+	minetest.register_node(name_opened, def_opened)
+	minetest.register_node(name_closed, def_closed)
+end
+
+
+
+register_trapdoor("protector:trapdoor", {
+	description = "Protected Trapdoor",
+	inventory_image = "doors_trapdoor.png^protector_logo.png",
+	wield_image = "doors_trapdoor.png^protector_logo.png",
+	tile_front = "doors_trapdoor.png^protector_logo.png",
+	tile_side = "doors_trapdoor_side.png",
+	groups = {snappy=1, choppy=2, oddly_breakable_by_hand=2, flammable=2, door=1},
+	sounds = default.node_sound_wood_defaults(),
+	sound_open = "doors_door_open",
+	sound_close = "doors_door_close"
+})
+
+minetest.register_craft({
+	output = 'protector:trapdoor 2',
+	recipe = {
+		{'group:wood', 'default:copper_ingot', 'group:wood'},
+		{'group:wood', 'group:wood', 'group:wood'},
+		{'', '', ''},
+	}
+})
+
+minetest.register_craft({
+	output = "protector:trapdoor",
+	recipe = {
+		{"doors:trapdoor", "default:copper_ingot"}
+	}
+})

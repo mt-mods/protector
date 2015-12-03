@@ -30,6 +30,7 @@ Released under WTFPL
 1.4 - Changed protector recipes to give single item instead of 4, added + button
       to interface, tweaked and tidied code, added admin command /delprot to remove
       protectors in bulk from banned/old players
+1.5 - Added much requested protected trapdoor
 
 Usage: (requires server privelage)
 
