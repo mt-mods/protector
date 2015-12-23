@@ -31,6 +31,9 @@ Released under WTFPL
       to interface, tweaked and tidied code, added admin command /delprot to remove
       protectors in bulk from banned/old players
 1.5 - Added much requested protected trapdoor
+1.6 - Added protector_drop (true or false) and protector_hurt (hurt by this num)
+      variables to minetest.conf settings to stop players breaking protected
+      areas by dropping tools and hurting player.
 
 Usage: (requires server privelage)
 

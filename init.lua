@@ -3,6 +3,8 @@ minetest.register_privilege("delprotect","Ignore player protection")
 protector = {}
 protector.mod = "redo"
 protector.radius = (tonumber(minetest.setting_get("protector_radius")) or 5)
+protector.drop = minetest.setting_getbool("protector_drop") or false
+protector.hurt = (tonumber(minetest.setting_get("protector_hurt")) or 0)
 
 protector.get_member_list = function(meta)
 
@@ -210,9 +212,30 @@ function minetest.is_protected(pos, digger)
 
 	if not protector.can_dig(protector.radius, pos, digger, false, 1) then
 
-		-- hurt player here if required
-		--player = minetest.get_player_by_name(digger)
-		--player:set_hp(player:get_hp() - 2)
+		local player = minetest.get_player_by_name(digger)
+
+		if protector.hurt > 0 then
+			player:set_hp(player:get_hp() - protector.hurt)
+		end
+
+		if protector.drop == true then
+			-- drop tool/item if protection violated
+			local tool = player:get_wielded_item()
+			local wear = tool:get_wear()
+			local num = player:get_wield_index()
+			local player_inv = player:get_inventory()
+			local inv = player_inv:get_stack("main", num)
+			local sta = inv:take_item(inv:get_count())
+			local obj = minetest.add_item(player:getpos(), sta)
+
+			if obj then
+				obj:setvelocity({x = 0, y = 5, z = 0})
+				player:set_wielded_item(nil)
+				minetest.after(0.1, function()
+					player_inv:set_stack("main", num, nil)
+				end)
+			end
+		end
 
 		return true
 	end
