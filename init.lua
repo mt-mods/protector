@@ -45,7 +45,7 @@ protector.del_member = function(meta, name)
 
 	local list = protector.get_member_list(meta)
 
-	for i, n in ipairs(list) do
+	for i, n in pairs(list) do
 
 		if n == name then
 			table.remove(list, i)
@@ -71,7 +71,7 @@ protector.generate_formspec = function(meta)
 	local npp = 12 -- max users added onto protector list
 	local i = 0
 
-	for _, member in ipairs(members) do
+	for _, member in pairs(members) do
 
 		if i < npp then
 
@@ -136,7 +136,7 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 
 	local meta, owner, members
 
-	for _, pos in ipairs(positions) do
+	for _, pos in pairs(positions) do
 
 		meta = minetest.get_meta(pos)
 		owner = meta:get_string("owner")
@@ -214,29 +214,30 @@ function minetest.is_protected(pos, digger)
 
 		local player = minetest.get_player_by_name(digger)
 
+		-- hurt player if protection violated
 		if protector.hurt > 0
 		and player then
 			player:set_hp(player:get_hp() - protector.hurt)
 		end
 
+		-- drop tool/item if protection violated
 		if protector.drop == true
 		and player then
-			-- drop tool/item if protection violated
-			local tool = player:get_wielded_item()
-			--local wear = tool:get_wear()
-			local num = player:get_wield_index()
-			local player_inv = player:get_inventory()
-			local inv = player_inv:get_stack("main", num)
-			local sta = inv:take_item(inv:get_count())
-			local obj = minetest.add_item(player:getpos(), sta)
 
-			if obj then
-				obj:setvelocity({x = 0, y = 5, z = 0})
-				player:set_wielded_item(nil)
-				minetest.after(0.2, function()
-					player_inv:set_stack("main", num, nil)
-				end)
+			local holding = player:get_wielded_item()
+
+			if holding:to_string() ~= "" then
+
+				local sta = holding:take_item(holding:get_count())
+				local obj = minetest.add_item(player:getpos(), sta)
+
+				if obj then
+					obj:setvelocity({x = 0, y = 5, z = 0})
+					player:set_wielded_item(holding)
+				end
+
 			end
+
 		end
 
 		return true

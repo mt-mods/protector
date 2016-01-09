@@ -47,7 +47,7 @@ minetest.register_abm({
 
 		local names = protector.removal_names:split(" ")
 
-		for _, n in ipairs(names) do
+		for _, n in pairs(names) do
 
 			if n == owner then
 				minetest.set_node(pos, {name = "air"})

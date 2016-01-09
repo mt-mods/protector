@@ -290,7 +290,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		if fields.toup then
 
 			-- copy contents of players inventory to chest
-			for i, v in ipairs (player_inv:get_list("main") or {}) do
+			for i, v in pairs (player_inv:get_list("main") or {}) do
 
 				if chest_inv
 				and chest_inv:room_for_item('main', v) then
@@ -309,7 +309,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		elseif fields.todn then
 
 			-- copy contents of chest to players inventory
-			for i, v in ipairs (chest_inv:get_list('main') or {}) do
+			for i, v in pairs (chest_inv:get_list('main') or {}) do
 
 				if player_inv:room_for_item("main", v) then
 
