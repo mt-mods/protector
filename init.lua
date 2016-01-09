@@ -18,7 +18,7 @@ end
 
 protector.is_member = function (meta, name)
 
-	for _, n in ipairs(protector.get_member_list(meta)) do
+	for _, n in pairs(protector.get_member_list(meta)) do
 
 		if n == name then
 			return true
@@ -234,6 +234,9 @@ function minetest.is_protected(pos, digger)
 				if obj then
 					obj:setvelocity({x = 0, y = 5, z = 0})
 					player:set_wielded_item(holding)
+					minetest.after(0.2, function()
+						player:set_wielded_item(holding)
+					end)
 				end
 
 			end
@@ -442,7 +445,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 		if fields.protector_add_member then
 
-			for _, i in ipairs(fields.protector_add_member:split(" ")) do
+			for _, i in pairs(fields.protector_add_member:split(" ")) do
 				protector.add_member(meta, i)
 			end
 		end
