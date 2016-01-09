@@ -228,16 +228,18 @@ function minetest.is_protected(pos, digger)
 
 			if holding:to_string() ~= "" then
 
+				-- take stack
 				local sta = holding:take_item(holding:get_count())
-				local obj = minetest.add_item(player:getpos(), sta)
+				player:set_wielded_item(holding)
 
-				if obj then
-					obj:setvelocity({x = 0, y = 5, z = 0})
+				-- incase of lag, reset stack
+				minetest.after(0.1, function()
 					player:set_wielded_item(holding)
-					minetest.after(0.2, function()
-						player:set_wielded_item(holding)
-					end)
-				end
+
+					-- drop stack
+					local obj = minetest.add_item(player:getpos(), sta)
+					obj:setvelocity({x = 0, y = 5, z = 0})
+				end)
 
 			end
 
