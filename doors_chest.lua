@@ -378,7 +378,7 @@ function register_trapdoor(name, def)
 		if sound then
 			minetest.sound_play(sound, {pos = pos, gain = 0.3, max_hear_distance = 10})
 		end
-		minetest.set_node(pos, {name = newname, param1 = node.param1, param2 = node.param2})
+		minetest.swap_node(pos, {name = newname, param1 = node.param1, param2 = node.param2})
 	end
 
 	def.on_rotate = minetest.get_modpath("screwdriver") and screwdriver.rotate_simple
