@@ -341,6 +341,8 @@ minetest.register_node("protector:protect", {
 
 		return protector.can_dig(1, pos, player:get_player_name(), true, 1)
 	end,
+
+	on_blast = function() end,
 })
 
 minetest.register_craft({
@@ -420,6 +422,8 @@ minetest.register_node("protector:protect2", {
 
 		return protector.can_dig(1, pos, player:get_player_name(), true, 1)
 	end,
+
+	on_blast = function() end,
 })
 
 minetest.register_craft({

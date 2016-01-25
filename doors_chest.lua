@@ -272,6 +272,8 @@ minetest.register_node("protector:chest", {
 				"protector:chest_" .. minetest.pos_to_string(pos),
 				formspec)
 	end,
+
+	on_blast = function() end,
 })
 
 -- Protected Chest formspec buttons
