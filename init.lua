@@ -260,9 +260,7 @@ function protector.check_overlap(itemstack, placer, pointed_thing)
 		return itemstack
 	end
 
-	if not protector.can_dig(protector.radius * 2, pointed_thing.under,
-	placer:get_player_name(), true, 3)
-	or not protector.can_dig(protector.radius * 2, pointed_thing.above,
+	if not protector.can_dig(protector.radius * 2, pointed_thing.above,
 	placer:get_player_name(), true, 3) then
 
 		minetest.chat_send_player(placer:get_player_name(),
