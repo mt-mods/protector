@@ -34,6 +34,8 @@ Released under WTFPL
 1.6 - Added protector_drop (true or false) and protector_hurt (hurt by this num)
       variables to minetest.conf settings to stop players breaking protected
       areas by dropping tools and hurting player.
+1.7 - Included an edited version of WTFPL doors mod since protected doors didn't
+      work with the doors mod in the latest daily build... Now it's fine :)
 
 Usage: (requires server privelage)
 
