@@ -1,7 +1,7 @@
 
 -- Since the doors mod has changed in the latest daily builds I have taken the
 -- WTFPL licenced code from the old doors mod and included an edited version
--- of it within this mod.
+-- of it within this mod for local use.
 
 -- Registers a door
 function register_door(name, def)
@@ -9,25 +9,12 @@ function register_door(name, def)
 
 	local box = {{-0.5, -0.5, -0.5, 0.5, 0.5, -0.5+1.5/16}}
 
-	if not def.node_box_bottom then
-		def.node_box_bottom = box
-	end
-	if not def.node_box_top then
-		def.node_box_top = box
-	end
-	if not def.selection_box_bottom then
-		def.selection_box_bottom= box
-	end
-	if not def.selection_box_top then
-		def.selection_box_top = box
-	end
-
-	if not def.sound_close_door then
-		def.sound_close_door = "doors_door_close"
-	end
-	if not def.sound_open_door then
-		def.sound_open_door = "doors_door_open"
-	end
+	def.node_box_bottom = box
+	def.node_box_top = box
+	def.selection_box_bottom = box
+	def.selection_box_top = box
+	def.sound_close_door  = "doors_door_close"
+	def.sound_open_door = "doors_door_open"
 
 	minetest.register_craftitem(name, {
 		description = def.description,
@@ -101,13 +88,6 @@ function register_door(name, def)
 		end
 	end
 
-	local function check_and_blast(pos, name)
-		local node = minetest.get_node(pos)
-		if node.name == name then
-			minetest.remove_node(pos)
-		end
-	end
-
 	local function on_rightclick(pos, dir, check_name, replace, replace_dir, params)
 		pos.y = pos.y+dir
 		if minetest.get_node(pos).name ~= check_name then
@@ -136,9 +116,7 @@ function register_door(name, def)
 	end
 
 	local function on_rotate(pos, node, dir, user, check_name, mode, new_param2)
-		if not check_player_priv(pos, user) then
-			return false
-		end
+
 		if mode ~= screwdriver.ROTATE_FACE then
 			return false
 		end
@@ -194,7 +172,6 @@ function register_door(name, def)
 			return on_rotate(pos, node, 1, user, name.."_t_1", mode)
 		end,
 
-		can_dig = check_player_priv,
 		sounds = def.sounds,
 		sunlight_propagates = def.sunlight,
 		on_blast = function() end,
@@ -232,7 +209,6 @@ function register_door(name, def)
 			return on_rotate(pos, node, -1, user, name.."_b_1", mode)
 		end,
 
-		can_dig = check_player_priv,
 		sounds = def.sounds,
 		sunlight_propagates = def.sunlight,
 		on_blast = function() end,
@@ -270,7 +246,6 @@ function register_door(name, def)
 			return on_rotate(pos, node, 1, user, name.."_t_2", mode)
 		end,
 
-		can_dig = check_player_priv,
 		sounds = def.sounds,
 		sunlight_propagates = def.sunlight,
 		on_blast = function() end,
@@ -308,7 +283,6 @@ function register_door(name, def)
 			return on_rotate(pos, node, -1, user, name.."_b_2", mode)
 		end,
 
-		can_dig = check_player_priv,
 		sounds = def.sounds,
 		sunlight_propagates = def.sunlight,
 		on_blast = function() end,
@@ -394,8 +368,8 @@ function register_trapdoor(name, def)
 		end
 		local newname = node.name == name_closed and name_opened or name_closed
 		local sound = false
-		if node.name == name_closed then sound = def.sound_open end
-		if node.name == name_opened then sound = def.sound_close end
+		if node.name == name_closed then sound = "doors_door_open" end
+		if node.name == name_opened then sound = "doors_door_close" end
 		if sound then
 			minetest.sound_play(sound, {pos = pos, gain = 0.3, max_hear_distance = 10})
 		end
@@ -407,7 +381,6 @@ function register_trapdoor(name, def)
 	def.paramtype = "light"
 	def.paramtype2 = "facedir"
 	def.is_ground_content = false
-	def.can_dig = check_player_priv
 
 	local def_opened = table.copy(def)
 	local def_closed = table.copy(def)
@@ -456,8 +429,6 @@ register_trapdoor("protector:trapdoor", {
 		door = 1, unbreakable = 1
 	},
 	sounds = default.node_sound_wood_defaults(),
-	sound_open = "doors_door_open",
-	sound_close = "doors_door_close"
 })
 
 minetest.register_craft({
@@ -489,8 +460,6 @@ register_trapdoor("protector:trapdoor_steel", {
 		door = 1, unbreakable = 1
 	},
 	sounds = default.node_sound_wood_defaults(),
-	sound_open = "doors_door_open",
-	sound_close = "doors_door_close"
 })
 
 minetest.register_craft({
