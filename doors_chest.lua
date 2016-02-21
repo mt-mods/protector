@@ -536,6 +536,11 @@ minetest.register_node("protector:chest", {
 		end
 
 		local meta = minetest.get_meta(pos)
+
+		if not meta then
+			return
+		end
+
 		local spos = pos.x .. "," .. pos.y .. "," ..pos.z
 		local formspec = "size[8,9]"
 			.. default.gui_bg
@@ -550,7 +555,6 @@ minetest.register_node("protector:chest", {
 			.. "list[current_player;main;0,6.08;8,3;8]"
 			.. "listring[nodemeta:" .. spos .. ";main]"
 			.. "listring[current_player;main]"
-			.. default.get_hotbar_bg(0,5)
 
 			minetest.show_formspec(
 				clicker:get_player_name(),
