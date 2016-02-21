@@ -61,10 +61,12 @@ end
 protector.generate_formspec = function(meta)
 
 	local formspec = "size[8,7]"
-		..default.gui_bg..default.gui_bg_img..default.gui_slots
-		.."label[2.5,0;-- Protector interface --]"
-		.."label[0,1;PUNCH node to show protected area or USE for area check]"
-		.."label[0,2;Members: (type player name then press Enter to add)]"
+		.. default.gui_bg
+		.. default.gui_bg_img
+		.. default.gui_slots
+		.. "label[2.5,0;-- Protector interface --]"
+		.. "label[0,1;PUNCH node to show protected area or USE for area check]"
+		.. "label[0,2;Members: (type player name then press Enter to add)]"
 		.. "button_exit[2.5,6.2;3,0.5;close_me;Close]"
 
 	local members = protector.get_member_list(meta)
@@ -320,7 +322,8 @@ minetest.register_node("protector:protect", {
 
 		local meta = minetest.get_meta(pos)
 
-		if protector.can_dig(1, pos,clicker:get_player_name(), true, 1) then
+		if meta
+		and protector.can_dig(1, pos,clicker:get_player_name(), true, 1) then
 			minetest.show_formspec(clicker:get_player_name(), 
 			"protector:node_" .. minetest.pos_to_string(pos), protector.generate_formspec(meta))
 		end
