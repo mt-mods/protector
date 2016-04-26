@@ -331,7 +331,7 @@ minetest.register_node("protector:protect", {
 
 	on_punch = function(pos, node, puncher)
 
-		if not protector.can_dig(1, pos, puncher:get_player_name(), true, 1) then
+		if minetest.is_protected(pos, puncher:get_player_name()) then
 			return
 		end
 
@@ -412,7 +412,7 @@ minetest.register_node("protector:protect2", {
 
 	on_punch = function(pos, node, puncher)
 
-		if not protector.can_dig(1, pos, puncher:get_player_name(), true, 1) then
+		if minetest.is_protected(pos, puncher:get_player_name()) then
 			return
 		end
 
