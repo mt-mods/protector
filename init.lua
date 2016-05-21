@@ -122,7 +122,8 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 
 	-- Delprotect privileged users can override protections
 
-	if minetest.check_player_privs(digger, {delprotect = true})
+	if ( minetest.check_player_privs(digger, {delprotect = true})
+	or minetest.check_player_privs(digger, {protection_bypass = true}) )
 	and infolevel == 1 then
 		return true
 	end

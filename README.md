@@ -36,6 +36,7 @@ Released under WTFPL
       areas by dropping tools and hurting player.
 1.7 - Included an edited version of WTFPL doors mod since protected doors didn't
       work with the doors mod in the latest daily build... Now it's fine :)
+      added support for "protection_bypass" privelage.
 
 Usage: (requires server privelage)
 
