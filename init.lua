@@ -241,7 +241,9 @@ function minetest.is_protected(pos, digger)
 
 					-- drop stack
 					local obj = minetest.add_item(player:getpos(), sta)
-					obj:setvelocity({x = 0, y = 5, z = 0})
+					if obj then
+						obj:setvelocity({x = 0, y = 5, z = 0})
+					end
 				end)
 
 			end
