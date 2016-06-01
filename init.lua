@@ -142,10 +142,10 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 	for _, pos in pairs(positions) do
 
 		meta = minetest.get_meta(pos)
-		owner = meta:get_string("owner")
-		members = meta:get_string("members")
+		owner = meta:get_string("owner") or ""
+		members = meta:get_string("members") or ""
 
-		if owner ~= digger then 
+		if owner ~= digger then
 
 			if onlyowner
 			or not protector.is_member(meta, digger) then
