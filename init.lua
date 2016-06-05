@@ -1,3 +1,4 @@
+
 minetest.register_privilege("delprotect","Ignore player protection")
 
 protector = {}
@@ -66,26 +67,26 @@ protector.generate_formspec = function(meta)
 		.. default.gui_slots
 		.. "label[2.5,0;-- Protector interface --]"
 		.. "label[0,1;PUNCH node to show protected area or USE for area check]"
-		.. "label[0,2;Members: (type player name then press Enter to add)]"
+		.. "label[0,2;Members:]"
 		.. "button_exit[2.5,6.2;3,0.5;close_me;Close]"
 
 	local members = protector.get_member_list(meta)
 	local npp = 12 -- max users added onto protector list
 	local i = 0
 
-	for _, member in pairs(members) do
+	for n = 1, #members do
 
 		if i < npp then
 
 			-- show username
 			formspec = formspec .. "button[" .. (i % 4 * 2)
 			.. "," .. math.floor(i / 4 + 3)
-			.. ";1.5,.5;protector_member;" .. member .. "]"
+			.. ";1.5,.5;protector_member;" .. members[n] .. "]"
 
 			-- username remove button
 			.. "button[" .. (i % 4 * 2 + 1.25) .. ","
 			.. math.floor(i / 4 + 3)
-			.. ";.75,.5;protector_del_member_" .. member .. ";X]"
+			.. ";.75,.5;protector_del_member_" .. members[n] .. ";X]"
 		end
 
 		i = i + 1
@@ -132,16 +133,16 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 
 	-- Find the protector nodes
 
-	local positions = minetest.find_nodes_in_area(
+	local pos = minetest.find_nodes_in_area(
 		{x = pos.x - r, y = pos.y - r, z = pos.z - r},
 		{x = pos.x + r, y = pos.y + r, z = pos.z + r},
 		{"protector:protect", "protector:protect2"})
 
 	local meta, owner, members
 
-	for _, pos in pairs(positions) do
+	for n = 1, #pos do
 
-		meta = minetest.get_meta(pos)
+		meta = minetest.get_meta(pos[n])
 		owner = meta:get_string("owner") or ""
 		members = meta:get_string("members") or ""
 
@@ -161,7 +162,7 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 					"This area is owned by " .. owner .. ".")
 
 					minetest.chat_send_player(digger,
-					"Protection located at: " .. minetest.pos_to_string(pos))
+					"Protection located at: " .. minetest.pos_to_string(pos[n]))
 
 					if members ~= "" then
 
@@ -180,7 +181,7 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 			"This area is owned by " .. owner .. ".")
 
 			minetest.chat_send_player(digger,
-			"Protection located at: " .. minetest.pos_to_string(pos))
+			"Protection located at: " .. minetest.pos_to_string(pos[n]))
 
 			if members ~= "" then
 
@@ -195,7 +196,7 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 
 	if infolevel == 2 then
 
-		if #positions < 1 then
+		if #pos < 1 then
 
 			minetest.chat_send_player(digger,
 			"This area is not protected.")
@@ -489,7 +490,8 @@ minetest.register_entity("protector:display", {
 	on_activate = function(self, staticdata)
 
 		-- Xanadu server only
-		if mobs and mobs.entity and mobs.entity == false then
+		if (mobs and mobs.entity and mobs.entity == false)
+		or not self then
 			self.object:remove()
 		end
 	end,
