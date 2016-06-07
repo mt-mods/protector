@@ -1,24 +1,26 @@
 
+local S = protector.intllib
+
 protector.removal_names = ""
 
 minetest.register_chatcommand("delprot", {
 	params = "",
-	description = "Remove Protectors near players with names provided (separate names with spaces)",
+	description = S("Remove Protectors near players with names provided (separate names with spaces)"),
 	privs = {server = true},
 	func = function(name, param)
 
 		if not param or param == "" then
 
 			minetest.chat_send_player(name,
-				"Protector Names to remove: "
-				.. protector.removal_names)
+				S("Protector Names to remove: %1",
+				protector.removal_names))
 
 			return
 		end
 
 		if param == "-" then
 			minetest.chat_send_player(name,
-				"Name List Reset")
+				S("Name List Reset"))
 
 			protector.removal_names = ""
 

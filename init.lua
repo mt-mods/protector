@@ -7,6 +7,28 @@ protector.radius = (tonumber(minetest.setting_get("protector_radius")) or 5)
 protector.drop = minetest.setting_getbool("protector_drop") or false
 protector.hurt = (tonumber(minetest.setting_get("protector_hurt")) or 0)
 
+-- Intllib
+local S
+if minetest.get_modpath("intllib") then
+	S = intllib.Getter()
+else
+	S = function(s, a, ...)
+		if a == nil then
+			return s
+		end
+		a = {a, ...}
+		return s:gsub("(@?)@(%(?)(%d+)(%)?)",
+			function(e, o, n, c)
+				if e == ""then
+					return a[tonumber(n)] .. (o == "" and c or "")
+				else
+					return "@" .. o .. n .. c
+				end
+			end)
+		end
+end
+protector.intllib = S
+
 protector.get_member_list = function(meta)
 
 	return meta:get_string("members"):split(" ")
@@ -65,10 +87,10 @@ protector.generate_formspec = function(meta)
 		.. default.gui_bg
 		.. default.gui_bg_img
 		.. default.gui_slots
-		.. "label[2.5,0;-- Protector interface --]"
-		.. "label[0,1;PUNCH node to show protected area or USE for area check]"
-		.. "label[0,2;Members:]"
-		.. "button_exit[2.5,6.2;3,0.5;close_me;Close]"
+		.. "label[2.5,0;" .. S("-- Protector interface --") .. "]"
+		.. "label[0,1;" .. S("PUNCH node to show protected area or USE for area check") .. "]"
+		.. "label[0,2;" .. S("Members:") .. "]"
+		.. "button_exit[2.5,6.2;3,0.5;close_me;" .. S("Close") .. "]"
 
 	local members = protector.get_member_list(meta)
 	local npp = 12 -- max users added onto protector list
@@ -154,20 +176,20 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 				if infolevel == 1 then
 
 					minetest.chat_send_player(digger,
-					"This area is owned by " .. owner .. " !")
+					S("This area is owned by @1!", owner))
 
 				elseif infolevel == 2 then
 
 					minetest.chat_send_player(digger,
-					"This area is owned by " .. owner .. ".")
+					S("This area is owned by @1.", owner))
 
 					minetest.chat_send_player(digger,
-					"Protection located at: " .. minetest.pos_to_string(pos[n]))
+					S("Protection located at: @1", minetest.pos_to_string(pos[n])))
 
 					if members ~= "" then
 
 						minetest.chat_send_player(digger,
-						"Members: " .. members .. ".")
+						S("Members: @1.", members))
 					end
 				end
 
@@ -178,15 +200,15 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 		if infolevel == 2 then
 
 			minetest.chat_send_player(digger,
-			"This area is owned by " .. owner .. ".")
+			S("This area is owned by @1.", owner))
 
 			minetest.chat_send_player(digger,
-			"Protection located at: " .. minetest.pos_to_string(pos[n]))
+			S("Protection located at: @1", minetest.pos_to_string(pos[n])))
 
 			if members ~= "" then
 
 				minetest.chat_send_player(digger,
-				"Members: " .. members .. ".")
+				S("Members: @1.", members))
 			end
 
 			return false
@@ -199,10 +221,10 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 		if #pos < 1 then
 
 			minetest.chat_send_player(digger,
-			"This area is not protected.")
+			S("This area is not protected."))
 		end
 
-		minetest.chat_send_player(digger, "You can build here.")
+		minetest.chat_send_player(digger, S("You can build here."))
 	end
 
 	return true
@@ -270,7 +292,7 @@ function protector.check_overlap(itemstack, placer, pointed_thing)
 	placer:get_player_name(), true, 3) then
 
 		minetest.chat_send_player(placer:get_player_name(),
-			"Overlaps into above players protected area")
+			S("Overlaps into above players protected area"))
 
 		return
 	end
@@ -282,7 +304,7 @@ end
 --= Protection Block
 
 minetest.register_node("protector:protect", {
-	description = "Protection Block",
+	description = S("Protection Block"),
 	drawtype = "nodebox",
 	tiles = {
 		"moreblocks_circle_stone_bricks.png",
@@ -309,7 +331,7 @@ minetest.register_node("protector:protect", {
 		local meta = minetest.get_meta(pos)
 
 		meta:set_string("owner", placer:get_player_name() or "")
-		meta:set_string("infotext", "Protection (owned by " .. meta:get_string("owner") .. ")")
+		meta:set_string("infotext", S("Protection (owned by @1)", meta:get_string("owner")))
 		meta:set_string("members", "")
 	end,
 
@@ -362,7 +384,7 @@ minetest.register_craft({
 --= Protection Logo
 
 minetest.register_node("protector:protect2", {
-	description = "Protection Logo",
+	description = S("Protection Logo"),
 	tiles = {"protector_logo.png"},
 	wield_image = "protector_logo.png",
 	inventory_image = "protector_logo.png",
@@ -390,7 +412,7 @@ minetest.register_node("protector:protect2", {
 		local meta = minetest.get_meta(pos)
 
 		meta:set_string("owner", placer:get_player_name() or "")
-		meta:set_string("infotext", "Protection (owned by " .. meta:get_string("owner") .. ")")
+		meta:set_string("infotext", S("Protection (owned by @1)", meta:get_string("owner")))
 		meta:set_string("members", "")
 	end,
 
@@ -543,4 +565,4 @@ dofile(minetest.get_modpath("protector") .. "/doors_chest.lua")
 dofile(minetest.get_modpath("protector") .. "/pvp.lua")
 dofile(minetest.get_modpath("protector") .. "/admin.lua")
 
-print ("[MOD] Protector Redo loaded")
+print (S("[MOD] Protector Redo loaded"))

@@ -1,4 +1,6 @@
 
+local S = protector.intllib
+
 -- get static spawn position
 local statspawn = (minetest.setting_get_pos("static_spawnpoint") or {x = 0, y = 2, z = 0})
 
@@ -16,7 +18,7 @@ if minetest.setting_getbool("enable_pvp") and protector.pvp then
 
 			if not player
 			or not hitter then
-				print("[Protector] on_punchplayer called with nil objects")
+				print(S("[Protector] on_punchplayer called with nil objects"))
 			end
 
 			if not hitter:is_player() then
@@ -43,9 +45,9 @@ if minetest.setting_getbool("enable_pvp") and protector.pvp then
 
 		end)
 	else
-		print("[Protector] pvp_protect not active, update your version of Minetest")
+		print(S("[Protector] pvp_protect not active, update your version of Minetest"))
 
 	end
 else
-	print("[Protector] pvp_protect is disabled")
+	print(S("[Protector] pvp_protect is disabled"))
 end

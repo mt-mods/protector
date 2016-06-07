@@ -3,6 +3,8 @@
 -- WTFPL licenced code from the old doors mod and included an edited version
 -- of it within this mod for local use.
 
+local S = protector.intllib
+
 -- Registers a door
 function register_door(name, def)
 	def.groups.not_in_creative_inventory = 1
@@ -295,7 +297,7 @@ end
 local name = "protector:door_wood"
 
 register_door(name, {
-	description = "Protected Wooden Door",
+	description = S("Protected Wooden Door"),
 	inventory_image = "doors_wood.png^protector_logo.png",
 	groups = {
 		snappy = 1, choppy = 2, oddly_breakable_by_hand = 2,
@@ -328,7 +330,7 @@ minetest.register_craft({
 local name = "protector:door_steel"
 
 register_door(name, {
-	description = "Protected Steel Door",
+	description = S("Protected Steel Door"),
 	inventory_image = "doors_steel.png^protector_logo.png",
 	groups = {
 		snappy = 1, bendy = 2, cracky = 1,
@@ -419,7 +421,7 @@ end
 -- Protected Wooden Trapdoor
 
 register_trapdoor("protector:trapdoor", {
-	description = "Protected Trapdoor",
+	description = S("Protected Trapdoor"),
 	inventory_image = "doors_trapdoor.png^protector_logo.png",
 	wield_image = "doors_trapdoor.png^protector_logo.png",
 	tile_front = "doors_trapdoor.png^protector_logo.png",
@@ -450,7 +452,7 @@ minetest.register_craft({
 -- Protected Steel Trapdoor
 
 register_trapdoor("protector:trapdoor_steel", {
-	description = "Protected Steel Trapdoor",
+	description = S("Protected Steel Trapdoor"),
 	inventory_image = "doors_trapdoor_steel.png^protector_logo.png",
 	wield_image = "doors_trapdoor_steel.png^protector_logo.png",
 	tile_front = "doors_trapdoor_steel.png^protector_logo.png",
@@ -480,7 +482,7 @@ minetest.register_craft({
 -- Protected Chest
 
 minetest.register_node("protector:chest", {
-	description = "Protected Chest",
+	description = S("Protected Chest"),
 	tiles = {
 		"default_chest_top.png", "default_chest_top.png",
 		"default_chest_side.png", "default_chest_side.png",
@@ -497,7 +499,7 @@ minetest.register_node("protector:chest", {
 		local meta = minetest.get_meta(pos)
 		local inv = meta:get_inventory()
 
-		meta:set_string("infotext", "Protected Chest")
+		meta:set_string("infotext", S("Protected Chest"))
 		meta:set_string("name", "")
 		inv:set_size("main", 8 * 4)
 	end,
@@ -517,16 +519,14 @@ minetest.register_node("protector:chest", {
 
 	on_metadata_inventory_put = function(pos, listname, index, stack, player)
 
-		minetest.log("action", player:get_player_name()
-		.. " moves stuff to protected chest at "
-		.. minetest.pos_to_string(pos))
+		minetest.log("action", S("@1 moves stuff to protected chest at @2",
+			player:get_player_name(), minetest.pos_to_string(pos)))
 	end,
 
 	on_metadata_inventory_take = function(pos, listname, index, stack, player)
 
-		minetest.log("action", player:get_player_name()
-		.. " takes stuff from protected chest at "
-		.. minetest.pos_to_string(pos))
+		minetest.log("action", S("@1 takes stuff from protected chest at @2",
+			player:get_player_name(), minetest.pos_to_string(pos)))
 	end,
 
 	on_rightclick = function(pos, node, clicker)
@@ -547,10 +547,10 @@ minetest.register_node("protector:chest", {
 			.. default.gui_bg_img
 			.. default.gui_slots
 			.. "list[nodemeta:".. spos .. ";main;0,0.3;8,4;]"
-			.. "button[0,4.5;2,0.25;toup;To Chest]"
+			.. "button[0,4.5;2,0.25;toup;" .. S("To Chest") .. "]"
 			.. "field[2.3,4.8;4,0.25;chestname;;"
 			.. meta:get_string("name") .. "]"
-			.. "button[6,4.5;2,0.25;todn;To Inventory]"
+			.. "button[6,4.5;2,0.25;todn;" .. S("To Inventory") .. "]"
 			.. "list[current_player;main;0,5;8,1;]"
 			.. "list[current_player;main;0,6.08;8,3;8]"
 			.. "listring[nodemeta:" .. spos .. ";main]"
@@ -622,9 +622,9 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 				meta:set_string("name", fields.chestname)
 				meta:set_string("infotext",
-				"Protected Chest (" .. fields.chestname .. ")")
+				S("Protected Chest (@1)", fields.chestname))
 			else
-				meta:set_string("infotext", "Protected Chest")
+				meta:set_string("infotext", S("Protected Chest"))
 			end
 
 		end
