@@ -5,6 +5,7 @@ protector = {}
 protector.mod = "redo"
 protector.radius = (tonumber(minetest.setting_get("protector_radius")) or 5)
 protector.drop = minetest.setting_getbool("protector_drop") or false
+protector.flip = minetest.setting_getbool("protector_flip") or false
 protector.hurt = (tonumber(minetest.setting_get("protector_hurt")) or 0)
 
 -- Intllib
@@ -246,6 +247,29 @@ function minetest.is_protected(pos, digger)
 			player:set_hp(player:get_hp() - protector.hurt)
 		end
 
+		-- flip player around when protection violated
+		if protector.flip
+		and player then
+
+			local pla_pos = player:getpos()
+			local vec = {
+				x = pos.x - pla_pos.x,
+				y = pos.y - pla_pos.y,
+				z = pos.z - pla_pos.z
+			}
+			if vec.x ~= 0
+			and vec.z ~= 0 then
+
+				local yaw = math.atan(vec.z / vec.x) + 3 * math.pi / 2
+
+				if pos.x > pla_pos.x then
+					yaw = yaw + math.pi
+				end
+
+				player:set_look_yaw(yaw)
+			end
+		end
+
 		-- drop tool/item if protection violated
 		if protector.drop == true
 		and player then
@@ -270,7 +294,6 @@ function minetest.is_protected(pos, digger)
 				end)
 
 			end
-
 		end
 
 		return true

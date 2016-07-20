@@ -37,6 +37,8 @@ Released under WTFPL
 1.7 - Included an edited version of WTFPL doors mod since protected doors didn't
       work with the doors mod in the latest daily build... Now it's fine :)
       added support for "protection_bypass" privelage.
+1.8 - Added 'protector_flip' setting to stop players using lag to grief into
+      another players house, it flips them around to stop them digging.
 
 Usage: (requires server privelage)
 
