@@ -56,3 +56,24 @@ remove all names from list
 
 Whenever a player is near any protectors with name1 or name2 then it will be
 replaced by an air block.
+
+
+The following lines can be added to your minetest.conf file to configure specific features of the mod:
+
+protector_radius = 5
+- Sets the area around each protection node so that other players cannot dig, place or enter through protected doors or chests.
+
+protector_pvp = true
+- true or false this setting disabled pvp inside of protected areas for all players apart from those listed on the protector node.
+
+protector_pvp_spawn = 10
+- Sets an area 10 nodes around spawn where pvp is disabled completely.
+
+protector_drop = true
+- When true players who dig inside a protected area will automatically drop tools to stop them going any further.
+
+protector_hurt = 2
+- When set to above 0, players digging in protected areas will be hurt by 2 health points (or whichever number it's set to)
+
+protector_flip = true
+- When true players who dig inside a protected area will flipped around to stop them using lag to grief into someone else's build
