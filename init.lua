@@ -263,14 +263,14 @@ function minetest.is_protected(pos, digger)
 			-- invert pitch
 			player:set_look_vertical(-player:get_look_vertical())
 
-			-- if digging below player, move up 1 block
+			-- if digging below player, move up to avoid falling through hole
 			local pla_pos = player:getpos()
 
 			if pos.y < pla_pos.y then
 
 				player:setpos({
 					x = pla_pos.x,
-					y = pla_pos.y + 1,
+					y = pla_pos.y + 0.8,
 					z = pla_pos.z
 				})
 			end
@@ -318,7 +318,7 @@ function protector.check_overlap(itemstack, placer, pointed_thing)
 	end
 
 	if not protector.can_dig(protector.radius * 2, pointed_thing.above,
-	placer:get_player_name(), true, 3) then
+		placer:get_player_name(), true, 3) then
 
 		minetest.chat_send_player(placer:get_player_name(),
 			S("Overlaps into above players protected area"))
