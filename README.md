@@ -7,7 +7,7 @@ based on glomie's mod, remade by Zeg9 and reworked by TenPlus1.
 
 https://forum.minetest.net/viewtopic.php?f=11&t=9376
 
-Released under WTFPL
+Change log:
 
 0.1 - Initial release
 0.2 - Texture update
