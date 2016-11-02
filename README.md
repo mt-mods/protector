@@ -40,7 +40,8 @@ Change log:
 1.8 - Added 'protector_flip' setting to stop players using lag to grief into
       another players house, it flips them around to stop them digging.
 1.9 - Renamed 'protector_pvp_spawn' setting to 'protector_spawn' which protects
-      an area around static spawnpoint. (note: previous name can still be used)
+      an area around static spawnpoint and disables pvp if active.
+      (note: previous name can still be used)
 
 Usage: (requires server privelage)
 
