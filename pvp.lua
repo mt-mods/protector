@@ -2,13 +2,12 @@
 local S = protector.intllib
 
 -- get static spawn position
-local statspawn = (minetest.setting_get_pos("static_spawnpoint") or {x = 0, y = 2, z = 0})
+local statspawn = minetest.setting_get_pos("static_spawnpoint") or {x = 0, y = 2, z = 0}
 
--- is pvp protection enabled and spawn protected
+-- is pvp protection enabled
 protector.pvp = minetest.setting_getbool("protector_pvp")
-protector.spawn = (tonumber(minetest.setting_get("protector_pvp_spawn")) or 0)
 
--- Disable PVP in your own protected areas
+-- disables PVP in your own protected areas
 if minetest.setting_getbool("enable_pvp") and protector.pvp then
 
 	if minetest.register_on_punchplayer then

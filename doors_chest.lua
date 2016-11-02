@@ -1,7 +1,7 @@
 
 -- Since the doors mod has changed in the latest daily builds I have taken the
 -- WTFPL licenced code from the old doors mod and included an edited version
--- of it within this mod for local use.
+-- within this mod for local use.
 
 local S = protector.intllib
 

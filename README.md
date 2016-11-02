@@ -3,7 +3,7 @@ Protector Redo mod [protect]
 Protector redo for minetest is a mod that protects a players builds by placing
 a block that stops other players from digging or placing blocks in that area.
 
-based on glomie's mod, remade by Zeg9 and reworked by TenPlus1.
+based on glomie's mod, remade by Zeg9 and rewritten by TenPlus1.
 
 https://forum.minetest.net/viewtopic.php?f=11&t=9376
 
@@ -39,6 +39,8 @@ Change log:
       added support for "protection_bypass" privelage.
 1.8 - Added 'protector_flip' setting to stop players using lag to grief into
       another players house, it flips them around to stop them digging.
+1.9 - Renamed 'protector_pvp_spawn' setting to 'protector_spawn' which protects
+      an area around static spawnpoint. (note: previous name can still be used)
 
 Usage: (requires server privelage)
 
@@ -66,8 +68,8 @@ protector_radius = 5
 protector_pvp = true
 - true or false this setting disabled pvp inside of protected areas for all players apart from those listed on the protector node.
 
-protector_pvp_spawn = 10
-- Sets an area 10 nodes around spawn where pvp is disabled completely.
+protector_spawn = 10
+- Sets an area 10 nodes around static spawnpoint that is protected.
 
 protector_drop = true
 - When true players who dig inside a protected area will automatically drop tools to stop them going any further.
