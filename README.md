@@ -43,6 +43,9 @@ Change log:
       an area around static spawnpoint and disables pvp if active.
       (note: previous name can still be used)
 
+Lucky Blocks: 6
+
+
 Usage: (requires server privelage)
 
 list names to remove
