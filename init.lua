@@ -639,8 +639,11 @@ minetest.register_node("protector:display_node", {
 	drop = "",
 })
 
-dofile(minetest.get_modpath("protector") .. "/doors_chest.lua")
-dofile(minetest.get_modpath("protector") .. "/pvp.lua")
-dofile(minetest.get_modpath("protector") .. "/admin.lua")
+local path = minetest.get_modpath("protector")
+
+dofile(path .. "/doors_chest.lua")
+dofile(path .. "/pvp.lua")
+dofile(path .. "/admin.lua")
+dofile(path .. "/lucky_block.lua")
 
 print (S("[MOD] Protector Redo loaded"))
