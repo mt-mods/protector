@@ -42,6 +42,9 @@ Change log:
 1.9 - Renamed 'protector_pvp_spawn' setting to 'protector_spawn' which protects
       an area around static spawnpoint and disables pvp if active.
       (note: previous name can still be used)
+2.0 - Added protector placement tool (thanks to Shara) so that players can easily
+      stand on a protector, face in a direction and it places a new one at a set
+      distance to cover protection radius.
 
 Lucky Blocks: 6
 
