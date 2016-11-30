@@ -23,6 +23,10 @@ minetest.register_craftitem("protector:tool", {
 			end
 		end
 
+		-- get members on protector
+		local meta = minetest.get_meta(pos)
+		local members = meta:get_string("members") or ""
+
 		-- get direction player is facing
 		local dir = minetest.dir_to_facedir( user:get_look_dir() )
 		local vec = {x = 0, y = 0, z = 0}
@@ -86,7 +90,13 @@ minetest.register_craftitem("protector:tool", {
 		local meta = minetest.get_meta(pos)
 		meta:set_string("owner", name)
 		meta:set_string("infotext", "Protection (owned by " .. name .. ")")
-		meta:set_string("members", "")
+
+		-- copy members across if holding sneak when using tool
+		if user:get_player_control().sneak then
+			meta:set_string("members", members)
+		else
+			meta:set_string("members", "")
+		end
 
 	end,
 })
