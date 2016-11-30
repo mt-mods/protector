@@ -1,5 +1,3 @@
 default
-doors?
-mobs?
 intllib?
 lucky_block?

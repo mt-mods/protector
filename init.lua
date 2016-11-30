@@ -586,15 +586,6 @@ minetest.register_entity("protector:display", {
 	textures = {"protector:display_node"},
 	timer = 0,
 
-	on_activate = function(self, staticdata)
-
-		-- Xanadu server only
-		if (mobs and mobs.entity and mobs.entity == false)
-		or not self then
-			self.object:remove()
-		end
-	end,
-
 	on_step = function(self, dtime)
 
 		self.timer = self.timer + dtime
