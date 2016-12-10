@@ -1,7 +1,9 @@
 
 -- older privelage for admins to rbypass protected nodes, do not use anymore
 -- instead grant admin 'protection_bypass' privelage.
-minetest.register_privilege("delprotect","Ignore player protection")
+
+-- 'delprotect' priv removed, use 'protection_bypass' instead
+--minetest.register_privilege("delprotect","Ignore player protection")
 
 -- get minetest.conf settings
 protector = {}
