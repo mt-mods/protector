@@ -53,18 +53,30 @@ Usage: (requires server privelage)
 
 list names to remove
 
-	/delprot
+	/protector_remove
 
 remove specific user names
 
-	/delprot name1 name2
+	/protector_remove name1 name2
 
 remove all names from list
 
-	/delprot -
+	/protector_remove -
 
 Whenever a player is near any protectors with name1 or name2 then it will be
 replaced by an air block.
+
+
+show owner name to replace
+
+	/protector_replace
+
+replace owner with new name
+
+	/protector_replace owner new_owner
+
+reset name list
+	/protector_replace -
 
 
 The following lines can be added to your minetest.conf file to configure specific features of the mod:

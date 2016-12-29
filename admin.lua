@@ -2,23 +2,25 @@
 local S = protector.intllib
 
 protector.removal_names = ""
+protector.replace_names = ""
 
-minetest.register_chatcommand("delprot", {
-	params = "",
-	description = S("Remove Protectors near players with names provided (separate names with spaces)"),
+minetest.register_chatcommand("protector_remove", {
+	params = "<names list>",
+	description = S("Remove Protectors around players (separate names with spaces)"),
 	privs = {server = true},
 	func = function(name, param)
 
 		if not param or param == "" then
 
 			minetest.chat_send_player(name,
-				S("Protector Names to remove: %1",
-				protector.removal_names))
+				"Protector Names to remove: "
+				.. protector.removal_names)
 
 			return
 		end
 
 		if param == "-" then
+
 			minetest.chat_send_player(name,
 				S("Name List Reset"))
 
@@ -32,6 +34,48 @@ minetest.register_chatcommand("delprot", {
 	end,
 })
 
+
+minetest.register_chatcommand("protector_replace", {
+	params = "<owner name> <name to replace with>",
+	description = S("Replace Protector Owner with name provided"),
+	privs = {server = true},
+	func = function(name, param)
+
+		if not param or param == "" then
+
+			if protector.replace_names ~= "" then
+
+				local names = protector.replace_names:split(" ")
+
+				minetest.chat_send_player(name,
+					"Replacing Protector name '" .. names[1]
+					.. "' with '" .. names[2] .. "'")
+
+				return
+			else
+				minetest.chat_send_player(name,
+					"Usage: /protector_replace <owner name> <new owner name>")
+
+				return
+			end
+		end
+
+		if param == "-" then
+
+			minetest.chat_send_player(name,
+				S("Name List Reset"))
+
+			protector.replace_names = ""
+
+			return
+		end
+
+		protector.replace_names = param
+
+	end,
+})
+
+
 minetest.register_abm({
 	nodenames = {"protector:protect", "protector:protect2"},
 	interval = 8,
@@ -39,23 +83,37 @@ minetest.register_abm({
 	catch_up = false,
 	action = function(pos, node)
 
-		if protector.removal_names == "" then
+		if protector.removal_names == ""
+		and protector_replace_names == "" then
 			return
 		end
 
-		local meta = minetest.get_meta(pos)
+		local meta = minetest.get_meta(pos) ; if not meta then return end
 		local owner = meta:get_string("owner")
 		--local members = meta:get_string("members")
 
-		local names = protector.removal_names:split(" ")
+		if protector.removal_names ~= "" then
 
-		for _, n in pairs(names) do
+			local names = protector.removal_names:split(" ")
 
-			if n == owner then
-				minetest.set_node(pos, {name = "air"})
+			for _, n in pairs(names) do
+
+				if n == owner then
+					minetest.set_node(pos, {name = "air"})
+				end
+			end
+		end
+
+		if protector.replace_names ~= "" then
+
+			local names = protector.replace_names:split(" ")
+
+			if owner == names[1] then
+
+				meta:set_string("owner", names[2])
+				meta:set_string("infotext", "Protection (owned by " .. names[2] .. ")")
 			end
 
 		end
-
 	end
 })
