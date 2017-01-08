@@ -84,7 +84,7 @@ minetest.register_abm({
 	action = function(pos, node)
 
 		if protector.removal_names == ""
-		and protector_replace_names == "" then
+		and protector.replace_names == "" then
 			return
 		end
 
