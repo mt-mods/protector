@@ -44,7 +44,7 @@ Change log:
       (note: previous name can still be used)
 2.0 - Added protector placement tool (thanks to Shara) so that players can easily
       stand on a protector, face in a direction and it places a new one at a set
-      distance to cover protection radius.
+      distance to cover protection radius.  Added /protector_show command (thanks agaran)
 
 Lucky Blocks: 6
 
@@ -76,7 +76,12 @@ replace owner with new name
 	/protector_replace owner new_owner
 
 reset name list
+
 	/protector_replace -
+
+
+show protected areas of your nearby protectors (max of 5)
+	/protector_show
 
 
 The following lines can be added to your minetest.conf file to configure specific features of the mod:
