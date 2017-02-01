@@ -640,4 +640,10 @@ dofile(path .. "/admin.lua")
 dofile(path .. "/tool.lua")
 dofile(path .. "/lucky_block.lua")
 
+-- stop mesecon pistons from pushing protectors
+if minetest.get_modpath("mesecons_mvps") then
+	mesecon.register_mvps_stopper("protector:protect")
+	mesecon.register_mvps_stopper("protector:protect2")
+end
+
 print (S("[MOD] Protector Redo loaded"))
