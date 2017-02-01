@@ -45,7 +45,7 @@ Change log:
 2.0 - Added protector placement tool (thanks to Shara) so that players can easily
       stand on a protector, face in a direction and it places a new one at a set
       distance to cover protection radius.  Added /protector_show command (thanks agaran)
-      Protectors cannot be moved by mesecon pistons or machines.
+      Protectors and chest cannot be moved by mesecon pistons or machines.
 
 Lucky Blocks: 6
 
