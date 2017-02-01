@@ -644,6 +644,7 @@ dofile(path .. "/lucky_block.lua")
 if minetest.get_modpath("mesecons_mvps") then
 	mesecon.register_mvps_stopper("protector:protect")
 	mesecon.register_mvps_stopper("protector:protect2")
+	mesecon.register_mvps_stopper("protector:chest")
 end
 
 print (S("[MOD] Protector Redo loaded"))
