@@ -442,7 +442,7 @@ minetest.register_node("protector:protect", {
 
 	can_dig = function(pos, player)
 
-		return protector.can_dig(1, pos, player:get_player_name(), true, 1)
+		return player and protector.can_dig(1, pos, player:get_player_name(), true, 1)
 	end,
 
 	on_blast = function() end,
@@ -522,7 +522,7 @@ minetest.register_node("protector:protect2", {
 
 	can_dig = function(pos, player)
 
-		return protector.can_dig(1, pos, player:get_player_name(), true, 1)
+		return player and protector.can_dig(1, pos, player:get_player_name(), true, 1)
 	end,
 
 	on_blast = function() end,
