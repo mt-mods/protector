@@ -1,9 +1,7 @@
 
--- older privelage for admins to rbypass protected nodes, do not use anymore
--- instead grant admin 'protection_bypass' privelage.
-
 -- 'delprotect' priv removed, use 'protection_bypass' instead
 --minetest.register_privilege("delprotect","Ignore player protection")
+
 
 -- get minetest.conf settings
 protector = {}
@@ -15,8 +13,10 @@ protector.hurt = tonumber(minetest.setting_get("protector_hurt")) or 0
 protector.spawn = tonumber(minetest.setting_get("protector_spawn")
 	or minetest.setting_get("protector_pvp_spawn")) or 0
 
+
 -- get static spawn position
 local statspawn = minetest.setting_get_pos("static_spawnpoint") or {x = 0, y = 2, z = 0}
+
 
 -- Intllib
 local S
@@ -40,17 +40,20 @@ else
 end
 protector.intllib = S
 
+
 -- return list of members as a table
 protector.get_member_list = function(meta)
 
 	return meta:get_string("members"):split(" ")
 end
 
+
 -- write member list table in protector meta as string
 protector.set_member_list = function(meta, list)
 
 	meta:set_string("members", table.concat(list, " "))
 end
+
 
 -- check if player name is a member
 protector.is_member = function (meta, name)
@@ -65,6 +68,7 @@ protector.is_member = function (meta, name)
 	return false
 end
 
+
 -- add player name to table as member
 protector.add_member = function(meta, name)
 
@@ -78,6 +82,7 @@ protector.add_member = function(meta, name)
 
 	protector.set_member_list(meta, list)
 end
+
 
 -- remove player name from table
 protector.del_member = function(meta, name)
@@ -94,6 +99,7 @@ protector.del_member = function(meta, name)
 
 	protector.set_member_list(meta, list)
 end
+
 
 -- protector interface
 protector.generate_formspec = function(meta)
@@ -145,6 +151,7 @@ protector.generate_formspec = function(meta)
 	return formspec
 end
 
+
 -- check if pos is inside a protected spawn area
 local function inside_spawn(pos, radius)
 
@@ -164,6 +171,7 @@ local function inside_spawn(pos, radius)
 
 	return false
 end
+
 
 -- Infolevel:
 -- 0 for no info
@@ -273,67 +281,65 @@ function minetest.is_protected(pos, digger)
 
 		local player = minetest.get_player_by_name(digger)
 
-		-- hurt player if protection violated
-		if protector.hurt > 0
-		and player then
-			player:set_hp(player:get_hp() - protector.hurt)
-		end
+		if player and player:is_player() then
 
-		-- flip player when protection violated
-		if protector.flip
-		and player then
-
-			-- yaw + 180°
-			--local yaw = player:get_look_horizontal() + math.pi
-			local yaw = player:get_look_yaw() + math.pi
-
-			if yaw > 2 * math.pi then
-				yaw = yaw - 2 * math.pi
+			-- hurt player if protection violated
+			if protector.hurt > 0 and player:get_hp() > 0 then
+				player:set_hp(player:get_hp() - protector.hurt)
 			end
 
-			--player:set_look_horizontal(yaw)
-			player:set_look_yaw(yaw)
+			-- flip player when protection violated
+			if protector.flip then
+				-- yaw + 180°
+				--local yaw = player:get_look_horizontal() + math.pi
+				local yaw = player:get_look_yaw() + math.pi
 
-			-- invert pitch
-			--player:set_look_vertical(-player:get_look_vertical())
-			player:set_look_pitch(-player:get_look_pitch())
+				if yaw > 2 * math.pi then
+					yaw = yaw - 2 * math.pi
+				end
 
-			-- if digging below player, move up to avoid falling through hole
-			local pla_pos = player:getpos()
+				--player:set_look_horizontal(yaw)
+				player:set_look_yaw(yaw)
 
-			if pos.y < pla_pos.y then
+				-- invert pitch
+				--player:set_look_vertical(-player:get_look_vertical())
+				player:set_look_pitch(-player:get_look_pitch())
 
-				player:setpos({
-					x = pla_pos.x,
-					y = pla_pos.y + 0.8,
-					z = pla_pos.z
-				})
+				-- if digging below player, move up to avoid falling through hole
+				local pla_pos = player:getpos()
+
+				if pos.y < pla_pos.y then
+
+					player:setpos({
+						x = pla_pos.x,
+						y = pla_pos.y + 0.8,
+						z = pla_pos.z
+					})
+				end
 			end
-		end
 
-		-- drop tool/item if protection violated
-		if protector.drop == true
-		and player then
+			-- drop tool/item if protection violated
+			if protector.drop == true then
 
-			local holding = player:get_wielded_item()
+				local holding = player:get_wielded_item()
 
-			if holding:to_string() ~= "" then
+				if holding:to_string() ~= "" then
 
-				-- take stack
-				local sta = holding:take_item(holding:get_count())
-				player:set_wielded_item(holding)
-
-				-- incase of lag, reset stack
-				minetest.after(0.1, function()
+					-- take stack
+					local sta = holding:take_item(holding:get_count())
 					player:set_wielded_item(holding)
 
-					-- drop stack
-					local obj = minetest.add_item(player:getpos(), sta)
-					if obj then
-						obj:setvelocity({x = 0, y = 5, z = 0})
-					end
-				end)
+					-- incase of lag, reset stack
+					minetest.after(0.1, function()
+						player:set_wielded_item(holding)
 
+						-- drop stack
+						local obj = minetest.add_item(player:getpos(), sta)
+						if obj then
+							obj:setvelocity({x = 0, y = 5, z = 0})
+						end
+					end)
+				end
 			end
 		end
 
@@ -342,8 +348,8 @@ function minetest.is_protected(pos, digger)
 
 	-- otherwise can dig or place
 	return protector.old_is_protected(pos, digger)
-
 end
+
 
 -- make sure protection block doesn't overlap another protector's area
 function protector.check_overlap(itemstack, placer, pointed_thing)
@@ -377,6 +383,7 @@ function protector.check_overlap(itemstack, placer, pointed_thing)
 	return minetest.item_place(itemstack, placer, pointed_thing)
 
 end
+
 
 -- protection node
 minetest.register_node("protector:protect", {
@@ -456,6 +463,7 @@ minetest.register_craft({
 		{"default:stone", "default:stone", "default:stone"},
 	}
 })
+
 
 -- protection logo
 minetest.register_node("protector:protect2", {
@@ -537,6 +545,7 @@ minetest.register_craft({
 	}
 })
 
+
 -- check formspec buttons or when name entered
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 
@@ -578,6 +587,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 end)
 
+
 -- display entity shown when protector node is punched
 minetest.register_entity("protector:display", {
 	physical = false,
@@ -598,6 +608,7 @@ minetest.register_entity("protector:display", {
 		end
 	end,
 })
+
 
 -- Display-zone node, Do NOT place the display as a node,
 -- it is made to be used as an entity (see above)
@@ -632,6 +643,7 @@ minetest.register_node("protector:display_node", {
 	drop = "",
 })
 
+
 local path = minetest.get_modpath("protector")
 
 dofile(path .. "/doors_chest.lua")
@@ -640,11 +652,13 @@ dofile(path .. "/admin.lua")
 dofile(path .. "/tool.lua")
 dofile(path .. "/lucky_block.lua")
 
+
 -- stop mesecon pistons from pushing protectors
 if minetest.get_modpath("mesecons_mvps") then
 	mesecon.register_mvps_stopper("protector:protect")
 	mesecon.register_mvps_stopper("protector:protect2")
 	mesecon.register_mvps_stopper("protector:chest")
 end
+
 
 print (S("[MOD] Protector Redo loaded"))
