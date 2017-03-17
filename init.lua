@@ -23,20 +23,12 @@ local S
 if minetest.get_modpath("intllib") then
 	S = intllib.Getter()
 else
-	S = function(s, a, ...)
-		if a == nil then
-			return s
-		end
-		a = {a, ...}
-		return s:gsub("(@?)@(%(?)(%d+)(%)?)",
-			function(e, o, n, c)
-				if e == ""then
-					return a[tonumber(n)] .. (o == "" and c or "")
-				else
-					return "@" .. o .. n .. c
-				end
-			end)
-		end
+	S = function(s, a, ...) a = {a, ...}
+		return s:gsub("@(%d+)", function(n)
+			return a[tonumber(n)]
+		end)
+	end
+
 end
 protector.intllib = S
 
