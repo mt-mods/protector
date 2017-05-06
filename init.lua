@@ -173,15 +173,13 @@ end
 
 protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 
-	if not digger
-	or not pos then
+	if not digger or not pos then
 		return false
 	end
 
-	-- delprotect and protector_bypass privileged users can override protection
-	if ( minetest.check_player_privs(digger, {delprotect = true})
-	or minetest.check_player_privs(digger, {protection_bypass = true}) )
-	and infolevel == 1 then
+	-- protector_bypass privileged users can override protection
+	if infolevel == 1
+	and minetest.check_player_privs(digger, {protection_bypass = true}) then
 		return true
 	end
 
@@ -213,12 +211,10 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 		members = meta:get_string("members") or ""
 
 		-- node change and digger isn't owner
-		if owner ~= digger
-		and infolevel == 1 then
+		if infolevel == 1 and owner ~= digger then
 
 			-- and you aren't on the member list
-			if onlyowner
-			or not protector.is_member(meta, digger) then
+			if onlyowner or not protector.is_member(meta, digger) then
 
 				minetest.chat_send_player(digger,
 					S("This area is owned by @1!", owner))
