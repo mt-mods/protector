@@ -529,6 +529,39 @@ minetest.register_node("protector:chest", {
 			player:get_player_name(), minetest.pos_to_string(pos)))
 	end,
 
+	on_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
+
+		minetest.log("action", S("@1 moves stuff inside protected chest at @2",
+			player:get_player_name(), minetest.pos_to_string(pos)))
+	end,
+
+	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
+
+		if minetest.is_protected(pos, player:get_player_name()) then
+			return 0
+		end
+
+		return stack:get_count()
+	end,
+
+	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
+
+		if minetest.is_protected(pos, player:get_player_name()) then
+			return 0
+		end
+
+		return stack:get_count()
+	end,
+
+	allow_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
+
+		if minetest.is_protected(pos, player:get_player_name()) then
+			return 0
+		end
+
+		return count
+	end,
+
 	on_rightclick = function(pos, node, clicker)
 
 		if minetest.is_protected(pos, clicker:get_player_name()) then
@@ -575,6 +608,11 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 	local pos_s = string.sub(formname,string.len("protector:chest_") + 1)
 	local pos = minetest.string_to_pos(pos_s)
+
+	if minetest.is_protected(pos, player:get_player_name()) then
+		return
+	end
+
 	local meta = minetest.get_meta(pos) ; if not meta then return end
 	local chest_inv = meta:get_inventory() ; if not chest_inv then return end
 	local player_inv = player:get_inventory()
