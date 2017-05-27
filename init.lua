@@ -264,6 +264,8 @@ protector.old_is_protected = minetest.is_protected
 -- check for protected area, return true if protected and digger isn't on list
 function minetest.is_protected(pos, digger)
 
+	digger = digger or "" -- nil check
+
 	-- is area protected against digger?
 	if not protector.can_dig(protector.radius, pos, digger, false, 1) then
 
