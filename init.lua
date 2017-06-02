@@ -7,7 +7,7 @@
 protector = {}
 protector.mod = "redo"
 protector.radius = tonumber(minetest.setting_get("protector_radius")) or 5
-protector.drop = minetest.setting_getbool("protector_drop") or false
+--protector.drop = minetest.setting_getbool("protector_drop") or false
 protector.flip = minetest.setting_getbool("protector_flip") or false
 protector.hurt = tonumber(minetest.setting_get("protector_hurt")) or 0
 protector.spawn = tonumber(minetest.setting_get("protector_spawn")
@@ -307,7 +307,7 @@ function minetest.is_protected(pos, digger)
 					})
 				end
 			end
-
+--[[
 			-- drop tool/item if protection violated
 			if protector.drop == true then
 
@@ -332,7 +332,7 @@ function minetest.is_protected(pos, digger)
 				end
 			end
 		end
-
+]]
 		return true
 	end
 
