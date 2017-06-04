@@ -330,9 +330,9 @@ function minetest.is_protected(pos, digger)
 						end
 					end)
 				end
-			end
+			end]]
 		end
-]]
+
 		return true
 	end
 
