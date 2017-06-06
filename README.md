@@ -46,6 +46,8 @@ Change log:
       stand on a protector, face in a direction and it places a new one at a set
       distance to cover protection radius.  Added /protector_show command (thanks agaran)
       Protectors and chest cannot be moved by mesecon pistons or machines.
+2.1 - Added 'protector_night_pvp' setting so night-time becomes a free for all and
+      players can hurt one another even inside protected areas (not spawn protected)
 
 Lucky Blocks: 6
 
@@ -93,11 +95,11 @@ protector_radius = 5
 protector_pvp = true
 - true or false this setting disabled pvp inside of protected areas for all players apart from those listed on the protector node.
 
+protector_night_pvp = false
+- when true this setting enables pvp at night time only, even inside protected areas, requires protector_pvp to be active to work.
+
 protector_spawn = 10
 - Sets an area 10 nodes around static spawnpoint that is protected.
-
-protector_drop = true
-- When true players who dig inside a protected area will automatically drop tools to stop them going any further.
 
 protector_hurt = 2
 - When set to above 0, players digging in protected areas will be hurt by 2 health points (or whichever number it's set to)

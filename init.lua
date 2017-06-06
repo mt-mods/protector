@@ -7,7 +7,6 @@
 protector = {}
 protector.mod = "redo"
 protector.radius = tonumber(minetest.setting_get("protector_radius")) or 5
---protector.drop = minetest.setting_getbool("protector_drop") or false
 protector.flip = minetest.setting_getbool("protector_flip") or false
 protector.hurt = tonumber(minetest.setting_get("protector_hurt")) or 0
 protector.spawn = tonumber(minetest.setting_get("protector_spawn")
@@ -307,30 +306,6 @@ function minetest.is_protected(pos, digger)
 					})
 				end
 			end
---[[
-			-- drop tool/item if protection violated
-			if protector.drop == true then
-
-				local holding = player:get_wielded_item()
-
-				if holding:to_string() ~= "" then
-
-					-- take stack
-					local sta = holding:take_item(holding:get_count())
-					player:set_wielded_item(holding)
-
-					-- incase of lag, reset stack
-					minetest.after(0.1, function()
-						player:set_wielded_item(holding)
-
-						-- drop stack
-						local obj = minetest.add_item(player:getpos(), sta)
-						if obj then
-							obj:setvelocity({x = 0, y = 5, z = 0})
-						end
-					end)
-				end
-			end]]
 		end
 
 		return true
