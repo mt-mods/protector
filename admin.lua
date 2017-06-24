@@ -41,31 +41,25 @@ minetest.register_chatcommand("protector_replace", {
 	privs = {server = true},
 	func = function(name, param)
 
-		if not param or param == "" then
-
-			if protector.replace_names ~= "" then
-
-				local names = protector.replace_names:split(" ")
-
-				minetest.chat_send_player(name,
-					"Replacing Protector name '" .. names[1]
-					.. "' with '" .. names[2] .. "'")
-
-				return
-			else
-				minetest.chat_send_player(name,
-					"Usage: /protector_replace <owner name> <new owner name>")
-
-				return
-			end
-		end
-
+		-- reset list to empty
 		if param == "-" then
 
-			minetest.chat_send_player(name,
-				S("Name List Reset"))
+			minetest.chat_send_player(name, S("Name List Reset"))
 
 			protector.replace_names = ""
+
+			return
+		end
+
+		-- show name info
+		if param == ""
+		and protector.replace_names ~= "" then
+
+			local names = protector.replace_names:split(" ")
+
+			minetest.chat_send_player(name,
+				"Replacing Protector name '" .. (names[1] or "")
+				.. "' with '" .. (names[2] or "").. "'")
 
 			return
 		end
@@ -108,7 +102,7 @@ minetest.register_abm({
 
 			local names = protector.replace_names:split(" ")
 
-			if owner == names[1] then
+			if names[1] and names[2] and owner == names[1] then
 
 				meta:set_string("owner", names[2])
 				meta:set_string("infotext", "Protection (owned by " .. names[2] .. ")")
