@@ -51,7 +51,7 @@ Change log:
 2.2 - Updated protector tool so that player only needs to stand nearby (2 block radius)
       It can also place vertically (up and down) as well.  New protector recipe added.
 
-Lucky Blocks: 6
+Lucky Blocks: 10
 
 
 Usage: (requires server privelage)
