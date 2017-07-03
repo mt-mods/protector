@@ -424,7 +424,7 @@ minetest.register_craft({
 	output = "protector:protect",
 	recipe = {
 		{"default:stone", "default:stone", "default:stone"},
-		{"default:stone", "default:steel_ingot", "default:stone"},
+		{"default:stone", "default:gold_ingot", "default:stone"},
 		{"default:stone", "default:stone", "default:stone"},
 	}
 })
@@ -500,7 +500,7 @@ minetest.register_node("protector:protect2", {
 
 	on_blast = function() end,
 })
-
+--[[
 minetest.register_craft({
 	output = "protector:protect2",
 	recipe = {
@@ -509,7 +509,7 @@ minetest.register_craft({
 		{"default:stone", "default:stone", "default:stone"},
 	}
 })
-
+]]
 
 -- check formspec buttons or when name entered
 minetest.register_on_player_receive_fields(function(player, formname, fields)
