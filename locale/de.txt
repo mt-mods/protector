@@ -22,7 +22,8 @@ Protected Chest (@1) = Geschützte Truhe (@1)
 
 #init.lua
 -- Protector interface -- = -- Störschutz-Interface --
-PUNCH node to show protected area or USE for area check = SCHLAGE Node, um geschützten Bereich anzuzeigen oder\nBENUTZE für Bereichsprüfung
+PUNCH node to show protected area = SCHLAGE Node, um geschützten Bereich anzuzeigen oder
+USE for area check = BENUTZE für Bereichsprüfung
 Members: = Mitglieder:
 Close = Schließen
 This area is owned by @1! = Dieses Gebiet gehoert @1!

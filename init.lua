@@ -1,8 +1,4 @@
 
--- 'delprotect' priv removed, use 'protection_bypass' instead
---minetest.register_privilege("delprotect","Ignore player protection")
-
-
 -- get minetest.conf settings
 protector = {}
 protector.mod = "redo"
@@ -46,6 +42,13 @@ protector.set_member_list = function(meta, list)
 end
 
 
+-- check if name is owner
+protector.is_owner = function(meta, name)
+
+	return name == meta:get_string("owner")
+end
+
+
 -- check if player name is a member
 protector.is_member = function (meta, name)
 
@@ -63,7 +66,9 @@ end
 -- add player name to table as member
 protector.add_member = function(meta, name)
 
-	if protector.is_member(meta, name) then
+	-- does name already exist?
+	if protector.is_owner(meta, name)
+	or protector.is_member(meta, name) then
 		return
 	end
 
@@ -100,7 +105,7 @@ protector.generate_formspec = function(meta)
 		.. default.gui_bg_img
 		.. default.gui_slots
 		.. "label[2.5,0;" .. S("-- Protector interface --") .. "]"
-		.. "label[0,1;" .. S("PUNCH node to show protected area or USE for area check") .. "]"
+		.. "label[0,1;" .. S("PUNCH node to show protected area") .. "]"
 		.. "label[0,2;" .. S("Members:") .. "]"
 		.. "button_exit[2.5,6.2;3,0.5;close_me;" .. S("Close") .. "]"
 
@@ -352,7 +357,7 @@ end
 
 -- protection node
 minetest.register_node("protector:protect", {
-	description = S("Protection Block"),
+	description = S("Protection Block") .. " (" .. S("USE for area check") .. ")",
 	drawtype = "nodebox",
 	tiles = {
 		"moreblocks_circle_stone_bricks.png",
@@ -432,13 +437,13 @@ minetest.register_craft({
 
 -- protection logo
 minetest.register_node("protector:protect2", {
-	description = S("Protection Logo"),
+	description = S("Protection Logo") .. " (" .. S("USE for area check") .. ")",
 	tiles = {"protector_logo.png"},
 	wield_image = "protector_logo.png",
 	inventory_image = "protector_logo.png",
 	sounds = default.node_sound_stone_defaults(),
 	groups = {dig_immediate = 2, unbreakable = 1},
-	paramtype = 'light',
+	paramtype = "light",
 	paramtype2 = "wallmounted",
 	legacy_wallmounted = true,
 	light_source = 4,
@@ -500,16 +505,20 @@ minetest.register_node("protector:protect2", {
 
 	on_blast = function() end,
 })
---[[
+
+-- recipes to switch between protectors
 minetest.register_craft({
-	output = "protector:protect2",
-	recipe = {
-		{"default:stone", "default:stone", "default:stone"},
-		{"default:stone", "default:copper_ingot", "default:stone"},
-		{"default:stone", "default:stone", "default:stone"},
-	}
+	type = "shapeless",
+	output = "protector:protect",
+	recipe = {"protector:protect2"}
 })
-]]
+
+minetest.register_craft({
+	type = "shapeless",
+	output = "protector:protect2",
+	recipe = {"protector:protect"}
+})
+
 
 -- check formspec buttons or when name entered
 minetest.register_on_player_receive_fields(function(player, formname, fields)

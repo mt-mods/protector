@@ -122,16 +122,3 @@ minetest.register_craft({
 		{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
 	}
 })
-
--- recipes to switch between protectors
-minetest.register_craft({
-	type = "shapeless",
-	output = "protector:protect",
-	recipe = {"protector:protect2"}
-})
-
-minetest.register_craft({
-	type = "shapeless",
-	output = "protector:protect2",
-	recipe = {"protector:protect"}
-})

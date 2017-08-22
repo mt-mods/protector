@@ -20,7 +20,8 @@ Protected Chest (@1) =
 
 #init.lua
 -- Protector interface -- = 
-PUNCH node to show protected area or USE for area check = 
+PUNCH node to show protected area = 
+USE for area check = 
 Members: = 
 Close = 
 This area is owned by @1! = 

@@ -20,7 +20,8 @@ Protected Chest (@1) = Korumalı sandık (@1)
 
 #init.lua
 -- Protector interface -- = 
-PUNCH node to show protected area or USE for area check = Korumalı alanı görmek için kutucuğa vurun yada alanı kontrol etmek için kullanın
+PUNCH node to show protected area = Korunan alanı göstermek için yumruk
+USE for area check = Bölge kontrolü için kullan
 Members: = Üyeler
 Close = Kapat
 This area is owned by @1! = Burasının sahibi  @1! 
