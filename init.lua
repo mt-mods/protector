@@ -329,11 +329,12 @@ function protector.check_overlap(itemstack, placer, pointed_thing)
 	end
 
 	local pos = pointed_thing.above
+	local name = placer:get_player_name()
 
 	-- make sure protector doesn't overlap onto protected spawn area
 	if inside_spawn(pos, protector.spawn + protector.radius) then
 
-		minetest.chat_send_player(placer:get_player_name(),
+		minetest.chat_send_player(name,
 			S("Spawn @1 has been protected up to a @2 block radius.",
 			minetest.pos_to_string(statspawn), protector.spawn))
 
@@ -341,10 +342,9 @@ function protector.check_overlap(itemstack, placer, pointed_thing)
 	end
 
 	-- make sure protector doesn't overlap any other player's area
-	if not protector.can_dig(protector.radius * 2, pos,
-		placer:get_player_name(), true, 3) then
+	if not protector.can_dig(protector.radius * 2, pos, name, true, 3) then
 
-		minetest.chat_send_player(placer:get_player_name(),
+		minetest.chat_send_player(name,
 			S("Overlaps into above players protected area"))
 
 		return itemstack
@@ -402,9 +402,11 @@ minetest.register_node("protector:protect", {
 		local meta = minetest.get_meta(pos)
 
 		if meta
-		and protector.can_dig(1, pos,clicker:get_player_name(), true, 1) then
-			minetest.show_formspec(clicker:get_player_name(), 
-			"protector:node_" .. minetest.pos_to_string(pos), protector.generate_formspec(meta))
+		and protector.can_dig(1, pos, clicker:get_player_name(), true, 1) then
+
+			minetest.show_formspec(clicker:get_player_name(),
+				"protector:node_" .. minetest.pos_to_string(pos),
+				protector.generate_formspec(meta))
 		end
 	end,
 
