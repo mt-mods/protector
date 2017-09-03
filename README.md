@@ -50,6 +50,7 @@ Change log:
       players can hurt one another even inside protected areas (not spawn protected)
 2.2 - Updated protector tool so that player only needs to stand nearby (2 block radius)
       It can also place vertically (up and down) as well.  New protector recipe added.
+2.3 - Localise many of the protector functions and tidy code.
 
 Lucky Blocks: 10
 
@@ -108,3 +109,10 @@ protector_hurt = 2
 
 protector_flip = true
 - When true players who dig inside a protected area will flipped around to stop them using lag to grief into someone else's build
+
+
+Protector Tool
+
+Can be crafted with a protector surrounded by steel ingots and is used to place new protectors at a set distance of protector.radius in all directions including up and down.
+
+Use by standing near an existing protector and using as a tool, hold sneak/shift to place new protector containing member list from inside nearest one.

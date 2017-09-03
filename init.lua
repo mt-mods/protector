@@ -29,30 +29,30 @@ protector.intllib = S
 
 
 -- return list of members as a table
-protector.get_member_list = function(meta)
+local get_member_list = function(meta)
 
 	return meta:get_string("members"):split(" ")
 end
 
 
 -- write member list table in protector meta as string
-protector.set_member_list = function(meta, list)
+local set_member_list = function(meta, list)
 
 	meta:set_string("members", table.concat(list, " "))
 end
 
 
--- check if name is owner
-protector.is_owner = function(meta, name)
+-- check for owner name
+local is_owner = function(meta, name)
 
 	return name == meta:get_string("owner")
 end
 
 
--- check if player name is a member
-protector.is_member = function (meta, name)
+-- check for member name
+local is_member = function (meta, name)
 
-	for _, n in pairs(protector.get_member_list(meta)) do
+	for _, n in pairs(get_member_list(meta)) do
 
 		if n == name then
 			return true
@@ -64,26 +64,26 @@ end
 
 
 -- add player name to table as member
-protector.add_member = function(meta, name)
+local add_member = function(meta, name)
 
 	-- does name already exist?
-	if protector.is_owner(meta, name)
-	or protector.is_member(meta, name) then
+	if is_owner(meta, name)
+	or is_member(meta, name) then
 		return
 	end
 
-	local list = protector.get_member_list(meta)
+	local list = get_member_list(meta)
 
 	table.insert(list, name)
 
-	protector.set_member_list(meta, list)
+	set_member_list(meta, list)
 end
 
 
 -- remove player name from table
-protector.del_member = function(meta, name)
+local del_member = function(meta, name)
 
-	local list = protector.get_member_list(meta)
+	local list = get_member_list(meta)
 
 	for i, n in pairs(list) do
 
@@ -93,12 +93,12 @@ protector.del_member = function(meta, name)
 		end
 	end
 
-	protector.set_member_list(meta, list)
+	set_member_list(meta, list)
 end
 
 
 -- protector interface
-protector.generate_formspec = function(meta)
+local protector_formspec = function(meta)
 
 	local formspec = "size[8,7]"
 		.. default.gui_bg
@@ -109,7 +109,7 @@ protector.generate_formspec = function(meta)
 		.. "label[0,2;" .. S("Members:") .. "]"
 		.. "button_exit[2.5,6.2;3,0.5;close_me;" .. S("Close") .. "]"
 
-	local members = protector.get_member_list(meta)
+	local members = get_member_list(meta)
 	local npp = 12 -- max users added to protector list
 	local i = 0
 
@@ -149,7 +149,7 @@ end
 
 
 -- check if pos is inside a protected spawn area
-local function inside_spawn(pos, radius)
+local inside_spawn = function(pos, radius)
 
 	if protector.spawn <= 0 then
 		return false
@@ -195,7 +195,7 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 
 		minetest.chat_send_player(digger,
 			S("Spawn @1 has been protected up to a @2 block radius.",
-			minetest.pos_to_string(statspawn), protector.spawn))
+				minetest.pos_to_string(statspawn), protector.spawn))
 
 		return false
 	end
@@ -218,7 +218,7 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 		if infolevel == 1 and owner ~= digger then
 
 			-- and you aren't on the member list
-			if onlyowner or not protector.is_member(meta, digger) then
+			if onlyowner or not is_member(meta, digger) then
 
 				minetest.chat_send_player(digger,
 					S("This area is owned by @1!", owner))
@@ -230,16 +230,14 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 		-- when using protector as tool, show protector information
 		if infolevel == 2 then
 
-			minetest.chat_send_player(digger,
-			S("This area is owned by @1.", owner))
+			minetest.chat_send_player(digger, S("This area is owned by @1.", owner))
 
 			minetest.chat_send_player(digger,
-			S("Protection located at: @1", minetest.pos_to_string(pos[n])))
+				S("Protection located at: @1", minetest.pos_to_string(pos[n])))
 
 			if members ~= "" then
 
-				minetest.chat_send_player(digger,
-				S("Members: @1.", members))
+				minetest.chat_send_player(digger, S("Members: @1.", members))
 			end
 
 			return false
@@ -252,8 +250,7 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 
 		if #pos < 1 then
 
-			minetest.chat_send_player(digger,
-			S("This area is not protected."))
+			minetest.chat_send_player(digger, S("This area is not protected."))
 		end
 
 		minetest.chat_send_player(digger, S("You can build here."))
@@ -263,7 +260,7 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 end
 
 
-protector.old_is_protected = minetest.is_protected
+local old_is_protected = minetest.is_protected
 
 -- check for protected area, return true if protected and digger isn't on list
 function minetest.is_protected(pos, digger)
@@ -317,12 +314,12 @@ function minetest.is_protected(pos, digger)
 	end
 
 	-- otherwise can dig or place
-	return protector.old_is_protected(pos, digger)
+	return old_is_protected(pos, digger)
 end
 
 
 -- make sure protection block doesn't overlap another protector's area
-function protector.check_overlap(itemstack, placer, pointed_thing)
+local check_overlap = function(itemstack, placer, pointed_thing)
 
 	if pointed_thing.type ~= "node" then
 		return itemstack
@@ -377,7 +374,7 @@ minetest.register_node("protector:protect", {
 		}
 	},
 
-	on_place = protector.check_overlap,
+	on_place = check_overlap,
 
 	after_place_node = function(pos, placer)
 
@@ -406,7 +403,7 @@ minetest.register_node("protector:protect", {
 
 			minetest.show_formspec(clicker:get_player_name(),
 				"protector:node_" .. minetest.pos_to_string(pos),
-				protector.generate_formspec(meta))
+				protector_formspec(meta))
 		end
 	end,
 
@@ -460,7 +457,7 @@ minetest.register_node("protector:protect2", {
 	},
 	selection_box = {type = "wallmounted"},
 
-	on_place = protector.check_overlap,
+	on_place = check_overlap,
 
 	after_place_node = function(pos, placer)
 
@@ -487,7 +484,7 @@ minetest.register_node("protector:protect2", {
 		if protector.can_dig(1, pos, clicker:get_player_name(), true, 1) then
 
 			minetest.show_formspec(clicker:get_player_name(), 
-			"protector:node_" .. minetest.pos_to_string(pos), protector.generate_formspec(meta))
+			"protector:node_" .. minetest.pos_to_string(pos), protector_formspec(meta))
 		end
 	end,
 
@@ -541,7 +538,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		if fields.protector_add_member then
 
 			for _, i in pairs(fields.protector_add_member:split(" ")) do
-				protector.add_member(meta, i)
+				add_member(meta, i)
 			end
 		end
 
@@ -551,14 +548,14 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			if string.sub(field, 0,
 				string.len("protector_del_member_")) == "protector_del_member_" then
 
-				protector.del_member(meta,
+				del_member(meta,
 					string.sub(field,string.len("protector_del_member_") + 1))
 			end
 		end
 
 		-- reset formspec until close button pressed
 		if not fields.close_me then
-			minetest.show_formspec(player:get_player_name(), formname, protector.generate_formspec(meta))
+			minetest.show_formspec(player:get_player_name(), formname, protector_formspec(meta))
 		end
 	end
 end)
