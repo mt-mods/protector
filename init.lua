@@ -2,15 +2,16 @@
 -- get minetest.conf settings
 protector = {}
 protector.mod = "redo"
-protector.radius = tonumber(minetest.setting_get("protector_radius")) or 5
-protector.flip = minetest.setting_getbool("protector_flip") or false
-protector.hurt = tonumber(minetest.setting_get("protector_hurt")) or 0
-protector.spawn = tonumber(minetest.setting_get("protector_spawn")
-	or minetest.setting_get("protector_pvp_spawn")) or 0
+protector.radius = tonumber(minetest.settings:get("protector_radius")) or 5
+protector.flip = minetest.settings:get_bool("protector_flip") or false
+protector.hurt = tonumber(minetest.settings:get("protector_hurt")) or 0
+protector.spawn = tonumber(minetest.settings:get("protector_spawn")
+	or minetest.settings:get("protector_pvp_spawn")) or 0
 
 
 -- get static spawn position
-local statspawn = minetest.setting_get_pos("static_spawnpoint") or {x = 0, y = 2, z = 0}
+local statspawn = minetest.string_to_pos(minetest.settings:get("static_spawnpoint"))
+		or {x = 0, y = 2, z = 0}
 
 
 -- Intllib

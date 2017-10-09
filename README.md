@@ -51,6 +51,7 @@ Change log:
 - 2.2 - Updated protector tool so that player only needs to stand nearby (2 block radius)
       It can also place vertically (up and down) as well.  New protector recipe added.
 - 2.3 - Localise many of the protector functions and tidy code.
+- 2.4 - Update to newer functions, Minetest 0.4.16 needed to run now.
 
 Lucky Blocks: 10
 
