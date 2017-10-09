@@ -121,7 +121,7 @@ minetest.register_chatcommand("protector_show", {
 	func = function(name, param)
 
 		local player = minetest.get_player_by_name(name)
-		local pos = player:getpos()
+		local pos = player:get_pos()
 		local r = protector.radius -- max protector range.
 
 		-- find the protector nodes

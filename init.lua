@@ -283,8 +283,8 @@ function minetest.is_protected(pos, digger)
 			-- flip player when protection violated
 			if protector.flip then
 				-- yaw + 180°
-				--local yaw = player:get_look_horizontal() + math.pi
-				local yaw = player:get_look_yaw() + math.pi
+				local yaw = player:get_look_horizontal() + math.pi
+				--local yaw = player:get_look_yaw() + math.pi
 
 				if yaw > 2 * math.pi then
 					yaw = yaw - 2 * math.pi
@@ -294,11 +294,11 @@ function minetest.is_protected(pos, digger)
 				player:set_look_yaw(yaw)
 
 				-- invert pitch
-				--player:set_look_vertical(-player:get_look_vertical())
-				player:set_look_pitch(-player:get_look_pitch())
+				player:set_look_vertical(-player:get_look_vertical())
+				--player:set_look_pitch(-player:get_look_pitch())
 
 				-- if digging below player, move up to avoid falling through hole
-				local pla_pos = player:getpos()
+				local pla_pos = player:get_pos()
 
 				if pos.y < pla_pos.y then
 

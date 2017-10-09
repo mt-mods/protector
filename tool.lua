@@ -11,7 +11,7 @@ minetest.register_craftitem("protector:tool", {
 		local name = user:get_player_name()
 
 		-- check for protector near player (2 block radius)
-		local pos = user:getpos()
+		local pos = user:get_pos()
 		local pp = minetest.find_nodes_in_area(
 			vector.subtract(pos, 2), vector.add(pos, 2),
 			{"protector:protect", "protector:protect2"})

@@ -29,7 +29,7 @@ if minetest.settings:get_bool("enable_pvp") and protector.pvp then
 			end
 
 			-- no pvp at spawn area
-			local pos = player:getpos()
+			local pos = player:get_pos()
 
 			if pos.x < statspawn.x + protector.spawn
 			and pos.x > statspawn.x - protector.spawn
