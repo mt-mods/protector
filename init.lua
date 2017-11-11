@@ -624,6 +624,7 @@ dofile(path .. "/doors_chest.lua")
 dofile(path .. "/pvp.lua")
 dofile(path .. "/admin.lua")
 dofile(path .. "/tool.lua")
+dofile(path .. "/hud.lua")
 dofile(path .. "/lucky_block.lua")
 
 
