@@ -15,7 +15,7 @@ minetest.register_globalstep(function(dtime)
 
 		local name = player:get_player_name()
 		local pos = vector.round(player:getpos())
-		local hud_text = "You can build here"
+		local hud_text = ""
 
 		local protectors = minetest.find_nodes_in_area(
 			{x=pos.x -radius , y=pos.y -radius , z=pos.z -radius},
@@ -27,7 +27,7 @@ minetest.register_globalstep(function(dtime)
 			local meta = minetest.get_meta(npos)
 			local nodeowner = meta:get_string("owner")
 
-			hud_text = "Owned by: " .. nodeowner
+			hud_text = "Owner: " .. nodeowner
 		end
 
 		if not hud[name] then
