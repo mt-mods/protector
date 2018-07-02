@@ -302,7 +302,7 @@ function minetest.is_protected(pos, digger)
 
 				if pos.y < pla_pos.y then
 
-					player:setpos({
+					player:set_pos({
 						x = pla_pos.x,
 						y = pla_pos.y + 0.8,
 						z = pla_pos.z
