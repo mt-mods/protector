@@ -1,13 +1,14 @@
 
--- get minetest.conf settings
 protector = {}
 protector.mod = "redo"
+protector.max_share_count = 12
+
+-- get minetest.conf settings
 protector.radius = tonumber(minetest.settings:get("protector_radius")) or 5
 protector.flip = minetest.settings:get_bool("protector_flip") or false
 protector.hurt = tonumber(minetest.settings:get("protector_hurt")) or 0
 protector.spawn = tonumber(minetest.settings:get("protector_spawn")
 	or minetest.settings:get("protector_pvp_spawn")) or 0
-
 
 -- get static spawn position
 local statspawn = minetest.string_to_pos(minetest.settings:get("static_spawnpoint"))
@@ -67,6 +68,11 @@ end
 -- add player name to table as member
 local add_member = function(meta, name)
 
+	-- Constant (20) defined by player.h
+	if name:len() > 25 then
+		return
+	end
+
 	-- does name already exist?
 	if is_owner(meta, name)
 	or is_member(meta, name) then
@@ -74,6 +80,10 @@ local add_member = function(meta, name)
 	end
 
 	local list = get_member_list(meta)
+
+	if #list >= protector.max_share_count then
+		return
+	end
 
 	table.insert(list, name)
 
@@ -111,7 +121,7 @@ local protector_formspec = function(meta)
 		.. "button_exit[2.5,6.2;3,0.5;close_me;" .. S("Close") .. "]"
 
 	local members = get_member_list(meta)
-	local npp = 12 -- max users added to protector list
+	local npp = protector.max_share_count -- max users added to protector list
 	local i = 0
 
 	for n = 1, #members do
@@ -224,7 +234,7 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 				minetest.chat_send_player(digger,
 					S("This area is owned by @1!", owner))
 
-					return false
+				return false
 			end
 		end
 
@@ -282,20 +292,18 @@ function minetest.is_protected(pos, digger)
 
 			-- flip player when protection violated
 			if protector.flip then
+
 				-- yaw + 180°
 				local yaw = player:get_look_horizontal() + math.pi
-				--local yaw = player:get_look_yaw() + math.pi
 
 				if yaw > 2 * math.pi then
 					yaw = yaw - 2 * math.pi
 				end
 
-				--player:set_look_horizontal(yaw)
-				player:set_look_yaw(yaw)
+				player:set_look_horizontal(yaw)
 
 				-- invert pitch
 				player:set_look_vertical(-player:get_look_vertical())
-				--player:set_look_pitch(-player:get_look_pitch())
 
 				-- if digging below player, move up to avoid falling through hole
 				local pla_pos = player:get_pos()
@@ -530,55 +538,58 @@ minetest.register_craft({
 -- check formspec buttons or when name entered
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 
-	if formname == "protector:node" then
+	if formname ~= "protector:node" then
+		return
+	end
 
-		local name = player:get_player_name()
-		local pos = player_pos[name]
-		local meta = minetest.get_meta(pos)
+	local name = player:get_player_name()
+	local pos = player_pos[name]
 
-		if not name or not pos or not meta then
-			return
-		end
+	if not name or not pos then
+		return
+	end
 
-		-- only owner can add names
-		if not protector.can_dig(1, pos, player:get_player_name(), true, 1) then
-			return
-		end
+	-- reset formspec until close button pressed
+	if fields.close_me or fields.quit then
+		player_pos[name] = nil
+		return
+	end
 
-		-- are we adding member to a protection node ? (csm protection)
-		local nod = minetest.get_node(pos).name
+	-- only owner can add names
+	if not protector.can_dig(1, pos, player:get_player_name(), true, 1) then
+		return
+	end
 
-		if nod ~= "protector:protect"
-		and nod ~= "protector:protect2" then
-			return
-		end
+	-- are we adding member to a protection node ? (csm protection)
+	local nod = minetest.get_node(pos).name
 
-		-- add member [+]
-		if fields.protector_add_member then
+	if nod ~= "protector:protect"
+	and nod ~= "protector:protect2" then
+		return
+	end
 
-			for _, i in pairs(fields.protector_add_member:split(" ")) do
-				add_member(meta, i)
-			end
-		end
+	local meta = minetest.get_meta(pos)
 
-		-- remove member [x]
-		for field, value in pairs(fields) do
+	-- add member [+]
+	if fields.protector_add_member then
 
-			if string.sub(field, 0,
-				string.len("protector_del_member_")) == "protector_del_member_" then
-
-				del_member(meta,
-					string.sub(field,string.len("protector_del_member_") + 1))
-			end
-		end
-
-		-- reset formspec until close button pressed
-		if not fields.close_me and not fields.quit then
-			minetest.show_formspec(name, formname, protector_formspec(meta))
-		else
-			player_pos[name] = nil
+		for _, i in pairs(fields.protector_add_member:split(" ")) do
+			add_member(meta, i)
 		end
 	end
+
+	-- remove member [x]
+	for field, value in pairs(fields) do
+
+		if string.sub(field, 0,
+			string.len("protector_del_member_")) == "protector_del_member_" then
+
+			del_member(meta,
+				string.sub(field,string.len("protector_del_member_") + 1))
+		end
+	end
+
+	minetest.show_formspec(name, formname, protector_formspec(meta))
 end)
 
 
