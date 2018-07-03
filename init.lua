@@ -535,6 +535,14 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			return
 		end
 
+		-- are we adding member to a protection node ? (csm protection)
+		local nod = minetest.get_node(pos).name
+
+		if nod ~= "protector:protect"
+		and nod ~= "protector:protect2" then
+			return
+		end
+
 		-- add member [+]
 		if fields.protector_add_member then
 
