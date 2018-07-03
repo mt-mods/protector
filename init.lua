@@ -119,6 +119,7 @@ local protector_formspec = function(meta)
 		.. "label[0,1;" .. S("PUNCH node to show protected area") .. "]"
 		.. "label[0,2;" .. S("Members:") .. "]"
 		.. "button_exit[2.5,6.2;3,0.5;close_me;" .. S("Close") .. "]"
+		.. "field_close_on_enter[protector_add_member;false]"
 
 	local members = get_member_list(meta)
 	local npp = protector.max_share_count -- max users added to protector list
@@ -549,8 +550,11 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	end
 
+	local add_member_input = fields.protector_add_member
+
 	-- reset formspec until close button pressed
-	if fields.close_me or fields.quit then
+	if (fields.close_me or fields.quit)
+	and (not add_member_input or add_member_input == "") then
 		player_pos[name] = nil
 		return
 	end
@@ -565,15 +569,20 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 	if nod ~= "protector:protect"
 	and nod ~= "protector:protect2" then
+		player_pos[name] = nil
 		return
 	end
 
 	local meta = minetest.get_meta(pos)
 
-	-- add member [+]
-	if fields.protector_add_member then
+	if not meta then
+		return
+	end
 
-		for _, i in pairs(fields.protector_add_member:split(" ")) do
+	-- add member [+]
+	if add_member_input then
+
+		for _, i in pairs(add_member_input:split(" ")) do
 			add_member(meta, i)
 		end
 	end
