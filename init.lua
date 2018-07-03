@@ -530,6 +530,10 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		local pos = minetest.string_to_pos(pos_s)
 		local meta = minetest.get_meta(pos)
 
+		if not meta then
+			return
+		end
+
 		-- only owner can add names
 		if not protector.can_dig(1, pos, player:get_player_name(), true, 1) then
 			return
