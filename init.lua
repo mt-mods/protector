@@ -353,6 +353,9 @@ local check_overlap = function(itemstack, placer, pointed_thing)
 end
 
 
+-- temporary pos store
+local player_pos = {}
+
 -- protection node
 minetest.register_node("protector:protect", {
 	description = S("Protection Block") .. " (" .. S("USE for area check") .. ")",
@@ -398,13 +401,14 @@ minetest.register_node("protector:protect", {
 	on_rightclick = function(pos, node, clicker, itemstack)
 
 		local meta = minetest.get_meta(pos)
+		local name = clicker:get_player_name()
 
 		if meta
-		and protector.can_dig(1, pos, clicker:get_player_name(), true, 1) then
+		and protector.can_dig(1, pos, name, true, 1) then
 
-			minetest.show_formspec(clicker:get_player_name(),
-				"protector:node_" .. minetest.pos_to_string(pos),
-				protector_formspec(meta))
+			player_pos[name] = pos
+
+			minetest.show_formspec(name, "protector:node", protector_formspec(meta))
 		end
 	end,
 
@@ -481,11 +485,14 @@ minetest.register_node("protector:protect2", {
 	on_rightclick = function(pos, node, clicker, itemstack)
 
 		local meta = minetest.get_meta(pos)
+		local name = clicker:get_player_name()
 
-		if protector.can_dig(1, pos, clicker:get_player_name(), true, 1) then
+		if meta
+		and protector.can_dig(1, pos, name, true, 1) then
 
-			minetest.show_formspec(clicker:get_player_name(), 
-			"protector:node_" .. minetest.pos_to_string(pos), protector_formspec(meta))
+			player_pos[name] = pos
+
+			minetest.show_formspec(name, "protector:node", protector_formspec(meta))
 		end
 	end,
 
@@ -523,14 +530,13 @@ minetest.register_craft({
 -- check formspec buttons or when name entered
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 
-	-- protector formspec found
-	if string.sub(formname, 0, string.len("protector:node_")) == "protector:node_" then
+	if formname == "protector:node" then
 
-		local pos_s = string.sub(formname, string.len("protector:node_") + 1)
-		local pos = minetest.string_to_pos(pos_s)
+		local name = player:get_player_name()
+		local pos = player_pos[name]
 		local meta = minetest.get_meta(pos)
 
-		if not meta then
+		if not name or not pos or not meta then
 			return
 		end
 
@@ -567,8 +573,10 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		end
 
 		-- reset formspec until close button pressed
-		if not fields.close_me then
-			minetest.show_formspec(player:get_player_name(), formname, protector_formspec(meta))
+		if not fields.close_me and not fields.quit then
+			minetest.show_formspec(name, formname, protector_formspec(meta))
+		else
+			player_pos[name] = nil
 		end
 	end
 end)
