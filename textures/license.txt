@@ -1,15 +1,4 @@
 
-following Textures created by Fernando Zapata (CC BY-SA 3.0):
-  door_wood.png
-  door_wood_a.png
-  door_wood_a_r.png
-  door_wood_b.png
-  door_wood_b_r.png
+All textures are listed under the CC BY-SA 3.0 license apart from the following:
 
-following Textures created by BlockMen (WTFPL):
-  door_trapdoor.png
-
-following textures created by sofar (CC-BY-SA-3.0)
-  doors_trapdoor_steel.png
-  doors_trapdoor_steel_side.png
-  door_trapdoor_side.png
+moreblocks_circle_stone_bricks.png (zlib license)
