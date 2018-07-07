@@ -1,4 +1,6 @@
 
-All textures are listed under the CC BY-SA 3.0 license apart from the following:
+Original door textures for Minetest are CC BY-SA 3.0
 
-moreblocks_circle_stone_bricks.png (zlib license)
+Any of my own textures (logo, tool, display) are CC BY-SA 3.0
+
+moreblocks_circle_stone_bricks.png is CC-BY-SA-3.0 by Hugo Locurcio
