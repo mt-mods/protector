@@ -53,7 +53,7 @@ Change log:
 - 2.3 - Localise many of the protector functions and tidy code.
 - 2.4 - Update to newer functions, Minetest 0.4.16 needed to run now.
 - 2.5 - Added HUD text to show when player is inside a protected area (updates every 5 seconds)
-- 2.6 - Add protection against CSM tampering
+- 2.6 - Add protection against CSM tampering, updated Intllib support (thanks codexp)
 
 Lucky Blocks: 10
 

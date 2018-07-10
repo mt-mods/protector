@@ -1,7 +1,15 @@
 
+local MP = minetest.get_modpath(minetest.get_current_modname())
+-- Load support for intllib.
+local S = dofile(MP .. "/intllib.lua")
+local F = minetest.formspec_escape
+
+
 protector = {}
 protector.mod = "redo"
+protector.modpath = MP
 protector.max_share_count = 12
+protector.intllib = S
 
 -- get minetest.conf settings
 protector.radius = tonumber(minetest.settings:get("protector_radius")) or 5
@@ -13,21 +21,6 @@ protector.spawn = tonumber(minetest.settings:get("protector_spawn")
 -- get static spawn position
 local statspawn = minetest.string_to_pos(minetest.settings:get("static_spawnpoint"))
 		or {x = 0, y = 2, z = 0}
-
-
--- Intllib
-local S
-if minetest.get_modpath("intllib") then
-	S = intllib.Getter()
-else
-	S = function(s, a, ...) a = {a, ...}
-		return s:gsub("@(%d+)", function(n)
-			return a[tonumber(n)]
-		end)
-	end
-
-end
-protector.intllib = S
 
 
 -- return list of members as a table
@@ -115,10 +108,10 @@ local protector_formspec = function(meta)
 		.. default.gui_bg
 		.. default.gui_bg_img
 		.. default.gui_slots
-		.. "label[2.5,0;" .. S("-- Protector interface --") .. "]"
-		.. "label[0,1;" .. S("PUNCH node to show protected area") .. "]"
-		.. "label[0,2;" .. S("Members:") .. "]"
-		.. "button_exit[2.5,6.2;3,0.5;close_me;" .. S("Close") .. "]"
+		.. "label[2.5,0;" .. F(S("-- Protector interface --")) .. "]"
+		.. "label[0,1;" .. F(S("PUNCH node to show protected area")) .. "]"
+		.. "label[0,2;" .. F(S("Members:")) .. "]"
+		.. "button_exit[2.5,6.2;3,0.5;close_me;" .. F(S("Close")) .. "]"
 		.. "field_close_on_enter[protector_add_member;false]"
 
 	local members = get_member_list(meta)
@@ -132,17 +125,17 @@ local protector_formspec = function(meta)
 			-- show username
 			formspec = formspec .. "button[" .. (i % 4 * 2)
 			.. "," .. math.floor(i / 4 + 3)
-			.. ";1.5,.5;protector_member;" .. members[n] .. "]"
+			.. ";1.5,.5;protector_member;" .. F(members[n]) .. "]"
 
 			-- username remove button
 			.. "button[" .. (i % 4 * 2 + 1.25) .. ","
 			.. math.floor(i / 4 + 3)
-			.. ";.75,.5;protector_del_member_" .. members[n] .. ";X]"
+			.. ";.75,.5;protector_del_member_" .. F(members[n]) .. ";X]"
 		end
 
 		i = i + 1
 	end
-	
+
 	if i < npp then
 
 		-- user name entry field
@@ -233,7 +226,7 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 			if onlyowner or not is_member(meta, digger) then
 
 				minetest.chat_send_player(digger,
-					S("This area is owned by @1!", owner))
+					S("This area is owned by @1", owner) .. "!")
 
 				return false
 			end
@@ -242,7 +235,8 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 		-- when using protector as tool, show protector information
 		if infolevel == 2 then
 
-			minetest.chat_send_player(digger, S("This area is owned by @1.", owner))
+			minetest.chat_send_player(digger,
+				S("This area is owned by @1", owner) .. ".")
 
 			minetest.chat_send_player(digger,
 				S("Protection located at: @1", minetest.pos_to_string(pos[n])))
@@ -658,14 +652,12 @@ minetest.register_node("protector:display_node", {
 })
 
 
-local path = minetest.get_modpath("protector")
-
-dofile(path .. "/doors_chest.lua")
-dofile(path .. "/pvp.lua")
-dofile(path .. "/admin.lua")
-dofile(path .. "/tool.lua")
-dofile(path .. "/hud.lua")
-dofile(path .. "/lucky_block.lua")
+dofile(MP .. "/doors_chest.lua")
+dofile(MP .. "/pvp.lua")
+dofile(MP .. "/admin.lua")
+dofile(MP .. "/tool.lua")
+dofile(MP .. "/hud.lua")
+dofile(MP .. "/lucky_block.lua")
 
 
 -- stop mesecon pistons from pushing protectors

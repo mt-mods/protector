@@ -1,4 +1,5 @@
 
+local S = protector.intllib
 local radius = (tonumber(minetest.setting_get("protector_radius")) or 5)
 local hud = {}
 local hud_timer = 0
@@ -27,7 +28,7 @@ minetest.register_globalstep(function(dtime)
 			local meta = minetest.get_meta(npos)
 			local nodeowner = meta:get_string("owner")
 
-			hud_text = "Owner: " .. nodeowner
+			hud_text = S("Owner: @1", nodeowner)
 		end
 
 		if not hud[name] then

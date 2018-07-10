@@ -4,6 +4,7 @@
 -- within this mod for local use.
 
 local S = protector.intllib
+local F = minetest.formspec_escape
 
 -- Registers a door
 function register_door(name, def)
@@ -580,10 +581,10 @@ minetest.register_node("protector:chest", {
 			.. default.gui_bg_img
 			.. default.gui_slots
 			.. "list[nodemeta:".. spos .. ";main;0,0.3;8,4;]"
-			.. "button[0,4.5;2,0.25;toup;" .. S("To Chest") .. "]"
+			.. "button[0,4.5;2,0.25;toup;" .. F(S("To Chest")) .. "]"
 			.. "field[2.3,4.8;4,0.25;chestname;;"
 			.. meta:get_string("name") .. "]"
-			.. "button[6,4.5;2,0.25;todn;" .. S("To Inventory") .. "]"
+			.. "button[6,4.5;2,0.25;todn;" .. F(S("To Inventory")) .. "]"
 			.. "list[current_player;main;0,5;8,1;]"
 			.. "list[current_player;main;0,6.08;8,3;8]"
 			.. "listring[nodemeta:" .. spos .. ";main]"
@@ -635,7 +636,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				end
 			end
 		end
-	
+
 	elseif fields.todn then
 
 		-- copy contents of chest to players inventory

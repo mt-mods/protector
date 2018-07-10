@@ -5,7 +5,7 @@ protector.removal_names = ""
 protector.replace_names = ""
 
 minetest.register_chatcommand("protector_remove", {
-	params = "<names list>",
+	params = S("<names list>"),
 	description = S("Remove Protectors around players (separate names with spaces)"),
 	privs = {server = true},
 	func = function(name, param)
@@ -13,8 +13,8 @@ minetest.register_chatcommand("protector_remove", {
 		if not param or param == "" then
 
 			minetest.chat_send_player(name,
-				"Protector Names to remove: "
-				.. protector.removal_names)
+				S("Protector Names to remove: @1",
+					protector.removal_names))
 
 			return
 		end
@@ -36,7 +36,7 @@ minetest.register_chatcommand("protector_remove", {
 
 
 minetest.register_chatcommand("protector_replace", {
-	params = "<owner name> <name to replace with>",
+	params = S("<owner name> <name to replace with>"),
 	description = S("Replace Protector Owner with name provided"),
 	privs = {server = true},
 	func = function(name, param)
@@ -58,8 +58,8 @@ minetest.register_chatcommand("protector_replace", {
 			local names = protector.replace_names:split(" ")
 
 			minetest.chat_send_player(name,
-				"Replacing Protector name '" .. (names[1] or "")
-				.. "' with '" .. (names[2] or "").. "'")
+				S("Replacing Protector name '@1' with '@2'",
+					names[1] or "", names[2] or ""))
 
 			return
 		end
@@ -82,7 +82,10 @@ minetest.register_abm({
 			return
 		end
 
-		local meta = minetest.get_meta(pos) ; if not meta then return end
+		local meta = minetest.get_meta(pos);
+
+		if not meta then return end
+
 		local owner = meta:get_string("owner")
 		--local members = meta:get_string("members")
 
@@ -91,7 +94,6 @@ minetest.register_abm({
 			local names = protector.removal_names:split(" ")
 
 			for _, n in pairs(names) do
-
 				if n == owner then
 					minetest.set_node(pos, {name = "air"})
 				end
@@ -103,9 +105,8 @@ minetest.register_abm({
 			local names = protector.replace_names:split(" ")
 
 			if names[1] and names[2] and owner == names[1] then
-
 				meta:set_string("owner", names[2])
-				meta:set_string("infotext", "Protection (owned by " .. names[2] .. ")")
+				meta:set_string("infotext", S("Protection (owned by @1)", names[2]))
 			end
 
 		end
@@ -116,7 +117,7 @@ minetest.register_abm({
 -- show protection areas of nearby protectors owned by you (thanks agaran)
 minetest.register_chatcommand("protector_show", {
 	params = "",
-	description = "Show protected areas of your nearby protectors",
+	description = S("Show protected areas of your nearby protectors"),
 	privs = {},
 	func = function(name, param)
 
