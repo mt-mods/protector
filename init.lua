@@ -364,9 +364,9 @@ minetest.register_node("protector:protect", {
 	description = S("Protection Block") .. " (" .. S("USE for area check") .. ")",
 	drawtype = "nodebox",
 	tiles = {
-		"moreblocks_circle_stone_bricks.png",
-		"moreblocks_circle_stone_bricks.png",
-		"moreblocks_circle_stone_bricks.png^protector_logo.png"
+		"default_stone.png^protector_overlay.png",
+		"default_stone.png^protector_overlay.png",
+		"default_stone.png^protector_overlay.png^protector_logo.png"
 	},
 	sounds = default.node_sound_stone_defaults(),
 	groups = {dig_immediate = 2, unbreakable = 1},

@@ -1,5 +1,3 @@
-following texture created by Hugo Locurcio (CC BY-SA 3.0):
-  moreblocks_circle_stone_bricks.png
 
 following Textures created by Fernando Zapata (CC BY-SA 3.0):
   doors_wood.png
@@ -29,3 +27,4 @@ following textures by Cisoun (WTFPL):
 following textures by TenPlus1 (CC BY-SA 3.0):
   protector_logo.png
   protector_display.png
+  protector_overlay.png
