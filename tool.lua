@@ -1,6 +1,9 @@
 
 -- protector placement tool (thanks to Shara for code and idea)
 
+-- get protection radius
+local r = tonumber(minetest.settings:get("protector_radius")) or 5
+
 minetest.register_craftitem("protector:tool", {
 	description = "Protector Placer Tool (stand near protector, face direction and use)",
 	inventory_image = "protector_display.png^protector_logo.png",
@@ -27,7 +30,7 @@ minetest.register_craftitem("protector:tool", {
 		-- get direction player is facing
 		local dir = minetest.dir_to_facedir( user:get_look_dir() )
 		local vec = {x = 0, y = 0, z = 0}
-		local gap = (protector.radius * 2) + 1
+		local gap = (r * 2) + 1
 		local pit =  user:get_look_pitch()
 
 		-- set placement coords
@@ -51,8 +54,7 @@ minetest.register_craftitem("protector:tool", {
 		pos.z = pos.z + vec.z
 
 		-- does placing a protector overlap existing area
-		if not protector.can_dig(protector.radius * 2, pos,
-			user:get_player_name(), true, 3) then
+		if not protector.can_dig(r * 2, pos, user:get_player_name(), true, 3) then
 
 			minetest.chat_send_player(name,
 				"Overlaps into above players protected area")

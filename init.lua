@@ -8,14 +8,14 @@ local F = minetest.formspec_escape
 protector = {}
 protector.mod = "redo"
 protector.modpath = MP
-protector.max_share_count = 12
 protector.intllib = S
 
+local protector_max_share_count = 12
 -- get minetest.conf settings
-protector.radius = tonumber(minetest.settings:get("protector_radius")) or 5
-protector.flip = minetest.settings:get_bool("protector_flip") or false
-protector.hurt = tonumber(minetest.settings:get("protector_hurt")) or 0
-protector.spawn = tonumber(minetest.settings:get("protector_spawn")
+local protector_radius = tonumber(minetest.settings:get("protector_radius")) or 5
+local protector_flip = minetest.settings:get_bool("protector_flip") or false
+local protector_hurt = tonumber(minetest.settings:get("protector_hurt")) or 0
+local protector_spawn = tonumber(minetest.settings:get("protector_spawn")
 	or minetest.settings:get("protector_pvp_spawn")) or 0
 
 -- get static spawn position
@@ -74,7 +74,7 @@ local add_member = function(meta, name)
 
 	local list = get_member_list(meta)
 
-	if #list >= protector.max_share_count then
+	if #list >= protector_max_share_count then
 		return
 	end
 
@@ -115,7 +115,7 @@ local protector_formspec = function(meta)
 		.. "field_close_on_enter[protector_add_member;false]"
 
 	local members = get_member_list(meta)
-	local npp = protector.max_share_count -- max users added to protector list
+	local npp = protector_max_share_count -- max users added to protector list
 	local i = 0
 
 	for n = 1, #members do
@@ -156,7 +156,7 @@ end
 -- check if pos is inside a protected spawn area
 local inside_spawn = function(pos, radius)
 
-	if protector.spawn <= 0 then
+	if protector_spawn <= 0 then
 		return false
 	end
 
@@ -196,11 +196,11 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 	if infolevel == 3 then infolevel = 1 end
 
 	-- is spawn area protected ?
-	if inside_spawn(pos, protector.spawn) then
+	if inside_spawn(pos, protector_spawn) then
 
 		minetest.chat_send_player(digger,
 			S("Spawn @1 has been protected up to a @2 block radius.",
-				minetest.pos_to_string(statspawn), protector.spawn))
+				minetest.pos_to_string(statspawn), protector_spawn))
 
 		return false
 	end
@@ -274,19 +274,19 @@ function minetest.is_protected(pos, digger)
 	digger = digger or "" -- nil check
 
 	-- is area protected against digger?
-	if not protector.can_dig(protector.radius, pos, digger, false, 1) then
+	if not protector.can_dig(protector_radius, pos, digger, false, 1) then
 
 		local player = minetest.get_player_by_name(digger)
 
 		if player and player:is_player() then
 
 			-- hurt player if protection violated
-			if protector.hurt > 0 and player:get_hp() > 0 then
-				player:set_hp(player:get_hp() - protector.hurt)
+			if protector_hurt > 0 and player:get_hp() > 0 then
+				player:set_hp(player:get_hp() - protector_hurt)
 			end
 
 			-- flip player when protection violated
-			if protector.flip then
+			if protector_flip then
 
 				-- yaw + 180°
 				local yaw = player:get_look_horizontal() + math.pi
@@ -333,17 +333,17 @@ local check_overlap = function(itemstack, placer, pointed_thing)
 	local name = placer:get_player_name()
 
 	-- make sure protector doesn't overlap onto protected spawn area
-	if inside_spawn(pos, protector.spawn + protector.radius) then
+	if inside_spawn(pos, protector_spawn + protector_radius) then
 
 		minetest.chat_send_player(name,
 			S("Spawn @1 has been protected up to a @2 block radius.",
-			minetest.pos_to_string(statspawn), protector.spawn))
+			minetest.pos_to_string(statspawn), protector_spawn))
 
 		return itemstack
 	end
 
 	-- make sure protector doesn't overlap any other player's area
-	if not protector.can_dig(protector.radius * 2, pos, name, true, 3) then
+	if not protector.can_dig(protector_radius * 2, pos, name, true, 3) then
 
 		minetest.chat_send_player(name,
 			S("Overlaps into above players protected area"))
@@ -398,7 +398,7 @@ minetest.register_node("protector:protect", {
 			return
 		end
 
-		protector.can_dig(protector.radius, pointed_thing.under, user:get_player_name(), false, 2)
+		protector.can_dig(protector_radius, pointed_thing.under, user:get_player_name(), false, 2)
 	end,
 
 	on_rightclick = function(pos, node, clicker, itemstack)
@@ -482,7 +482,7 @@ minetest.register_node("protector:protect2", {
 			return
 		end
 
-		protector.can_dig(protector.radius, pointed_thing.under, user:get_player_name(), false, 2)
+		protector.can_dig(protector_radius, pointed_thing.under, user:get_player_name(), false, 2)
 	end,
 
 	on_rightclick = function(pos, node, clicker, itemstack)
@@ -621,7 +621,7 @@ minetest.register_entity("protector:display", {
 -- Display-zone node, Do NOT place the display as a node,
 -- it is made to be used as an entity (see above)
 
-local x = protector.radius
+local x = protector_radius
 minetest.register_node("protector:display_node", {
 	tiles = {"protector_display.png"},
 	use_texture_alpha = true,

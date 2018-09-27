@@ -111,6 +111,8 @@ minetest.register_abm({
 	end
 })
 
+-- get protection radius
+local r = tonumber(minetest.settings:get("protector_radius")) or 5
 
 -- show protection areas of nearby protectors owned by you (thanks agaran)
 minetest.register_chatcommand("protector_show", {
@@ -121,7 +123,6 @@ minetest.register_chatcommand("protector_show", {
 
 		local player = minetest.get_player_by_name(name)
 		local pos = player:get_pos()
-		local r = protector.radius
 
 		-- find the protector nodes
 		local pos = minetest.find_nodes_in_area(
