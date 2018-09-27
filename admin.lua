@@ -1,8 +1,7 @@
 
 local S = protector.intllib
-
-protector.removal_names = ""
-protector.replace_names = ""
+local removal_names = ""
+local replace_names = ""
 
 minetest.register_chatcommand("protector_remove", {
 	params = S("<names list>"),
@@ -14,7 +13,7 @@ minetest.register_chatcommand("protector_remove", {
 
 			minetest.chat_send_player(name,
 				S("Protector Names to remove: @1",
-					protector.removal_names))
+					removal_names))
 
 			return
 		end
@@ -24,12 +23,12 @@ minetest.register_chatcommand("protector_remove", {
 			minetest.chat_send_player(name,
 				S("Name List Reset"))
 
-			protector.removal_names = ""
+			removal_names = ""
 
 			return
 		end
 
-		protector.removal_names = param
+		removal_names = param
 
 	end,
 })
@@ -46,16 +45,16 @@ minetest.register_chatcommand("protector_replace", {
 
 			minetest.chat_send_player(name, S("Name List Reset"))
 
-			protector.replace_names = ""
+			replace_names = ""
 
 			return
 		end
 
 		-- show name info
 		if param == ""
-		and protector.replace_names ~= "" then
+		and replace_names ~= "" then
 
-			local names = protector.replace_names:split(" ")
+			local names = replace_names:split(" ")
 
 			minetest.chat_send_player(name,
 				S("Replacing Protector name '@1' with '@2'",
@@ -64,7 +63,7 @@ minetest.register_chatcommand("protector_replace", {
 			return
 		end
 
-		protector.replace_names = param
+		replace_names = param
 
 	end,
 })
@@ -77,21 +76,20 @@ minetest.register_abm({
 	catch_up = false,
 	action = function(pos, node)
 
-		if protector.removal_names == ""
-		and protector.replace_names == "" then
+		if removal_names == ""
+		and replace_names == "" then
 			return
 		end
 
-		local meta = minetest.get_meta(pos);
+		local meta = minetest.get_meta(pos)
 
 		if not meta then return end
 
 		local owner = meta:get_string("owner")
-		--local members = meta:get_string("members")
 
-		if protector.removal_names ~= "" then
+		if removal_names ~= "" then
 
-			local names = protector.removal_names:split(" ")
+			local names = removal_names:split(" ")
 
 			for _, n in pairs(names) do
 				if n == owner then
@@ -100,9 +98,9 @@ minetest.register_abm({
 			end
 		end
 
-		if protector.replace_names ~= "" then
+		if replace_names ~= "" then
 
-			local names = protector.replace_names:split(" ")
+			local names = replace_names:split(" ")
 
 			if names[1] and names[2] and owner == names[1] then
 				meta:set_string("owner", names[2])
@@ -123,7 +121,7 @@ minetest.register_chatcommand("protector_show", {
 
 		local player = minetest.get_player_by_name(name)
 		local pos = player:get_pos()
-		local r = protector.radius -- max protector range.
+		local r = protector.radius
 
 		-- find the protector nodes
 		local pos = minetest.find_nodes_in_area(
