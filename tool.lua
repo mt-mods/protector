@@ -93,13 +93,12 @@ minetest.register_craftitem("protector:tool", {
 			nod = "protector:protect2"
 		end
 
-		-- do not replace nodes that aren't ground content e.g. chests
-		local nod2 = minetest.get_node(pos)
-		local def2 = minetest.registered_nodes[nod2.name]
+		-- do not replace containers with inventory space
+		local inv = minetest.get_inventory({type = "node", pos = pos})
 
-		if not def2 or def2.is_ground_content ~= true then
+		if inv then
 			minetest.chat_send_player(name,
-				"Cannot place protector, check node at " .. minetest.pos_to_string(pos))
+				"Cannot place protector, container at " .. minetest.pos_to_string(pos))
 			return
 		end
 
