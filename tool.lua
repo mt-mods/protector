@@ -93,6 +93,16 @@ minetest.register_craftitem("protector:tool", {
 			nod = "protector:protect2"
 		end
 
+		-- do not replace nodes that aren't ground content e.g. chests
+		local nod2 = minetest.get_node(pos)
+		local def2 = minetest.registered_nodes[nod2.name]
+
+		if not def2 or def2.is_ground_content ~= true then
+			minetest.chat_send_player(name,
+				"Cannot place protector, check node at " .. minetest.pos_to_string(pos))
+			return
+		end
+
 		-- place protector
 		minetest.set_node(pos, {name = nod, param2 = 1})
 
