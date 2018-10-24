@@ -430,6 +430,13 @@ minetest.register_node("protector:protect", {
 	end,
 
 	on_blast = function() end,
+
+	after_destruct = function(pos, oldnode)
+		local objects = minetest.get_objects_inside_radius(pos, 0.5)
+		for _, v in ipairs(objects) do
+			v:remove()
+		end
+	end,
 })
 
 minetest.register_craft({
@@ -514,6 +521,13 @@ minetest.register_node("protector:protect2", {
 	end,
 
 	on_blast = function() end,
+
+	after_destruct = function(pos, oldnode)
+		local objects = minetest.get_objects_inside_radius(pos, 0.5)
+		for _, v in ipairs(objects) do
+			v:remove()
+		end
+	end,
 })
 
 -- recipes to switch between protectors

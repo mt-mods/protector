@@ -54,6 +54,7 @@ Change log:
 - 2.4 - Update to newer functions, Minetest 0.4.16 needed to run now.
 - 2.5 - Added HUD text to show when player is inside a protected area (updates every 5 seconds)
 - 2.6 - Add protection against CSM tampering, updated Intllib support (thanks codexp), tweaked block textures
+- 2.7 - Remove protection field entity when protector has been dug
 
 Lucky Blocks: 10
 
