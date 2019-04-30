@@ -102,6 +102,14 @@ minetest.register_craftitem("protector:tool", {
 			return
 		end
 
+		-- protection check for other mods like Areas
+		if minetest.is_protected(pos, name) then
+			minetest.chat_send_player(name,
+				"Cannot place protector, already protected at " ..
+				minetest.pos_to_string(pos))
+			return
+		end
+
 		-- place protector
 		minetest.set_node(pos, {name = nod, param2 = 1})
 
