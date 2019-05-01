@@ -1,11 +1,13 @@
 
 -- protector placement tool (thanks to Shara for code and idea)
 
+local S = protector.intllib
+
 -- get protection radius
 local r = tonumber(minetest.settings:get("protector_radius")) or 5
 
 minetest.register_craftitem("protector:tool", {
-	description = "Protector Placer Tool (stand near protector, face direction and use)",
+	description = S("Protector Placer Tool (stand near protector, face direction and use)"),
 	inventory_image = "protector_display.png^protector_logo.png",
 	stack_max = 1,
 
@@ -57,7 +59,7 @@ minetest.register_craftitem("protector:tool", {
 		if not protector.can_dig(r * 2, pos, user:get_player_name(), true, 3) then
 
 			minetest.chat_send_player(name,
-				"Overlaps into above players protected area")
+				S("Overlaps into above players protected area"))
 
 			return
 		end
@@ -67,7 +69,8 @@ minetest.register_craftitem("protector:tool", {
 			vector.subtract(pos, 1), vector.add(pos, 1),
 			{"protector:protect", "protector:protect2"}) > 0 then
 
-			minetest.chat_send_player(name, "Protector already in place!")
+			minetest.chat_send_player(name, S("Protector already in place!"))
+
 			return
 		end
 
@@ -77,7 +80,10 @@ minetest.register_craftitem("protector:tool", {
 
 		if not inv:contains_item("main", "protector:protect")
 		and not inv:contains_item("main", "protector:protect2") then
-			minetest.chat_send_player(name, "No protectors available to place!")
+
+			minetest.chat_send_player(name,
+				S("No protectors available to place!"))
+
 			return
 		end
 
@@ -98,15 +104,16 @@ minetest.register_craftitem("protector:tool", {
 
 		if inv then
 			minetest.chat_send_player(name,
-				"Cannot place protector, container at " .. minetest.pos_to_string(pos))
+				S("Cannot place protector, container at") ..
+					" " .. minetest.pos_to_string(pos))
 			return
 		end
 
 		-- protection check for other mods like Areas
 		if minetest.is_protected(pos, name) then
 			minetest.chat_send_player(name,
-				"Cannot place protector, already protected at " ..
-				minetest.pos_to_string(pos))
+				S("Cannot place protector, already protected at") ..
+				" " .. minetest.pos_to_string(pos))
 			return
 		end
 
@@ -127,7 +134,8 @@ minetest.register_craftitem("protector:tool", {
 		end
 
 		minetest.chat_send_player(name,
-				"Protector placed at " .. minetest.pos_to_string(pos))
+				S("Protector placed at") ..
+				" " ..  minetest.pos_to_string(pos))
 
 	end,
 })
