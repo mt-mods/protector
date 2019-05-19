@@ -55,6 +55,7 @@ Change log:
 - 2.5 - Added HUD text to show when player is inside a protected area (updates every 5 seconds)
 - 2.6 - Add protection against CSM tampering, updated Intllib support (thanks codexp), tweaked block textures
 - 2.7 - Remove protection field entity when protector has been dug
+- 2.8 - Added 'protector_show_interval' setting to minetest.conf, default is 5
 
 Lucky Blocks: 10
 
@@ -113,6 +114,9 @@ protector_hurt = 2
 
 protector_flip = true
 - When true players who dig inside a protected area will flipped around to stop them using lag to grief into someone else's build
+
+protector_show_interval
+- Number of seconds the protection field is visible, defaults to 5 seconds.
 
 
 Protector Tool

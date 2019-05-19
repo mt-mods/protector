@@ -17,6 +17,7 @@ local protector_flip = minetest.settings:get_bool("protector_flip") or false
 local protector_hurt = tonumber(minetest.settings:get("protector_hurt")) or 0
 local protector_spawn = tonumber(minetest.settings:get("protector_spawn")
 	or minetest.settings:get("protector_pvp_spawn")) or 0
+local protector_show = tonumber(minetest.settings:get("protector_show_interval")) or 5
 
 -- get static spawn position
 local statspawn = minetest.string_to_pos(minetest.settings:get("static_spawnpoint"))
@@ -616,7 +617,7 @@ minetest.register_entity("protector:display", {
 	collisionbox = {0, 0, 0, 0, 0, 0},
 	visual = "wielditem",
 	-- wielditem seems to be scaled to 1.5 times original node size
-	visual_size = {x = 1.0 / 1.5, y = 1.0 / 1.5},
+	visual_size = {x = 0.67, y = 0.67},
 	textures = {"protector:display_node"},
 	timer = 0,
 
@@ -625,7 +626,7 @@ minetest.register_entity("protector:display", {
 		self.timer = self.timer + dtime
 
 		-- remove after 5 seconds
-		if self.timer > 5 then
+		if self.timer > protector_show then
 			self.object:remove()
 		end
 	end,
