@@ -5,10 +5,11 @@ local S = dofile(MP .. "/intllib.lua")
 local F = minetest.formspec_escape
 
 
-protector = {}
-protector.mod = "redo"
-protector.modpath = MP
-protector.intllib = S
+protector = {
+	mod = "redo",
+	modpath = MP,
+	intllib = S
+}
 
 local protector_max_share_count = 12
 -- get minetest.conf settings
@@ -620,12 +621,13 @@ minetest.register_entity("protector:display", {
 	visual_size = {x = 0.67, y = 0.67},
 	textures = {"protector:display_node"},
 	timer = 0,
+	glow = 10,
 
 	on_step = function(self, dtime)
 
 		self.timer = self.timer + dtime
 
-		-- remove after 5 seconds
+		-- remove after set number of seconds
 		if self.timer > protector_show then
 			self.object:remove()
 		end
