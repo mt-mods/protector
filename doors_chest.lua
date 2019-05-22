@@ -520,20 +520,23 @@ minetest.register_node("protector:chest", {
 
 	on_metadata_inventory_put = function(pos, listname, index, stack, player)
 
-		minetest.log("action", S("@1 moves stuff to protected chest at @2",
-			player:get_player_name(), minetest.pos_to_string(pos)))
+		minetest.log("action", player:get_player_name() ..
+			" moves stuff to protected chest at " ..
+			minetest.pos_to_string(pos))
 	end,
 
 	on_metadata_inventory_take = function(pos, listname, index, stack, player)
 
-		minetest.log("action", S("@1 takes stuff from protected chest at @2",
-			player:get_player_name(), minetest.pos_to_string(pos)))
+		minetest.log("action", player:get_player_name() ..
+			" takes stuff from protected chest at " ..
+			minetest.pos_to_string(pos))
 	end,
 
 	on_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
 
-		minetest.log("action", S("@1 moves stuff inside protected chest at @2",
-			player:get_player_name(), minetest.pos_to_string(pos)))
+		minetest.log("action", player:get_player_name() ..
+			" moves stuff inside protected chest at " ..
+			minetest.pos_to_string(pos))
 	end,
 
 	allow_metadata_inventory_put = function(pos, listname, index, stack, player)

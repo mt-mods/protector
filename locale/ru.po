@@ -73,18 +73,6 @@ msgid "Protected Chest"
 msgstr "Защищенный сундук"
 
 #: doors_chest.lua
-msgid "@1 moves stuff to protected chest at @2"
-msgstr "@1 перемещает вещи в защищенный сундук на координатах @2"
-
-#: doors_chest.lua
-msgid "@1 takes stuff from protected chest at @2"
-msgstr "@1 берет вещи из защищенного сундука на координатах @2"
-
-#: doors_chest.lua
-msgid "@1 moves stuff inside protected chest at @2"
-msgstr "@1 перемещает вещи внутри защищенного сундука на координатах @2"
-
-#: doors_chest.lua
 msgid "To Chest"
 msgstr "В сундук"
 

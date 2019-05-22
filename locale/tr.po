@@ -74,19 +74,6 @@ msgid "Protected Chest"
 msgstr "Korumalı sandık"
 
 #: doors_chest.lua
-msgid "@1 moves stuff to protected chest at @2"
-msgstr "@1 korumalı sandığa birşeyler koydu @2"
-
-#: doors_chest.lua
-msgid "@1 takes stuff from protected chest at @2"
-msgstr "@1 korumalı sandıktan birşeyler aldı @2"
-
-#: doors_chest.lua
-#, fuzzy
-msgid "@1 moves stuff inside protected chest at @2"
-msgstr "@1 korumalı sandığa içinde bir şeyler taşındı @2"
-
-#: doors_chest.lua
 msgid "To Chest"
 msgstr "Sandığa"
 

@@ -71,18 +71,6 @@ msgid "Protected Chest"
 msgstr ""
 
 #: doors_chest.lua
-msgid "@1 moves stuff to protected chest at @2"
-msgstr ""
-
-#: doors_chest.lua
-msgid "@1 takes stuff from protected chest at @2"
-msgstr ""
-
-#: doors_chest.lua
-msgid "@1 moves stuff inside protected chest at @2"
-msgstr ""
-
-#: doors_chest.lua
 msgid "To Chest"
 msgstr ""
 
