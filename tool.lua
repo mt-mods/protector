@@ -141,11 +141,17 @@ minetest.register_craftitem("protector:tool", {
 })
 
 -- tool recipe
+local df = "default:steel_ingot"
+if not minetest.registered_items[df] then
+	df = "mcl_core:iron_ingot"
+end
+
+
 minetest.register_craft({
 	output = "protector:tool",
 	recipe = {
-		{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
-		{"default:steel_ingot", "protector:protect", "default:steel_ingot"},
-		{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
+		{df, df, df},
+		{df, "protector:protect", df},
+		{df, df, df},
 	}
 })

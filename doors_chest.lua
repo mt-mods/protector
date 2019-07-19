@@ -6,6 +6,9 @@
 local S = protector.intllib
 local F = minetest.formspec_escape
 
+-- MineClone2 support
+local mcl = not minetest.registered_items["default:steel_ingot"]
+
 -- Registers a door
 function register_door(name, def)
 	def.groups.not_in_creative_inventory = 1
@@ -310,6 +313,14 @@ register_door(name, {
 	sunlight = false,
 })
 
+if mcl then
+minetest.register_craft({
+	output = name,
+	recipe = {
+		{"mcl_doors:wooden_door", "mcl_core:gold_ingot"}
+	}
+})
+else
 minetest.register_craft({
 	output = name,
 	recipe = {
@@ -325,6 +336,7 @@ minetest.register_craft({
 		{"doors:door_wood", "default:copper_ingot"}
 	}
 })
+end
 
 -- Protected Steel Door
 
@@ -343,6 +355,14 @@ register_door(name, {
 	sunlight = false,
 })
 
+if mcl then
+minetest.register_craft({
+	output = name,
+	recipe = {
+		{"mcl_doors:iron_door", "mcl_core:gold_ingot"}
+	}
+})
+else
 minetest.register_craft({
 	output = name,
 	recipe = {
@@ -358,6 +378,7 @@ minetest.register_craft({
 		{"doors:door_steel", "default:copper_ingot"}
 	}
 })
+end
 
 ----trapdoor----
 
@@ -434,12 +455,19 @@ register_trapdoor("protector:trapdoor", {
 	sounds = default.node_sound_wood_defaults(),
 })
 
+if mcl then
 minetest.register_craft({
-	output = 'protector:trapdoor 2',
+	output = "protector:trapdoor",
 	recipe = {
-		{'group:wood', 'default:copper_ingot', 'group:wood'},
-		{'group:wood', 'group:wood', 'group:wood'},
-		{'', '', ''},
+		{"mcl_doors:trapdoor", "mcl_core:gold_ingot"}
+	}
+})
+else
+minetest.register_craft({
+	output = "protector:trapdoor 2",
+	recipe = {
+		{"group:wood", "default:copper_ingot", "group:wood"},
+		{"group:wood", "group:wood", "group:wood"},
 	}
 })
 
@@ -449,6 +477,7 @@ minetest.register_craft({
 		{"doors:trapdoor", "default:copper_ingot"}
 	}
 })
+end
 
 -- Protected Steel Trapdoor
 
@@ -465,11 +494,19 @@ register_trapdoor("protector:trapdoor_steel", {
 	sounds = default.node_sound_wood_defaults(),
 })
 
+if mcl then
+minetest.register_craft({
+	output = "protector:trapdoor_steel",
+	recipe = {
+		{"mcl_doors:iron_trapdoor", "mcl_core:gold_ingot"}
+	}
+})
+else
 minetest.register_craft({
 	output = 'protector:trapdoor_steel',
 	recipe = {
-		{'default:copper_ingot', 'default:steel_ingot'},
-		{'default:steel_ingot', 'default:steel_ingot'},
+		{"default:copper_ingot", "default:steel_ingot"},
+		{"default:steel_ingot", "default:steel_ingot"},
 	}
 })
 
@@ -479,6 +516,7 @@ minetest.register_craft({
 		{"doors:trapdoor_steel", "default:copper_ingot"}
 	}
 })
+end
 
 -- Protected Chest
 
@@ -675,18 +713,27 @@ end)
 
 -- Protected Chest recipes
 
+if mcl then
 minetest.register_craft({
-	output = 'protector:chest',
+	output = "protector:chest",
 	recipe = {
-		{'group:wood', 'group:wood', 'group:wood'},
-		{'group:wood', 'default:copper_ingot', 'group:wood'},
-		{'group:wood', 'group:wood', 'group:wood'},
+		{"mcl_chests:chest", "mcl_core:gold_ingot"},
+	}
+})
+else
+minetest.register_craft({
+	output = "protector:chest",
+	recipe = {
+		{"group:wood", "group:wood", "group:wood"},
+		{"group:wood", "default:copper_ingot", "group:wood"},
+		{"group:wood", "group:wood", "group:wood"},
 	}
 })
 
 minetest.register_craft({
-	output = 'protector:chest',
+	output = "protector:chest",
 	recipe = {
-		{'default:chest', 'default:copper_ingot', ''},
+		{"default:chest", "default:copper_ingot"},
 	}
 })
+end

@@ -1,4 +1,13 @@
 
+-- default support (for use with MineClone2 and other [games]
+default = default or {
+	node_sound_stone_defaults = function(table) end,
+	node_sound_wood_defaults = function(table) end,
+	gui_bg = "",
+	gui_bg_img = "",
+	gui_slots = "",
+}
+
 -- Load support for intllib.
 local MP = minetest.get_modpath(minetest.get_current_modname())
 local S = dofile(MP .. "/intllib.lua")
@@ -441,6 +450,8 @@ minetest.register_node("protector:protect", {
 	end,
 })
 
+-- default recipe and alternative for MineClone2
+if minetest.registered_items["default:stone"] then
 minetest.register_craft({
 	output = "protector:protect",
 	recipe = {
@@ -449,7 +460,16 @@ minetest.register_craft({
 		{"default:stone", "default:stone", "default:stone"},
 	}
 })
-
+else
+minetest.register_craft({
+	output = "protector:protect",
+	recipe = {
+		{"mcl_core:stone", "mcl_core:stone", "mcl_core:stone"},
+		{"mcl_core:stone", "mcl_core:gold_ingot", "mcl_core:stone"},
+		{"mcl_core:stone", "mcl_core:stone", "mcl_core:stone"},
+	}
+})
+end
 
 -- protection logo
 minetest.register_node("protector:protect2", {

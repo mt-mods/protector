@@ -40,17 +40,15 @@ minetest.register_globalstep(function(dtime)
 				hud_elem_type = "text",
 				name = "Protector Area",
 				number = 0xFFFF22,
-				position = {x=0, y=0.95},
-				offset = {x=8, y=-8},
+				position = {x = 0, y = 0.95},
+				offset = {x = 8, y = -8},
 				text = hud_text,
-				scale = {x=200, y=60},
-				alignment = {x=1, y=-1},
+				scale = {x = 200, y = 60},
+				alignment = {x = 1, y = -1},
 			})
 
 			return
-
 		else
-
 			player:hud_change(hud[name].id, "text", hud_text)
 		end
 	end

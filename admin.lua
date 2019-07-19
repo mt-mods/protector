@@ -29,7 +29,6 @@ minetest.register_chatcommand("protector_remove", {
 		end
 
 		removal_names = param
-
 	end,
 })
 
@@ -64,7 +63,6 @@ minetest.register_chatcommand("protector_replace", {
 		end
 
 		replace_names = param
-
 	end,
 })
 
@@ -106,7 +104,6 @@ minetest.register_abm({
 				meta:set_string("owner", names[2])
 				meta:set_string("infotext", S("Protection (owned by @1)", names[2]))
 			end
-
 		end
 	end
 })
