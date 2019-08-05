@@ -429,8 +429,8 @@ function register_trapdoor(name, def)
 		fixed = {-0.5, -0.5, 6/16, 0.5, 0.5, 0.5}
 	}
 	def_opened.tiles = { def.tile_side, def.tile_side,
-			def.tile_side .. '^[transform3',
-			def.tile_side .. '^[transform1',
+			def.tile_side .. "^[transform3",
+			def.tile_side .. "^[transform1",
 			def.tile_front, def.tile_front }
 
 	def_opened.drop = name_closed
@@ -503,7 +503,7 @@ minetest.register_craft({
 })
 else
 minetest.register_craft({
-	output = 'protector:trapdoor_steel',
+	output = "protector:trapdoor_steel",
 	recipe = {
 		{"default:copper_ingot", "default:steel_ingot"},
 		{"default:steel_ingot", "default:steel_ingot"},

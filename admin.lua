@@ -56,7 +56,7 @@ minetest.register_chatcommand("protector_replace", {
 			local names = replace_names:split(" ")
 
 			minetest.chat_send_player(name,
-				S("Replacing Protector name '@1' with '@2'",
+				S("Replacing Protector name @1 with @2",
 					names[1] or "", names[2] or ""))
 
 			return
