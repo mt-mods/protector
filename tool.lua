@@ -33,13 +33,13 @@ minetest.register_craftitem("protector:tool", {
 		local dir = minetest.dir_to_facedir( user:get_look_dir() )
 		local vec = {x = 0, y = 0, z = 0}
 		local gap = (r * 2) + 1
-		local pit =  user:get_look_pitch()
+		local pit =  user:get_look_vertical()
 
 		-- set placement coords
 		if pit > 1.2 then
-			vec.y = gap -- up
+			vec.y = -gap -- up
 		elseif pit < -1.2 then
-			vec.y = -gap -- down
+			vec.y = gap -- down
 		elseif dir == 0 then
 			vec.z = gap -- north
 		elseif dir == 1 then
