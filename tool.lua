@@ -8,10 +8,7 @@ local r = tonumber(minetest.settings:get("protector_radius")) or 5
 
 protector.tool = {
 
-	registered_protectors = {
-		["protector:protect"] = {},
-		["protector:protect2"] = {},
-	},
+	registered_protectors = {},
 
 	register_protector = function(self, nodename, data)
 		if not data.on_place then 
@@ -21,10 +18,13 @@ protector.tool = {
 		data.nodes = data.nodes or {}
 		table.insert(data.nodes, nodename)
 
+		-- Collect parameters droppping anything that is not used
 		self.registered_protectors[nodename] = {
 			radius = data.radius or r,
+			param2 = data.param2 or 0,
 			nodes = data.nodes,
-			on_place = data.on_place
+			on_place = data.on_place,
+			after_place = data.after_place,
 		}
 		print(S('[MOD] Protector Redo Tool: registered protector:tool for @1', nodename))
 		if data.nodes ~= nil then
@@ -40,6 +40,10 @@ protector.tool = {
 				print(S('[MOD] Protector Redo Tool: invalid data.nodes in register_protector @1', nodename))
 			end
 		end
+	end,
+
+	get_protector_data = function(self, nodename)
+		return self.registered_protectors[nodename]
 	end,
 
 	get_registered_alternatives = function(self, nodename)
@@ -67,10 +71,11 @@ protector.tool = {
 	end,
 
 	take_from_inventory = function(self, user, node)
-		-- do we have protectors to use ?
+		-- do we have protectors to use?
 		local available_node = nil
 		local inv = user:get_inventory()
 
+		-- first look for specified node (normally one user is standing on) and then any compatible nodes
 		if inv:contains_item("main", node.name) then
 			available_node = node.name
 		elseif self.registered_protectors[node.name].nodes then
@@ -90,6 +95,32 @@ protector.tool = {
 		inv:remove_item("main", available_node)
 		return available_node
 	end,
+
+	place_protector = function(self, user, pos, nodename, source_pos, source_node)
+		local p = self:get_protector_data(source_node)
+
+		if p.on_place then
+			-- on_place event, callback should place nodes to world
+			p.on_place(user, pos, source_pos, nodename)
+		elseif user:get_player_control().sneak then
+			-- default on_place while sneaking, place node to world with param2 copied
+			local param2 = minetest.get_node(source_pos).param2
+			minetest.set_node(pos, {name = nodename, param2 = param2})
+		else
+			-- default on_place, place node to world
+			minetest.set_node(pos, {name = nodename, param2 = p.param2})
+		end
+
+		local meta = minetest.get_meta(pos)
+		local name = user:get_player_name()
+		meta:set_string("owner", name)
+
+		if p.after_place then
+			-- execute after_place event where metadata can be changed easily
+			local src_meta = minetest.get_meta(source_pos)
+			p.after_place(user, meta, src_meta, nodename)
+		end
+	end,
 }
 
 minetest.register_craftitem("protector:tool", {
@@ -106,11 +137,12 @@ minetest.register_craftitem("protector:tool", {
 		local source_pos = protector.tool:find_protector(pos, 2)
 		if source_pos == nil then return end
 		local source_node = minetest.get_node(source_pos)
+		local radius = protector.tool:get_protector_data(source_node.name).radius
 
 		-- get direction player is facing
 		local dir = minetest.dir_to_facedir( user:get_look_dir() )
 		local vec = {x = 0, y = 0, z = 0}
-		local gap = (r * 2) + 1
+		local gap = (radius * 2) + 1
 		local pit =  user:get_look_vertical()
 
 		-- set placement coords
@@ -134,7 +166,7 @@ minetest.register_craftitem("protector:tool", {
 		pos.z = source_pos.z + vec.z
 
 		-- does placing a protector overlap existing area
-		if not protector.can_dig(r * 2, pos, user:get_player_name(), true, 3) then
+		if not protector.can_dig(radius * 2, pos, user:get_player_name(), true, 3) then
 
 			minetest.chat_send_player(name,
 				S("Overlaps into above players protected area"))
@@ -176,7 +208,7 @@ minetest.register_craftitem("protector:tool", {
 			return
 		end
 
-		protector.tool.registered_protectors[source_node.name].on_place(user, pos, source_pos, protector_node)
+		protector.tool:place_protector(user, pos, protector_node, source_pos, source_node.name)
 
 		minetest.chat_send_player(name,
 				S("Protector placed at") ..

@@ -698,23 +698,16 @@ dofile(MP .. "/lucky_block.lua")
 
 protector.tool:register_protector('protector:protect', {
 	nodes = {'protector:protect2'}, -- Compatible nodes for protector tool, uses same on_place, radius, etc.
-	on_place = function(user, pos, source_pos, nodename)
+	param2 = 1, -- Default param2 for protector
+	on_place = nil, -- on_place callback, protector is about to be placed
+	after_place = function(user, meta, src_meta, nodename)
 
-		-- place protector
-		minetest.set_node(pos, {name = nodename, param2 = 1})
-
-		local meta = minetest.get_meta(pos)
 		local name = user:get_player_name()
-
-		meta:set_string("owner", name)
 		meta:set_string("infotext", "Protection (owned by " .. name .. ")")
-
-		-- ^ TBD: Above params could also be set at lower level in tool.lua on_use method, how much customization should be implemented here?
 
 		-- copy members across if holding sneak when using tool
 		if user:get_player_control().sneak then
 			-- get members on protector / set protector metadata
-			local src_meta = minetest.get_meta(source_pos)
 			local members = src_meta:get_string("members") or ""
 			meta:set_string("members", members)
 		else
