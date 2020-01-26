@@ -703,7 +703,7 @@ protector.tool:register_protector('protector:protect', {
 	after_place = function(user, meta, src_meta, nodename)
 
 		local name = user:get_player_name()
-		meta:set_string("infotext", "Protection (owned by " .. name .. ")")
+		meta:set_string("infotext", S("Protection (owned by @1)",name))
 
 		-- copy members across if holding sneak when using tool
 		if user:get_player_control().sneak then
