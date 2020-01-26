@@ -6,6 +6,92 @@ local S = protector.intllib
 -- get protection radius
 local r = tonumber(minetest.settings:get("protector_radius")) or 5
 
+protector.tool = {
+
+	registered_protectors = {
+		["protector:protect"] = {},
+		["protector:protect2"] = {},
+	},
+
+	register_protector = function(self, nodename, data)
+		if not data.on_place then 
+			print(S('[MOD] Protector Redo Tool: Error registering protector @1 missing on_place method', nodename))
+		end
+
+		data.nodes = data.nodes or {}
+		table.insert(data.nodes, nodename)
+
+		self.registered_protectors[nodename] = {
+			radius = data.radius or r,
+			nodes = data.nodes,
+			on_place = data.on_place
+		}
+		print(S('[MOD] Protector Redo Tool: registered protector:tool for @1', nodename))
+		if data.nodes ~= nil then
+			if type(data.nodes) == 'table' then
+				for i,name in ipairs(data.nodes) do
+					-- create links for nodes for fast and straightforward lookup
+					if name ~= nodename then
+						print(S('[MOD] Protector Redo Tool: registering alternative @1 for @2', name, nodename))
+					end
+					self.registered_protectors[name] = self.registered_protectors[nodename]
+				end
+			else
+				print(S('[MOD] Protector Redo Tool: invalid data.nodes in register_protector @1', nodename))
+			end
+		end
+	end,
+
+	get_registered_alternatives = function(self, nodename)
+		if self.registered_protectors[nodename] then
+			return self.registered_protectors[nodename].nodes
+		end
+		return {}
+	end,
+
+	get_registered_protectors = function(self)
+		if self.registered_protectors_cache == nil then
+			self.registered_protectors_cache = {}
+			for nodename,_ in pairs(self.registered_protectors) do
+				table.insert(self.registered_protectors_cache, nodename)
+			end
+		end
+		return self.registered_protectors_cache
+	end,
+
+	find_protector = function(self, pos, radius)
+		local pp = minetest.find_nodes_in_area(
+			vector.subtract(pos, radius), vector.add(pos, radius),
+			self:get_registered_protectors())
+		return #pp > 0 and pp[1] or nil -- take position of first protector found
+	end,
+
+	take_from_inventory = function(self, user, node)
+		-- do we have protectors to use ?
+		local available_node = nil
+		local inv = user:get_inventory()
+
+		if inv:contains_item("main", node.name) then
+			available_node = node.name
+		elseif self.registered_protectors[node.name].nodes then
+			for i,nodename in ipairs(self.registered_protectors[node.name].nodes) do
+				if nodename ~= node.name and inv:contains_item("main", nodename) then
+					available_node = nodename
+					break
+				end
+			end
+		end
+
+		if not available_node then
+			return
+		end
+
+		-- take protector from inventory and return node name that was actually used
+		inv:remove_item("main", available_node)
+		return available_node
+	end,
+}
+
 minetest.register_craftitem("protector:tool", {
 	description = S("Protector Placer Tool (stand near protector, face direction and use)"),
 	inventory_image = "protector_display.png^protector_logo.png",
@@ -14,20 +100,12 @@ minetest.register_craftitem("protector:tool", {
 	on_use = function(itemstack, user, pointed_thing)
 
 		local name = user:get_player_name()
-
-		-- check for protector near player (2 block radius)
 		local pos = user:get_pos()
-		local pp = minetest.find_nodes_in_area(
-			vector.subtract(pos, 2), vector.add(pos, 2),
-			{"protector:protect", "protector:protect2"})
 
-		if #pp == 0 then return end -- none found
-
-		pos = pp[1] -- take position of first protector found
-
-		-- get members on protector
-		local meta = minetest.get_meta(pos)
-		local members = meta:get_string("members") or ""
+		-- check for protector near player (2 block radius), abort if not found
+		local source_pos = protector.tool:find_protector(pos, 2)
+		if source_pos == nil then return end
+		local source_node = minetest.get_node(source_pos)
 
 		-- get direction player is facing
 		local dir = minetest.dir_to_facedir( user:get_look_dir() )
@@ -51,9 +129,9 @@ minetest.register_craftitem("protector:tool", {
 		end
 
 		-- new position
-		pos.x = pos.x + vec.x
-		pos.y = pos.y + vec.y
-		pos.z = pos.z + vec.z
+		pos.x = source_pos.x + vec.x
+		pos.y = source_pos.y + vec.y
+		pos.z = source_pos.z + vec.z
 
 		-- does placing a protector overlap existing area
 		if not protector.can_dig(r * 2, pos, user:get_player_name(), true, 3) then
@@ -67,41 +145,22 @@ minetest.register_craftitem("protector:tool", {
 		-- does a protector already exist ?
 		if #minetest.find_nodes_in_area(
 			vector.subtract(pos, 1), vector.add(pos, 1),
-			{"protector:protect", "protector:protect2"}) > 0 then
+			protector.tool:get_registered_alternatives(source_node.name)) > 0 then
 
 			minetest.chat_send_player(name, S("Protector already in place!"))
 
 			return
 		end
 
-		-- do we have protectors to use ?
-		local nod
-		local inv = user:get_inventory()
-
-		if not inv:contains_item("main", "protector:protect")
-		and not inv:contains_item("main", "protector:protect2") then
-
-			minetest.chat_send_player(name,
-				S("No protectors available to place!"))
-
+		local protector_node = protector.tool:take_from_inventory(user, source_node)
+		if not protector_node then
+			-- cannot take compatible ndoe from inventory
+			minetest.chat_send_player(name, S("No protectors available to place!"))
 			return
-		end
-
-		-- take protector (block first then logo)
-		if inv:contains_item("main", "protector:protect") then
-
-			inv:remove_item("main", "protector:protect")
-			nod = "protector:protect"
-
-		elseif inv:contains_item("main", "protector:protect2") then
-
-			inv:remove_item("main", "protector:protect2")
-			nod = "protector:protect2"
 		end
 
 		-- do not replace containers with inventory space
 		local inv = minetest.get_inventory({type = "node", pos = pos})
-
 		if inv then
 			minetest.chat_send_player(name,
 				S("Cannot place protector, container at") ..
@@ -117,21 +176,7 @@ minetest.register_craftitem("protector:tool", {
 			return
 		end
 
-		-- place protector
-		minetest.set_node(pos, {name = nod, param2 = 1})
-
-		-- set protector metadata
-		local meta = minetest.get_meta(pos)
-
-		meta:set_string("owner", name)
-		meta:set_string("infotext", "Protection (owned by " .. name .. ")")
-
-		-- copy members across if holding sneak when using tool
-		if user:get_player_control().sneak then
-			meta:set_string("members", members)
-		else
-			meta:set_string("members", "")
-		end
+		protector.tool.registered_protectors[source_node.name].on_place(user, pos, source_pos, protector_node)
 
 		minetest.chat_send_player(name,
 				S("Protector placed at") ..
