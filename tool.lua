@@ -11,10 +11,6 @@ protector.tool = {
 	registered_protectors = {},
 
 	register_protector = function(self, nodename, data)
-		if not data.on_place then 
-			print(S('[MOD] Protector Redo Tool: Error registering protector @1 missing on_place method', nodename))
-		end
-
 		data.nodes = data.nodes or {}
 		table.insert(data.nodes, nodename)
 
