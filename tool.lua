@@ -70,7 +70,7 @@ protector.tool = {
 		return #pp > 0 and pp[1] or nil -- take position of first protector found
 	end,
 
-	take_from_inventory = function(self, user, node)
+	find_from_inventory = function(self, user, node)
 		-- do we have protectors to use?
 		local available_node = nil
 		local inv = user:get_inventory()
@@ -91,8 +91,7 @@ protector.tool = {
 			return
 		end
 
-		-- take protector from inventory and return node name that was actually used
-		inv:remove_item("main", available_node)
+		-- return node name that should be used
 		return available_node
 	end,
 
@@ -184,9 +183,9 @@ minetest.register_craftitem("protector:tool", {
 			return
 		end
 
-		local protector_node = protector.tool:take_from_inventory(user, source_node)
+		local protector_node = protector.tool:find_from_inventory(user, source_node)
 		if not protector_node then
-			-- cannot take compatible ndoe from inventory
+			-- compatible protector nodes not in inventory
 			minetest.chat_send_player(name, S("No protectors available to place!"))
 			return
 		end
@@ -208,6 +207,8 @@ minetest.register_craftitem("protector:tool", {
 			return
 		end
 
+		local user_inv = user:get_inventory()
+		user_inv:remove_item("main", protector_node)
 		protector.tool:place_protector(user, pos, protector_node, source_pos, source_node.name)
 
 		minetest.chat_send_player(name,
