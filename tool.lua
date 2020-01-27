@@ -96,7 +96,7 @@ protector.tool = {
 	end,
 
 	place_protector = function(self, user, pos, nodename, source_pos, source_node)
-		local p = self:get_protector_data(source_node)
+		local p = self:get_protector_data(nodename)
 
 		if p.on_place then
 			-- on_place event, callback should place nodes to world
