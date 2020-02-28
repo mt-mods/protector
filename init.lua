@@ -689,11 +689,7 @@ minetest.register_node("protector:display_node", {
 })
 
 
--- only add protected doors and chest if running default minetest
-if minetest.registered_items["default:steel_ingot"] then
-	dofile(MP .. "/doors_chest.lua")
-end
-
+dofile(MP .. "/doors_chest.lua")
 dofile(MP .. "/pvp.lua")
 dofile(MP .. "/admin.lua")
 dofile(MP .. "/tool.lua")
