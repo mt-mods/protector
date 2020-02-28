@@ -56,7 +56,7 @@ Change log:
 - 2.6 - Add protection against CSM tampering, updated Intllib support (thanks codexp), tweaked block textures
 - 2.7 - Remove protection field entity when protector has been dug
 - 2.8 - Added 'protector_show_interval' setting to minetest.conf [default is 5], make protection field glow in dark.
-- 2.9 - Added MineClone2 compatibility (missing default switches to alternate recipes etc.)
+- 2.9 - Added MineClone2 recipes for protection block but no official support as yet
 
 Lucky Blocks: 10
 
