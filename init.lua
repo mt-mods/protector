@@ -217,7 +217,7 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 	end
 
 	-- find the protector nodes
-	local pos = minetest.find_nodes_in_area(
+	pos = minetest.find_nodes_in_area(
 		{x = pos.x - r, y = pos.y - r, z = pos.z - r},
 		{x = pos.x + r, y = pos.y + r, z = pos.z + r},
 		{"protector:protect", "protector:protect2"})

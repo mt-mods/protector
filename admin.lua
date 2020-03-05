@@ -119,12 +119,12 @@ minetest.register_chatcommand("protector_show", {
 	func = function(name, param)
 
 		local player = minetest.get_player_by_name(name)
-		local pos = player:get_pos()
+		local ppos = player:get_pos()
 
 		-- find the protector nodes
 		local pos = minetest.find_nodes_in_area(
-			{x = pos.x - r, y = pos.y - r, z = pos.z - r},
-			{x = pos.x + r, y = pos.y + r, z = pos.z + r},
+			{x = ppos.x - r, y = ppos.y - r, z = ppos.z - r},
+			{x = ppos.x + r, y = ppos.y + r, z = ppos.z + r},
 			{"protector:protect", "protector:protect2"})
 
 		local meta, owner

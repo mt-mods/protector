@@ -1,5 +1,7 @@
 Protector Redo mod [protect]
 
+![](https://github.com/S-S-X/protector/workflows/luacheck/badge.svg)
+
 Protector redo for minetest is a mod that protects a players builds by placing
 a block that stops other players from digging or placing blocks in that area.
 
