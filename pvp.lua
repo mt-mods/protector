@@ -48,9 +48,7 @@ and minetest.settings:get_bool("protector_pvp") then
 				-- get time of day
 				local tod = minetest.get_timeofday() or 0
 
-				if tod > 0.2 and tod < 0.8 then
-					--
-				else
+				if tod <= 0.2 or tod >= 0.8 then
 					return false
 				end
 			end

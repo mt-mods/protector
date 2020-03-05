@@ -87,9 +87,9 @@ function register_door(name, def)
 	local tt = def.tiles_top
 	local tb = def.tiles_bottom
 
-	local function after_dig_node(pos, name, digger)
+	local function after_dig_node(pos, node_name, digger)
 		local node = minetest.get_node(pos)
-		if node.name == name then
+		if node.name == node_name then
 			minetest.node_dig(pos, node, digger)
 		end
 	end
@@ -340,7 +340,7 @@ end
 
 -- Protected Steel Door
 
-local name = "protector:door_steel"
+name = "protector:door_steel"
 
 register_door(name, {
 	description = S("Protected Steel Door"),
@@ -382,9 +382,9 @@ end
 
 ----trapdoor----
 
-function register_trapdoor(name, def)
-	local name_closed = name
-	local name_opened = name.."_open"
+function register_trapdoor(node_name, def)
+	local name_closed = node_name
+	local name_opened = node_name.."_open"
 
 	def.on_rightclick = function (pos, node, clicker, itemstack, pointed_thing)
 		if minetest.is_protected(pos, clicker:get_player_name()) then
