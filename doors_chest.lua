@@ -618,9 +618,9 @@ minetest.register_node("protector:chest", {
 
 		local spos = pos.x .. "," .. pos.y .. "," ..pos.z
 		local formspec = "size[8,9]"
-			.. default.gui_bg
-			.. default.gui_bg_img
-			.. default.gui_slots
+--			.. default.gui_bg
+--			.. default.gui_bg_img
+--			.. default.gui_slots
 			.. "list[nodemeta:".. spos .. ";main;0,0.3;8,4;]"
 			.. "button[0,4.5;2,0.25;toup;" .. F(S("To Chest")) .. "]"
 			.. "field[2.3,4.8;4,0.25;chestname;;"
