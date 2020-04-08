@@ -293,7 +293,11 @@ function minetest.is_protected(pos, digger)
 
 			-- hurt player if protection violated
 			if protector_hurt > 0 and player:get_hp() > 0 then
-				player:set_hp(player:get_hp() - protector_hurt)
+
+				-- This delay fixes item duplication bug (thanks luk3yx)
+				minetest.after(0.1, function()
+					player:set_hp(player:get_hp() - protector_hurt)
+				end)
 			end
 
 			-- flip player when protection violated
