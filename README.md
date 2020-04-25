@@ -57,6 +57,7 @@ Change log:
 - 2.7 - Remove protection field entity when protector has been dug
 - 2.8 - Added 'protector_show_interval' setting to minetest.conf [default is 5], make protection field glow in dark.
 - 2.9 - Added MineClone2 recipes for protection block but no official support as yet
+- 3.0 - Added PlayerFactions support, 'protector_hud_interval' setting and listing in advanced settings for mod values.
 
 Lucky Blocks: 10
 

@@ -13,6 +13,8 @@ local MP = minetest.get_modpath(minetest.get_current_modname())
 local S = dofile(MP .. "/intllib.lua")
 local F = minetest.formspec_escape
 
+-- Load support for factions
+local factions_available = minetest.global_exists("factions")
 
 protector = {
 	mod = "redo",
@@ -57,6 +59,15 @@ end
 
 -- check for member name
 local is_member = function (meta, name)
+
+	if factions_available
+	and meta:get_int("faction_members") == 1
+	and factions.get_player_faction(name) ~= nil
+	and factions.get_player_faction(meta:get_string("owner")) ==
+			factions.get_player_faction(name) then
+
+		return true
+	end
 
 	for _, n in pairs(get_member_list(meta)) do
 
@@ -128,6 +139,19 @@ local protector_formspec = function(meta)
 	local members = get_member_list(meta)
 	local npp = protector_max_share_count -- max users added to protector list
 	local i = 0
+
+	if factions_available
+	and factions.get_player_faction(meta:get_string("owner")) then
+
+		formspec = formspec .. "checkbox[0,5;faction_members;"
+			.. F(S("Allow faction access"))
+			.. ";" .. (meta:get_int("faction_members") == 1 and
+					"true" or "false") .. "]"
+
+		if npp > 8 then
+			npp = 8
+		end
+	end
 
 	for n = 1, #members do
 
@@ -611,6 +635,11 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 	if not meta then
 		return
+	end
+
+	-- add faction members
+	if factions_available then
+		meta:set_int("faction_members", fields.faction_members == "true" and 1 or 0)
 	end
 
 	-- add member [+]

@@ -3,12 +3,14 @@ local S = protector.intllib
 local radius = (tonumber(minetest.setting_get("protector_radius")) or 5)
 local hud = {}
 local hud_timer = 0
+local hud_interval = (tonumber(minetest.setting_get("protector_hud_interval")) or 5)
 
+if hud_interval > 0 then
 minetest.register_globalstep(function(dtime)
 
 	-- every 5 seconds
 	hud_timer = hud_timer + dtime
-	if hud_timer < 5 then
+	if hud_timer < hud_interval then
 		return
 	end
 	hud_timer = 0
@@ -57,3 +59,5 @@ end)
 minetest.register_on_leaveplayer(function(player)
 	hud[player:get_player_name()] = nil
 end)
+
+end
