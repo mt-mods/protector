@@ -135,7 +135,8 @@ minetest.register_chatcommand("protector_show_area", {
 			meta = minetest.get_meta(pos[n])
 			owner = meta:get_string("owner") or ""
 
-			if owner == name then
+			if owner == name
+			or minetest.check_player_privs(name, {protection_bypass = true}) then
 				minetest.add_entity(pos[n], "protector:display")
 			end
 		end
@@ -194,7 +195,8 @@ minetest.register_chatcommand("protector_show", {
 			meta = minetest.get_meta(row)
 			owner = meta:get_string("owner") or ""
 
-			if owner == name then
+			if owner == name
+			or minetest.check_player_privs(name, {protection_bypass = true}) then
 				minetest.swap_node(row, {name = "protector:protect"})
 			end
 		end
@@ -228,7 +230,8 @@ minetest.register_chatcommand("protector_hide", {
 			meta = minetest.get_meta(row)
 			owner = meta:get_string("owner") or ""
 
-			if owner == name then
+			if owner == name
+			or minetest.check_player_privs(name, {protection_bypass = true}) then
 				minetest.swap_node(row, {name = "protector:protect_hidden"})
 			end
 		end
