@@ -170,7 +170,7 @@ minetest.register_node("protector:protect_hidden", {
 
 minetest.register_chatcommand("protector_show", {
 	params = "",
-	description = "Hide protection blocks",
+	description = S("Show your nearby protection blocks"),
 	privs = {interact = true},
 
 	func = function(name, param)
@@ -205,7 +205,7 @@ minetest.register_chatcommand("protector_show", {
 
 minetest.register_chatcommand("protector_hide", {
 	params = "",
-	description = "Hide protection blocks",
+	description = S("Hide your nearby protection blocks"),
 	privs = {interact = true},
 
 	func = function(name, param)
