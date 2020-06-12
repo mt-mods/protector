@@ -24,7 +24,7 @@ minetest.register_globalstep(function(dtime)
 		local protectors = minetest.find_nodes_in_area(
 			{x = pos.x - radius , y = pos.y - radius , z = pos.z - radius},
 			{x = pos.x + radius , y = pos.y + radius , z = pos.z + radius},
-			{"protector:protect","protector:protect2"})
+			{"protector:protect","protector:protect2", "protector:protect_hidden"})
 
 		if #protectors > 0 then
 			local npos = protectors[1]

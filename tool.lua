@@ -19,7 +19,7 @@ minetest.register_craftitem("protector:tool", {
 		local pos = user:get_pos()
 		local pp = minetest.find_nodes_in_area(
 			vector.subtract(pos, 2), vector.add(pos, 2),
-			{"protector:protect", "protector:protect2"})
+			{"protector:protect", "protector:protect2", "protector:protect_hidden"})
 
 		if #pp == 0 then return end -- none found
 
@@ -67,7 +67,7 @@ minetest.register_craftitem("protector:tool", {
 		-- does a protector already exist ?
 		if #minetest.find_nodes_in_area(
 			vector.subtract(pos, 1), vector.add(pos, 1),
-			{"protector:protect", "protector:protect2"}) > 0 then
+			{"protector:protect", "protector:protect2", "protector:protect_hidden"}) > 0 then
 
 			minetest.chat_send_player(name, S("Protector already in place!"))
 
