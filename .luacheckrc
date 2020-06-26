@@ -21,5 +21,6 @@ read_globals = {
 	"intllib",
 	"mesecon",
 	"screwdriver",
-	"lucky_block"
+	"lucky_block",
+	"factions"
 }
