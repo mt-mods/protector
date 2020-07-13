@@ -10,8 +10,9 @@ default = default or {
 
 -- Load support for intllib.
 local MP = minetest.get_modpath(minetest.get_current_modname())
-local S = dofile(MP .. "/intllib.lua")
 local F = minetest.formspec_escape
+local S = minetest.get_translator and minetest.get_translator("protector") or
+		dofile(MP .. "/intllib.lua")
 
 -- Load support for factions
 local factions_available = minetest.global_exists("factions")

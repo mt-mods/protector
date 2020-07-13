@@ -59,6 +59,7 @@ Change log:
 - 2.9 - Added MineClone2 recipes for protection block but no official support as yet
 - 3.0 - Added PlayerFactions support, 'protector_hud_interval' setting and listing in advanced settings for mod values.
 - 3.1 - Ability to hide protection blocks using /protector_hide and /protector_show , italian local added (thanks Hamlet)
+- 3.2 - Defaults to Minetest translation if found, otherwise intllib fallback if loaded, locale files updated for both.
 
 Lucky Blocks: 10
 
