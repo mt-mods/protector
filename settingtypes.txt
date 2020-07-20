@@ -24,3 +24,6 @@ protector_show_interval (Protector Show Interval) int 5
 
 #    Interval in seconds that HUD ownership text is updated, 0 to disable
 protector_hud_interval (Protector HUD Interval) int 5
+
+#    Enables craft recipe for protection block
+protector_recipe (Enable Protector recipe) bool true

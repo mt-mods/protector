@@ -31,6 +31,7 @@ local protector_hurt = tonumber(minetest.settings:get("protector_hurt")) or 0
 local protector_spawn = tonumber(minetest.settings:get("protector_spawn")
 	or minetest.settings:get("protector_pvp_spawn")) or 0
 local protector_show = tonumber(minetest.settings:get("protector_show_interval")) or 5
+local protector_recipe = minetest.settings:get_bool("protector_recipe") ~= false
 
 -- get static spawn position
 local statspawn = minetest.string_to_pos(minetest.settings:get("static_spawnpoint"))
@@ -480,24 +481,26 @@ minetest.register_node("protector:protect", {
 })
 
 -- default recipe and alternative for MineClone2
-if minetest.registered_items["default:stone"] then
-minetest.register_craft({
-	output = "protector:protect",
-	recipe = {
-		{"default:stone", "default:stone", "default:stone"},
-		{"default:stone", "default:gold_ingot", "default:stone"},
-		{"default:stone", "default:stone", "default:stone"},
-	}
-})
-else
-minetest.register_craft({
-	output = "protector:protect",
-	recipe = {
-		{"mcl_core:stone", "mcl_core:stone", "mcl_core:stone"},
-		{"mcl_core:stone", "mcl_core:gold_ingot", "mcl_core:stone"},
-		{"mcl_core:stone", "mcl_core:stone", "mcl_core:stone"},
-	}
-})
+if protector_recipe then
+	if minetest.registered_items["default:stone"] then
+	minetest.register_craft({
+		output = "protector:protect",
+		recipe = {
+			{"default:stone", "default:stone", "default:stone"},
+			{"default:stone", "default:gold_ingot", "default:stone"},
+			{"default:stone", "default:stone", "default:stone"},
+		}
+	})
+	else
+	minetest.register_craft({
+		output = "protector:protect",
+		recipe = {
+			{"mcl_core:stone", "mcl_core:stone", "mcl_core:stone"},
+			{"mcl_core:stone", "mcl_core:gold_ingot", "mcl_core:stone"},
+			{"mcl_core:stone", "mcl_core:stone", "mcl_core:stone"},
+		}
+	})
+	end
 end
 
 -- protection logo
