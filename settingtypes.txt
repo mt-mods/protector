@@ -27,3 +27,6 @@ protector_hud_interval (Protector HUD Interval) int 5
 
 #    Enables craft recipe for protection block
 protector_recipe (Enable Protector recipe) bool true
+
+#    Enables protection messages in player chat
+protector_msg (Enable Protector Messages) bool true

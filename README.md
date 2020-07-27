@@ -59,7 +59,7 @@ Change log:
 - 2.9 - Added MineClone2 recipes for protection block but no official support as yet
 - 3.0 - Added PlayerFactions support, 'protector_hud_interval' setting and listing in advanced settings for mod values.
 - 3.1 - Ability to hide protection blocks using /protector_hide and /protector_show , italian local added (thanks Hamlet)
-- 3.2 - Defaults to Minetest translation if found, otherwise intllib fallback if loaded, locale files updated for both.
+- 3.2 - Defaults to Minetest translation if found, otherwise intllib fallback if loaded, locale files updated for both.  Added 'protector_msg' setting for player text.
 
 Lucky Blocks: 10
 
@@ -126,6 +126,12 @@ protector_flip = true
 
 protector_show_interval
 - Number of seconds the protection field is visible, defaults to 5 seconds.
+
+protector_recipe = true
+- When true allows players to craft protection blocks
+
+protector_msg = true
+- When true shows protection messages in players chat when trying to interact in someone else's area
 
 
 Protector Tool

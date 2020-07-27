@@ -32,6 +32,7 @@ local protector_spawn = tonumber(minetest.settings:get("protector_spawn")
 	or minetest.settings:get("protector_pvp_spawn")) or 0
 local protector_show = tonumber(minetest.settings:get("protector_show_interval")) or 5
 local protector_recipe = minetest.settings:get_bool("protector_recipe") ~= false
+local protector_msg = minetest.settings:get_bool("protector_msg") ~= false
 
 -- get static spawn position
 local statspawn = minetest.string_to_pos(minetest.settings:get("static_spawnpoint"))
@@ -211,6 +212,18 @@ local inside_spawn = function(pos, radius)
 end
 
 
+-- show protection message if enabled
+local show_msg = function(player, msg)
+
+	-- if messages disabled or no player name provided
+	if protector_msg == false or not player or player == "" then
+		return
+	end
+
+	minetest.chat_send_player(player, msg)
+end
+
+
 -- Infolevel:
 -- 0 for no info
 -- 1 for "This area is owned by <owner> !" if you can't dig
@@ -235,7 +248,7 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 	-- is spawn area protected ?
 	if inside_spawn(pos, protector_spawn) then
 
-		minetest.chat_send_player(digger,
+		show_msg(digger,
 			S("Spawn @1 has been protected up to a @2 block radius.",
 				minetest.pos_to_string(statspawn), protector_spawn))
 
@@ -262,7 +275,7 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 			-- and you aren't on the member list
 			if onlyowner or not is_member(meta, digger) then
 
-				minetest.chat_send_player(digger,
+				show_msg(digger,
 					S("This area is owned by @1", owner) .. "!")
 
 				return false
@@ -429,8 +442,9 @@ minetest.register_node("protector:protect", {
 		local meta = minetest.get_meta(pos)
 
 		meta:set_string("owner", placer:get_player_name() or "")
-		meta:set_string("infotext", S("Protection (owned by @1)", meta:get_string("owner")))
 		meta:set_string("members", "")
+		meta:set_string("infotext",
+				S("Protection (owned by @1)", meta:get_string("owner")))
 	end,
 
 	on_use = function(itemstack, user, pointed_thing)
@@ -439,7 +453,8 @@ minetest.register_node("protector:protect", {
 			return
 		end
 
-		protector.can_dig(protector_radius, pointed_thing.under, user:get_player_name(), false, 2)
+		protector.can_dig(protector_radius, pointed_thing.under,
+				user:get_player_name(), false, 2)
 	end,
 
 	on_rightclick = function(pos, node, clicker, itemstack)
@@ -533,8 +548,9 @@ minetest.register_node("protector:protect2", {
 		local meta = minetest.get_meta(pos)
 
 		meta:set_string("owner", placer:get_player_name() or "")
-		meta:set_string("infotext", S("Protection (owned by @1)", meta:get_string("owner")))
 		meta:set_string("members", "")
+		meta:set_string("infotext",
+				S("Protection (owned by @1)", meta:get_string("owner")))
 	end,
 
 	on_use = function(itemstack, user, pointed_thing)
@@ -543,7 +559,8 @@ minetest.register_node("protector:protect2", {
 			return
 		end
 
-		protector.can_dig(protector_radius, pointed_thing.under, user:get_player_name(), false, 2)
+		protector.can_dig(protector_radius, pointed_thing.under,
+				user:get_player_name(), false, 2)
 	end,
 
 	on_rightclick = function(pos, node, clicker, itemstack)

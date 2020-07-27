@@ -67,7 +67,8 @@ minetest.register_craftitem("protector:tool", {
 		-- does a protector already exist ?
 		if #minetest.find_nodes_in_area(
 			vector.subtract(pos, 1), vector.add(pos, 1),
-			{"protector:protect", "protector:protect2", "protector:protect_hidden"}) > 0 then
+			{"protector:protect", "protector:protect2",
+					"protector:protect_hidden"}) > 0 then
 
 			minetest.chat_send_player(name, S("Protector already in place!"))
 
@@ -91,11 +92,13 @@ minetest.register_craftitem("protector:tool", {
 		if inv:contains_item("main", "protector:protect") then
 
 			inv:remove_item("main", "protector:protect")
+
 			nod = "protector:protect"
 
 		elseif inv:contains_item("main", "protector:protect2") then
 
 			inv:remove_item("main", "protector:protect2")
+
 			nod = "protector:protect2"
 		end
 
@@ -142,6 +145,7 @@ minetest.register_craftitem("protector:tool", {
 
 -- tool recipe
 local df = "default:steel_ingot"
+
 if not minetest.registered_items[df] then
 	df = "mcl_core:iron_ingot"
 end
