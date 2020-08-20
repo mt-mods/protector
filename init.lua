@@ -64,12 +64,27 @@ end
 local is_member = function (meta, name)
 
 	if factions_available
-	and meta:get_int("faction_members") == 1
-	and factions.get_player_faction(name) ~= nil
-	and factions.get_player_faction(meta:get_string("owner")) ==
-			factions.get_player_faction(name) then
+	and meta:get_int("faction_members") == 1 then
 
-		return true
+		if factions.version == nil then
+
+			-- backward compatibility
+			if factions.get_player_faction(name) ~= nil
+			and factions.get_player_faction(meta:get_string("owner")) ==
+					factions.get_player_faction(name) then
+				return true
+			end
+		else
+			-- is member if player and owner share at least one faction
+			local owner_factions = factions.get_player_factions(name)
+
+			for _, f in ipairs(owner_factions) do
+
+				if factions.player_is_in_faction(f, owner) then
+					return true
+				end
+			end
+		end
 	end
 
 	for _, n in pairs(get_member_list(meta)) do
@@ -142,9 +157,24 @@ local protector_formspec = function(meta)
 	local members = get_member_list(meta)
 	local npp = protector_max_share_count -- max users added to protector list
 	local i = 0
+	local checkbox_faction = false
 
-	if factions_available
-	and factions.get_player_faction(meta:get_string("owner")) then
+	-- Display the checkbox only if the owner is member of at least 1 faction
+	if factions_available then
+
+		if factions.version == nil then
+
+			-- backward compatibility
+			if factions.get_player_faction(meta:get_string("owner")) then
+				checkbox_faction = true
+			end
+		else
+			if next(factions.get_player_faction(meta:get_string("owner"))) then
+				checkbox_faction = true
+			end
+		end
+	end
+	if checkbox_faction then
 
 		formspec = formspec .. "checkbox[0,5;faction_members;"
 			.. F(S("Allow faction access"))
