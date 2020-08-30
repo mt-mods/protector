@@ -34,6 +34,10 @@ local protector_show = tonumber(minetest.settings:get("protector_show_interval")
 local protector_recipe = minetest.settings:get_bool("protector_recipe") ~= false
 local protector_msg = minetest.settings:get_bool("protector_msg") ~= false
 
+-- radius limiter (minetest cannot handle node volume of more than 4096000)
+if protector_radius > 22 then protector_radius = 22 end
+
+
 -- get static spawn position
 local statspawn = minetest.string_to_pos(minetest.settings:get("static_spawnpoint"))
 		or {x = 0, y = 2, z = 0}
