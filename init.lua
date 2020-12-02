@@ -268,7 +268,7 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 		end
 
 		-- when using protector as tool, show protector information
-		if infolevel == 2 then
+		if infolevel == 2 and owner ~= "" then
 
 			minetest.chat_send_player(digger,
 				S("This area is owned by @1", owner) .. ".")
@@ -283,7 +283,6 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 
 			return false
 		end
-
 	end
 
 	-- show when you can build on unprotected area
