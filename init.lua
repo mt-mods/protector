@@ -251,11 +251,11 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 	for n = 1, #pos do
 
 		meta = minetest.get_meta(pos[n])
-		owner = meta:get_string("owner") or ""
-		members = meta:get_string("members") or ""
+		owner = meta:get_string("owner")
+		members = meta:get_string("members")
 
 		-- node change and digger isn't owner
-		if infolevel == 1 and owner ~= digger then
+		if infolevel == 1 and owner ~= "" and owner ~= digger then
 
 			-- and you aren't on the member list
 			if onlyowner or not is_member(meta, digger) then
