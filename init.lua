@@ -457,7 +457,8 @@ local del_display = function(pos)
 
 	for _, v in ipairs(objects) do
 
-		if v:get_luaentity().name == "protector:display" then
+		if v and v:get_luaentity()
+		and v:get_luaentity().name == "protector:display" then
 			v:remove()
 		end
 	end
