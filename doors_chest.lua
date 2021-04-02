@@ -77,7 +77,7 @@ function register_door(name, def)
 				minetest.get_meta(pt2):set_int("right", 1)
 			end
 
-			if not minetest.setting_getbool("creative_mode") then
+			if not minetest.settings:get_bool("creative_mode") then
 				itemstack:take_item()
 			end
 			return itemstack
@@ -150,6 +150,7 @@ function register_door(name, def)
 		tiles = {tb[2], tb[2], tb[2], tb[2], tb[1], tb[1].."^[transformfx"},
 		paramtype = "light",
 		paramtype2 = "facedir",
+		use_texture_alpha = "clip",
 		is_ground_content = false,
 		drop = name,
 		drawtype = "nodebox",
@@ -187,6 +188,7 @@ function register_door(name, def)
 		tiles = {tt[2], tt[2], tt[2], tt[2], tt[1], tt[1].."^[transformfx"},
 		paramtype = "light",
 		paramtype2 = "facedir",
+		use_texture_alpha = "clip",
 		is_ground_content = false,
 		drop = "",
 		drawtype = "nodebox",
@@ -224,6 +226,7 @@ function register_door(name, def)
 		tiles = {tb[2], tb[2], tb[2], tb[2], tb[1].."^[transformfx", tb[1]},
 		paramtype = "light",
 		paramtype2 = "facedir",
+		use_texture_alpha = "clip",
 		is_ground_content = false,
 		drop = name,
 		drawtype = "nodebox",
@@ -261,6 +264,7 @@ function register_door(name, def)
 		tiles = {tt[2], tt[2], tt[2], tt[2], tt[1].."^[transformfx", tt[1]},
 		paramtype = "light",
 		paramtype2 = "facedir",
+		use_texture_alpha = "clip",
 		is_ground_content = false,
 		drop = "",
 		drawtype = "nodebox",
@@ -404,6 +408,7 @@ function register_trapdoor(name, def)
 	def.drawtype = "nodebox"
 	def.paramtype = "light"
 	def.paramtype2 = "facedir"
+	def.use_texture_alpha = "clip"
 	def.is_ground_content = false
 
 	local def_opened = table.copy(def)

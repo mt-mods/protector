@@ -177,10 +177,10 @@ local protector_formspec = function(meta)
 				checkbox_faction = true
 			end
 		else
-			if factions.get_player_factions(meta:get_string("owner")) ~= nil then
-				if next(factions.get_player_faction(meta:get_string("owner"))) then
-					checkbox_faction = true
-				end
+			local player_factions = factions.get_player_factions(meta:get_string("owner"))
+
+			if player_factions ~= nil and #player_factions >= 1 then
+				checkbox_faction = true
 			end
 		end
 	end
@@ -578,6 +578,7 @@ minetest.register_node("protector:protect2", {
 	inventory_image = "protector_logo.png",
 	sounds = default.node_sound_stone_defaults(),
 	groups = {dig_immediate = 2, unbreakable = 1},
+	use_texture_alpha = "clip",
 	paramtype = "light",
 	paramtype2 = "wallmounted",
 	legacy_wallmounted = true,
