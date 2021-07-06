@@ -69,7 +69,7 @@ minetest.register_chatcommand("protector_replace", {
 
 minetest.register_abm({
 	nodenames = {"protector:protect", "protector:protect2", "protector:protect_hidden"},
-	interval = 8,
+	interval = 6,
 	chance = 1,
 	catch_up = false,
 	action = function(pos, node)

@@ -5,7 +5,7 @@ default = default or {
 	node_sound_wood_defaults = function(table) end,
 	gui_bg = "",
 	gui_bg_img = "",
-	gui_slots = "",
+	gui_slots = ""
 }
 
 -- Load support for intllib.
@@ -374,9 +374,9 @@ function minetest.is_protected(pos, digger)
 			if protector_hurt > 0 and player:get_hp() > 0 then
 
 				-- This delay fixes item duplication bug (thanks luk3yx)
-				minetest.after(0.1, function()
+				minetest.after(0.1, function(player)
 					player:set_hp(player:get_hp() - protector_hurt)
-				end)
+				end, player)
 			end
 
 			-- flip player when protection violated
