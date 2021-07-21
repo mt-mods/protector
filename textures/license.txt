@@ -28,3 +28,7 @@ following textures by TenPlus1 (CC BY-SA 3.0):
   protector_logo.png
   protector_display.png
   protector_overlay.png
+
+following textures by Kilbith (CC BY-SA 3.0):
+  protector_up_icon.png
+  protector_down_icon.png (both rotated)

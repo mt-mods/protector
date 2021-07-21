@@ -625,14 +625,17 @@ minetest.register_node("protector:chest", {
 
 		local spos = pos.x .. "," .. pos.y .. "," ..pos.z
 		local formspec = "size[8,9]"
---			.. default.gui_bg
---			.. default.gui_bg_img
---			.. default.gui_slots
 			.. "list[nodemeta:".. spos .. ";main;0,0.3;8,4;]"
-			.. "button[0,4.5;2,0.25;toup;" .. F(S("To Chest")) .. "]"
-			.. "field[2.3,4.8;4,0.25;chestname;;"
+
+			.. "image_button[-0.01,4.26;1.05,0.8;protector_up_icon.png;protect_up;]"
+			.. "image_button[0.98,4.26;1.05,0.8;protector_down_icon.png;protect_down;]"
+			.. "tooltip[protect_up;" .. S("To Chest") .. "]"
+			.. "tooltip[protect_down;" .. S("To Inventory") .. "]"
+
+			.. "field[2.3,4.8;4,0.25;protect_name;;"
 			.. meta:get_string("name") .. "]"
-			.. "button[6,4.5;2,0.25;todn;" .. F(S("To Inventory")) .. "]"
+			.. "button[5.99,4.5;2.05,0.25;protect_rename;" .. S("Rename") .. "]"
+
 			.. "list[current_player;main;0,5;8,1;]"
 			.. "list[current_player;main;0,6.08;8,3;8]"
 			.. "listring[nodemeta:" .. spos .. ";main]"
@@ -691,22 +694,22 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	local player_inv = player:get_inventory()
 
 	-- copy contents of player inventory to chest
-	if fields.toup then
+	if fields.protect_up then
 
 		to_from(player_inv, chest_inv)
 
 	-- copy contents of chest to player inventory
-	elseif fields.todn then
+	elseif fields.protect_down then
 
 		to_from(chest_inv, player_inv)
 
-	elseif fields.chestname then
+	elseif fields.protect_name or fields.protect_rename then
 
 		-- change chest infotext to display name
-		if fields.chestname ~= "" then
+		if fields.protect_name ~= "" then
 
-			meta:set_string("name", fields.chestname)
-			meta:set_string("infotext", fields.chestname)
+			meta:set_string("name", fields.protect_name)
+			meta:set_string("infotext", fields.protect_name)
 		else
 			meta:set_string("name", S("Protected Chest"))
 			meta:set_string("infotext", S("Protected Chest"))
