@@ -805,4 +805,4 @@ if minetest.get_modpath("mesecons_mvps") then
 end
 
 
-print (S("[MOD] Protector Redo loaded"))
+print ("[MOD] Protector Redo loaded")
