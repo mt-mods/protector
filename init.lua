@@ -356,6 +356,53 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 end
 
 
+-- add protector hurt and flip to protection violation function
+minetest.register_on_protection_violation(function(pos, name)
+
+	local player = minetest.get_player_by_name(name)
+
+	if player and player:is_player() then
+
+		-- hurt player if protection violated
+		if protector_hurt > 0 and player:get_hp() > 0 then
+
+			-- This delay fixes item duplication bug (thanks luk3yx)
+			minetest.after(0.1, function(player)
+				player:set_hp(player:get_hp() - protector_hurt)
+			end, player)
+		end
+
+		-- flip player when protection violated
+		if protector_flip then
+
+			-- yaw + 180°
+			local yaw = player:get_look_horizontal() + math.pi
+
+			if yaw > 2 * math.pi then
+				yaw = yaw - 2 * math.pi
+			end
+
+			player:set_look_horizontal(yaw)
+
+			-- invert pitch
+			player:set_look_vertical(-player:get_look_vertical())
+
+			-- if digging below player, move up to avoid falling through hole
+			local pla_pos = player:get_pos()
+
+			if pos.y < pla_pos.y then
+
+				player:set_pos({
+					x = pla_pos.x,
+					y = pla_pos.y + 0.8,
+					z = pla_pos.z
+				})
+			end
+		end
+	end
+end)
+
+
 local old_is_protected = minetest.is_protected
 
 -- check for protected area, return true if protected and digger isn't on list
@@ -365,49 +412,6 @@ function minetest.is_protected(pos, digger)
 
 	-- is area protected against digger?
 	if not protector.can_dig(protector_radius, pos, digger, false, 1) then
-
-		local player = minetest.get_player_by_name(digger)
-
-		if player and player:is_player() then
-
-			-- hurt player if protection violated
-			if protector_hurt > 0 and player:get_hp() > 0 then
-
-				-- This delay fixes item duplication bug (thanks luk3yx)
-				minetest.after(0.1, function(player)
-					player:set_hp(player:get_hp() - protector_hurt)
-				end, player)
-			end
-
-			-- flip player when protection violated
-			if protector_flip then
-
-				-- yaw + 180°
-				local yaw = player:get_look_horizontal() + math.pi
-
-				if yaw > 2 * math.pi then
-					yaw = yaw - 2 * math.pi
-				end
-
-				player:set_look_horizontal(yaw)
-
-				-- invert pitch
-				player:set_look_vertical(-player:get_look_vertical())
-
-				-- if digging below player, move up to avoid falling through hole
-				local pla_pos = player:get_pos()
-
-				if pos.y < pla_pos.y then
-
-					player:set_pos({
-						x = pla_pos.x,
-						y = pla_pos.y + 0.8,
-						z = pla_pos.z
-					})
-				end
-			end
-		end
-
 		return true
 	end
 
