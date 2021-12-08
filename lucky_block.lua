@@ -13,6 +13,6 @@ if minetest.get_modpath("lucky_block") then
 		{"dro", {"protector:trapdoor_steel"}, 1},
 		{"dro", {"protector:tool"}, 1},
 		{"dro", {"protector:chest"}, 1},
-		{"exp"},
+		{"exp"}
 	})
 end

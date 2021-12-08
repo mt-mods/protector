@@ -164,6 +164,6 @@ minetest.register_craft({
 	recipe = {
 		{df, df, df},
 		{df, "protector:protect", df},
-		{df, df, df},
+		{df, df, df}
 	}
 })

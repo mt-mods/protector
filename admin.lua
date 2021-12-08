@@ -29,7 +29,7 @@ minetest.register_chatcommand("protector_remove", {
 		end
 
 		removal_names = param
-	end,
+	end
 })
 
 
@@ -63,7 +63,7 @@ minetest.register_chatcommand("protector_replace", {
 		end
 
 		replace_names = param
-	end,
+	end
 })
 
 
@@ -163,8 +163,8 @@ minetest.register_node("protector:protect_hidden", {
 	-- 1px block inside door hinge near node top
 	collision_box = {
 		type = "fixed",
-		fixed = {-15/32, 13/32, -15/32, -13/32, 1/2, -13/32},
-	},
+		fixed = {-15/32, 13/32, -15/32, -13/32, 1/2, -13/32}
+	}
 })
 
 

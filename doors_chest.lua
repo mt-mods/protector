@@ -300,7 +300,6 @@ function register_door(name, def)
 		sunlight_propagates = def.sunlight,
 		on_blast = function() end,
 	})
-
 end
 
 -- Protected Wooden Door
@@ -317,7 +316,7 @@ register_door(name, {
 	tiles_bottom = {"doors_wood_b.png^protector_logo.png", "doors_brown.png"},
 	tiles_top = {"doors_wood_a.png", "doors_brown.png"},
 	sounds = default.node_sound_wood_defaults(),
-	sunlight = false,
+	sunlight = false
 })
 
 if protector_crafts then
@@ -480,7 +479,7 @@ if protector_crafts then
 		output = "protector:trapdoor 2",
 		recipe = {
 			{"group:wood", "default:copper_ingot", "group:wood"},
-			{"group:wood", "group:wood", "group:wood"},
+			{"group:wood", "group:wood", "group:wood"}
 		}
 	})
 
@@ -521,7 +520,7 @@ if protector_crafts then
 		output = "protector:trapdoor_steel",
 		recipe = {
 			{"default:copper_ingot", "default:steel_ingot"},
-			{"default:steel_ingot", "default:steel_ingot"},
+			{"default:steel_ingot", "default:steel_ingot"}
 		}
 	})
 
@@ -736,7 +735,7 @@ if protector_crafts then
 	minetest.register_craft({
 		output = "protector:chest",
 		recipe = {
-			{"mcl_chests:chest", "mcl_core:gold_ingot"},
+			{"mcl_chests:chest", "mcl_core:gold_ingot"}
 		}
 	})
 	else
@@ -745,14 +744,14 @@ if protector_crafts then
 		recipe = {
 			{"group:wood", "group:wood", "group:wood"},
 			{"group:wood", "default:copper_ingot", "group:wood"},
-			{"group:wood", "group:wood", "group:wood"},
+			{"group:wood", "group:wood", "group:wood"}
 		}
 	})
 
 	minetest.register_craft({
 		output = "protector:chest",
 		recipe = {
-			{"default:chest", "default:copper_ingot"},
+			{"default:chest", "default:copper_ingot"}
 		}
 	})
 	end

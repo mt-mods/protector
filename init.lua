@@ -155,7 +155,6 @@ local protector_formspec = function(meta)
 	local formspec = "size[8,7]"
 		.. default.gui_bg
 		.. default.gui_bg_img
-		.. default.gui_slots
 		.. "label[2.5,0;" .. F(S("-- Protector interface --")) .. "]"
 		.. "label[0,1;" .. F(S("PUNCH node to show protected area")) .. "]"
 		.. "label[0,2;" .. F(S("Members:")) .. "]"
@@ -489,7 +488,7 @@ minetest.register_node("protector:protect", {
 	node_box = {
 		type = "fixed",
 		fixed = {
-			{-0.5 ,-0.5, -0.5, 0.5, 0.5, 0.5},
+			{-0.5 ,-0.5, -0.5, 0.5, 0.5, 0.5}
 		}
 	},
 
@@ -558,7 +557,7 @@ if protector_recipe then
 			recipe = {
 				{"default:stone", "default:stone", "default:stone"},
 				{"default:stone", "default:gold_ingot", "default:stone"},
-				{"default:stone", "default:stone", "default:stone"},
+				{"default:stone", "default:stone", "default:stone"}
 			}
 		})
 	else
@@ -568,7 +567,7 @@ if protector_recipe then
 			recipe = {
 				{"mcl_core:stone", "mcl_core:stone", "mcl_core:stone"},
 				{"mcl_core:stone", "mcl_core:gold_ingot", "mcl_core:stone"},
-				{"mcl_core:stone", "mcl_core:stone", "mcl_core:stone"},
+				{"mcl_core:stone", "mcl_core:stone", "mcl_core:stone"}
 			}
 		})
 	end
@@ -594,7 +593,7 @@ minetest.register_node("protector:protect2", {
 		type = "wallmounted",
 		wall_top    = {-0.375, 0.4375, -0.5, 0.375, 0.5, 0.5},
 		wall_bottom = {-0.375, -0.5, -0.5, 0.375, -0.4375, 0.5},
-		wall_side   = {-0.5, -0.5, -0.375, -0.4375, 0.5, 0.375},
+		wall_side   = {-0.5, -0.5, -0.375, -0.4375, 0.5, 0.375}
 	},
 	selection_box = {type = "wallmounted"},
 
@@ -755,7 +754,7 @@ minetest.register_entity("protector:display", {
 		if self.timer > protector_show then
 			self.object:remove()
 		end
-	end,
+	end
 })
 
 
@@ -765,7 +764,7 @@ minetest.register_entity("protector:display", {
 local x = protector_radius
 minetest.register_node("protector:display_node", {
 	tiles = {"protector_display.png"},
-	use_texture_alpha = "clip", -- true,
+	use_texture_alpha = "clip",
 	walkable = false,
 	drawtype = "nodebox",
 	node_box = {
@@ -781,15 +780,15 @@ minetest.register_node("protector:display_node", {
 			-- bottom
 			{-(x+.55), -(x+.55), -(x+.55), (x+.55), -(x+.45), (x+.55)},
 			-- middle (surround protector)
-			{-.55,-.55,-.55, .55,.55,.55},
-		},
+			{-.55,-.55,-.55, .55,.55,.55}
+		}
 	},
 	selection_box = {
 		type = "regular",
 	},
 	paramtype = "light",
 	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
-	drop = "",
+	drop = ""
 })
 
 
