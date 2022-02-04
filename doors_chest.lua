@@ -7,7 +7,7 @@ local S = protector.intllib
 local F = minetest.formspec_escape
 
 -- MineClone2 support
-local mcl = not minetest.registered_items["default:steel_ingot"]
+local mcl = minetest.get_modpath("mcl_core")
 
 -- Are crafts enabled?
 local protector_crafts = minetest.settings:get_bool("protector_crafts") ~= false
@@ -634,7 +634,30 @@ minetest.register_node("protector:chest", {
 		end
 
 		local spos = pos.x .. "," .. pos.y .. "," ..pos.z
-		local formspec = "size[8,9]"
+		local formspec
+
+		-- mineclone support
+		if mcl then
+
+			formspec = "size[9,8.75]"
+			.. "label[0,0;" .. minetest.formspec_escape(
+					minetest.colorize("#313131", "Protected Chest")) .. "]"
+			.. "list[nodemeta:" .. spos .. ";main;0,0.5;9,3;]"
+			.. mcl_formspec.get_itemslot_bg(0,0.5,9,3)
+			.. "image_button[3.0,3.5;1.05,0.8;protector_up_icon.png;protect_up;]"
+			.. "image_button[4.0,3.5;1.05,0.8;protector_down_icon.png;protect_down;]"
+			.. "label[0,4.0;" .. minetest.formspec_escape(
+					minetest.colorize("#313131", "Inventory")) .. "]"
+			.. "list[current_player;main;0,4.5;9,3;9]"
+			.. mcl_formspec.get_itemslot_bg(0,4.5,9,3)
+			.. "list[current_player;main;0,7.74;9,1;]"
+			.. mcl_formspec.get_itemslot_bg(0,7.74,9,1)
+			.. "listring[nodemeta:" .. spos .. ";main]"
+			.. "listring[current_player;main]"
+
+		else -- default formspec
+
+			formspec = "size[8,9]"
 			.. "list[nodemeta:".. spos .. ";main;0,0.3;8,4;]"
 
 			.. "image_button[-0.01,4.26;1.05,0.8;protector_up_icon.png;protect_up;]"
@@ -650,11 +673,10 @@ minetest.register_node("protector:chest", {
 			.. "list[current_player;main;0,6.08;8,3;8]"
 			.. "listring[nodemeta:" .. spos .. ";main]"
 			.. "listring[current_player;main]"
+		end
 
-			minetest.show_formspec(
-				clicker:get_player_name(),
-				"protector:chest_" .. minetest.pos_to_string(pos),
-				formspec)
+		minetest.show_formspec(clicker:get_player_name(),
+				"protector:chest_" .. minetest.pos_to_string(pos), formspec)
 	end,
 
 	on_blast = function() end,
@@ -731,28 +753,30 @@ end)
 -- Protected Chest recipes
 
 if protector_crafts then
-	if mcl then
-	minetest.register_craft({
-		output = "protector:chest",
-		recipe = {
-			{"mcl_chests:chest", "mcl_core:gold_ingot"}
-		}
-	})
-	else
-	minetest.register_craft({
-		output = "protector:chest",
-		recipe = {
-			{"group:wood", "group:wood", "group:wood"},
-			{"group:wood", "default:copper_ingot", "group:wood"},
-			{"group:wood", "group:wood", "group:wood"}
-		}
-	})
 
-	minetest.register_craft({
-		output = "protector:chest",
-		recipe = {
-			{"default:chest", "default:copper_ingot"}
-		}
-	})
+	if mcl then
+
+		minetest.register_craft({
+			output = "protector:chest",
+			recipe = {
+				{"mcl_chests:chest", "mcl_core:gold_ingot"}
+			}
+		})
+	else
+		minetest.register_craft({
+			output = "protector:chest",
+			recipe = {
+				{"group:wood", "group:wood", "group:wood"},
+				{"group:wood", "default:copper_ingot", "group:wood"},
+				{"group:wood", "group:wood", "group:wood"}
+			}
+		})
+
+		minetest.register_craft({
+			output = "protector:chest",
+			recipe = {
+				{"default:chest", "default:copper_ingot"}
+			}
+		})
 	end
 end
