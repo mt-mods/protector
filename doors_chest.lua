@@ -8,6 +8,7 @@ local F = minetest.formspec_escape
 
 -- MineClone2 support
 local mcl = minetest.get_modpath("mcl_core")
+local mcf = minetest.get_modpath("mcl_formspec")
 
 -- Are crafts enabled?
 local protector_crafts = minetest.settings:get_bool("protector_crafts") ~= false
@@ -364,29 +365,31 @@ register_door(name, {
 })
 
 if protector_crafts then
-	if mcl then
-	minetest.register_craft({
-		output = name,
-		recipe = {
-			{"mcl_doors:iron_door", "mcl_core:gold_ingot"}
-		}
-	})
-	else
-	minetest.register_craft({
-		output = name,
-		recipe = {
-			{"default:steel_ingot", "default:steel_ingot"},
-			{"default:steel_ingot", "default:copper_ingot"},
-			{"default:steel_ingot", "default:steel_ingot"}
-		}
-	})
 
-	minetest.register_craft({
-		output = name,
-		recipe = {
-			{"doors:door_steel", "default:copper_ingot"}
-		}
-	})
+	if mcl then
+
+		minetest.register_craft({
+			output = name,
+			recipe = {
+				{"mcl_doors:iron_door", "mcl_core:gold_ingot"}
+			}
+		})
+	else
+		minetest.register_craft({
+			output = name,
+			recipe = {
+				{"default:steel_ingot", "default:steel_ingot"},
+				{"default:steel_ingot", "default:copper_ingot"},
+				{"default:steel_ingot", "default:steel_ingot"}
+			}
+		})
+
+		minetest.register_craft({
+			output = name,
+			recipe = {
+				{"doors:door_steel", "default:copper_ingot"}
+			}
+		})
 	end
 end
 
@@ -637,7 +640,7 @@ minetest.register_node("protector:chest", {
 		local formspec
 
 		-- mineclone support
-		if mcl then
+		if mcl and mcf then
 
 			formspec = "size[9,8.75]"
 			.. "label[0,0;" .. minetest.formspec_escape(
