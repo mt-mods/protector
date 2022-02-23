@@ -109,6 +109,11 @@ end
 -- add player name to table as member
 local add_member = function(meta, name)
 
+	-- Validate player name for MT compliance
+	if name ~= string.match(name, "[%w_-]+") then
+		return
+	end
+
 	-- Constant (20) defined by player.h
 	if name:len() > 25 then
 		return
