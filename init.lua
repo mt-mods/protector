@@ -713,7 +713,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 
 	-- add faction members
-	if factions_available then
+	if factions_available and fields.faction_members ~= nil then
 		meta:set_int("faction_members", fields.faction_members == "true" and 1 or 0)
 	end
 
