@@ -740,13 +740,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 	elseif fields.protect_name or fields.protect_rename then
 
-		if fields.protect_name ~= string.match(fields.protect_name, "[%w%s_-]+")
-		or fields.protect_name:len() > 35 then
-			return
-		end
-
 		-- change chest infotext to display name
 		if fields.protect_name ~= "" then
+
+			if fields.protect_name ~= string.match(fields.protect_name, "[%w%s_-]+")
+			or fields.protect_name:len() > 35 then
+				return
+			end
 
 			meta:set_string("name", fields.protect_name)
 			meta:set_string("infotext", fields.protect_name)
