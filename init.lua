@@ -493,7 +493,7 @@ minetest.register_node("protector:protect", {
 	node_box = {
 		type = "fixed",
 		fixed = {
-			{-0.5 ,-0.5, -0.5, 0.5, 0.5, 0.5}
+			{-0.499 ,-0.499, -0.499, 0.499, 0.499, 0.499}
 		}
 	},
 
