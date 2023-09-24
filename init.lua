@@ -8,6 +8,12 @@ default = default or {
 	gui_slots = ""
 }
 
+if minetest.get_modpath("mcl_sounds") then
+	default.node_sound_stone_defaults = mcl_sounds.node_sound_stone_defaults
+	default.node_sound_wood_defaults = mcl_sounds.node_sound_wood_defaults
+	default.node_sound_metal_defaults = mcl_sounds.node_sound_metal_defaults
+end
+
 local MP = minetest.get_modpath(minetest.get_current_modname())
 local F = minetest.formspec_escape
 
