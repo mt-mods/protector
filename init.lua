@@ -509,6 +509,7 @@ minetest.register_node("protector:protect2", {
 	inventory_image = "protector_logo.png",
 	sounds = default.node_sound_stone_defaults(),
 	groups = {dig_immediate = 2, unbreakable = 1},
+	is_ground_content = false,
 	paramtype = "light",
 	paramtype2 = "wallmounted",
 	legacy_wallmounted = true,

@@ -159,6 +159,7 @@ minetest.register_node("protector:protect_hidden", {
 	floodable = false,
 	drop = "",
 	groups = {not_in_creative_inventory = 1, unbreakable = 1},
+	is_ground_content = false,
 	on_blast = function() end,
 	-- 1px block inside door hinge near node top
 	collision_box = {
