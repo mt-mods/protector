@@ -22,5 +22,7 @@ read_globals = {
 	"mesecon",
 	"screwdriver",
 	"lucky_block",
+	"mcl_formspec",
+	"mcl_sounds",
 	"factions"
 }
