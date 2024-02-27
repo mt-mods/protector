@@ -161,6 +161,7 @@ function register_door(name, def)
 			type = "fixed",
 			fixed = def.selection_box_bottom
 		},
+		use_texture_alpha = def.use_texture_alpha,
 		groups = def.groups,
 
 		after_dig_node = function(pos, oldnode, oldmetadata, digger)
@@ -198,6 +199,7 @@ function register_door(name, def)
 			type = "fixed",
 			fixed = def.selection_box_top
 		},
+		use_texture_alpha = def.use_texture_alpha,
 		groups = def.groups,
 
 		after_dig_node = function(pos, oldnode, oldmetadata, digger)
@@ -235,6 +237,7 @@ function register_door(name, def)
 			type = "fixed",
 			fixed = def.selection_box_bottom
 		},
+		use_texture_alpha = def.use_texture_alpha,
 		groups = def.groups,
 
 		after_dig_node = function(pos, oldnode, oldmetadata, digger)
@@ -272,6 +275,7 @@ function register_door(name, def)
 			type = "fixed",
 			fixed = def.selection_box_top
 		},
+		use_texture_alpha = def.use_texture_alpha,
 		groups = def.groups,
 
 		after_dig_node = function(pos, oldnode, oldmetadata, digger)
@@ -303,6 +307,7 @@ local name = "protector:door_wood"
 register_door(name, {
 	description = S("Protected Wooden Door"),
 	inventory_image = "doors_wood.png^protector_logo.png",
+	use_texture_alpha = "clip",
 	groups = {
 		snappy = 1, choppy = 2, oddly_breakable_by_hand = 2,
 		unbreakable = 1, --door = 1
@@ -345,6 +350,7 @@ name = "protector:door_steel"
 register_door(name, {
 	description = S("Protected Steel Door"),
 	inventory_image = "doors_steel.png^protector_logo.png",
+	use_texture_alpha = "clip",
 	groups = {
 		snappy = 1, bendy = 2, cracky = 1,
 		level = 2, unbreakable = 1, -- door = 1
@@ -448,6 +454,7 @@ register_trapdoor("protector:trapdoor", {
 	wield_image = "doors_trapdoor.png^protector_logo.png",
 	tile_front = "doors_trapdoor.png^protector_logo.png",
 	tile_side = "doors_trapdoor_side.png",
+	use_texture_alpha = "clip",
 	groups = {
 		snappy = 1, choppy = 2, oddly_breakable_by_hand = 2,
 		unbreakable = 1, --door = 1
@@ -487,6 +494,7 @@ register_trapdoor("protector:trapdoor_steel", {
 	wield_image = "doors_trapdoor_steel.png^protector_logo.png",
 	tile_front = "doors_trapdoor_steel.png^protector_logo.png",
 	tile_side = "doors_trapdoor_steel_side.png",
+	use_texture_alpha = "clip",
 	groups = {
 		snappy = 1, bendy = 2, cracky = 1, melty = 2, level = 2,
 		unbreakable = 1, --door = 1

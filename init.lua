@@ -508,6 +508,7 @@ minetest.register_node("protector:protect2", {
 	wield_image = "protector_logo.png",
 	inventory_image = "protector_logo.png",
 	sounds = default.node_sound_stone_defaults(),
+	use_texture_alpha = "clip",
 	groups = {dig_immediate = 2, unbreakable = 1},
 	is_ground_content = false,
 	paramtype = "light",
