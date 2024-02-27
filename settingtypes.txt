@@ -1,5 +1,5 @@
 #    Size of protected area around protection node limiting player interaction
-protector_radius (Protector Radius) int 5
+protector_radius (Protector Radius [max 22]) int 5
 
 #    Flips player around when accessing protected area to stop lag griefing
 protector_flip (Protector Flip) bool false
@@ -24,3 +24,12 @@ protector_show_interval (Protector Show Interval) int 5
 
 #    Interval in seconds that HUD ownership text is updated, 0 to disable
 protector_hud_interval (Protector HUD Interval) int 5
+
+#    Enables craft recipe for protection block
+protector_recipe (Enable Protector recipe) bool true
+
+#    Enables craft recipes for protected doors and chest
+protector_crafts (Enable Protector door/chest recipes) bool true
+
+#    Enables protection messages in player chat
+protector_msg (Enable Protector Messages) bool true
