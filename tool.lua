@@ -6,6 +6,9 @@ local S = protector.intllib
 -- get protection radius
 local r = tonumber(minetest.settings:get("protector_radius")) or 5
 
+-- radius limiter (minetest cannot handle node volume of more than 4096000)
+if r > 22 then r = 22 end
+
 protector.tool = {
 
 	registered_protectors = {},
@@ -120,7 +123,7 @@ protector.tool = {
 
 minetest.register_craftitem("protector:tool", {
 	description = S("Protector Placer Tool (stand near protector, face direction and use)"),
-	inventory_image = "protector_display.png^protector_logo.png",
+	inventory_image = "protector_tool.png",
 	stack_max = 1,
 
 	on_use = function(itemstack, user, pointed_thing)
@@ -216,6 +219,7 @@ minetest.register_craftitem("protector:tool", {
 
 -- tool recipe
 local df = "default:steel_ingot"
+
 if not minetest.registered_items[df] then
 	df = "mcl_core:iron_ingot"
 end
@@ -226,6 +230,6 @@ minetest.register_craft({
 	recipe = {
 		{df, df, df},
 		{df, "protector:protect", df},
-		{df, df, df},
+		{df, df, df}
 	}
 })

@@ -5,13 +5,20 @@ default = default or {
 	node_sound_wood_defaults = function(table) end,
 	gui_bg = "",
 	gui_bg_img = "",
-	gui_slots = "",
+	gui_slots = ""
 }
 
--- Load support for intllib.
+if minetest.get_modpath("mcl_sounds") then
+	default.node_sound_stone_defaults = mcl_sounds.node_sound_stone_defaults
+	default.node_sound_wood_defaults = mcl_sounds.node_sound_wood_defaults
+	default.node_sound_metal_defaults = mcl_sounds.node_sound_metal_defaults
+end
+
 local MP = minetest.get_modpath(minetest.get_current_modname())
-local S = dofile(MP .. "/intllib.lua")
 local F = minetest.formspec_escape
+
+-- Translation support
+local S = minetest.get_translator("protector")
 
 -- Load support for factions
 local factions_available = minetest.global_exists("factions")
@@ -30,6 +37,12 @@ local protector_hurt = tonumber(minetest.settings:get("protector_hurt")) or 0
 local protector_spawn = tonumber(minetest.settings:get("protector_spawn")
 	or minetest.settings:get("protector_pvp_spawn")) or 0
 local protector_show = tonumber(minetest.settings:get("protector_show_interval")) or 5
+local protector_recipe = minetest.settings:get_bool("protector_recipe") ~= false
+local protector_msg = minetest.settings:get_bool("protector_msg") ~= false
+
+-- radius limiter (minetest cannot handle node volume of more than 4096000)
+if protector_radius > 22 then protector_radius = 22 end
+
 
 -- get static spawn position
 local statspawn = minetest.string_to_pos(minetest.settings:get("static_spawnpoint"))
@@ -58,15 +71,34 @@ end
 
 
 -- check for member name
-local is_member = function (meta, name)
+local is_member = function(meta, name)
 
 	if factions_available
-	and meta:get_int("faction_members") == 1
-	and factions.get_player_faction(name) ~= nil
-	and factions.get_player_faction(meta:get_string("owner")) ==
-			factions.get_player_faction(name) then
+	and meta:get_int("faction_members") == 1 then
 
-		return true
+		if factions.version == nil then
+
+			-- backward compatibility
+			if factions.get_player_faction(name) ~= nil
+			and factions.get_player_faction(meta:get_string("owner")) ==
+					factions.get_player_faction(name) then
+				return true
+			end
+		else
+			-- is member if player and owner share at least one faction
+			local owner_factions = factions.get_player_factions(name)
+			local owner = meta:get_string("owner")
+
+			if owner_factions ~= nil and owner_factions ~= false then
+
+				for _, f in ipairs(owner_factions) do
+
+					if factions.player_is_in_faction(f, owner) then
+						return true
+					end
+				end
+			end
+		end
 	end
 
 	for _, n in pairs(get_member_list(meta)) do
@@ -82,6 +114,11 @@ end
 
 -- add player name to table as member
 local add_member = function(meta, name)
+
+	-- Validate player name for MT compliance
+	if name ~= string.match(name, "[%w_-]+") then
+		return
+	end
 
 	-- Constant (20) defined by player.h
 	if name:len() > 25 then
@@ -129,7 +166,6 @@ local protector_formspec = function(meta)
 	local formspec = "size[8,7]"
 		.. default.gui_bg
 		.. default.gui_bg_img
-		.. default.gui_slots
 		.. "label[2.5,0;" .. F(S("-- Protector interface --")) .. "]"
 		.. "label[0,1;" .. F(S("PUNCH node to show protected area")) .. "]"
 		.. "label[0,2;" .. F(S("Members:")) .. "]"
@@ -139,9 +175,26 @@ local protector_formspec = function(meta)
 	local members = get_member_list(meta)
 	local npp = protector_max_share_count -- max users added to protector list
 	local i = 0
+	local checkbox_faction = false
 
-	if factions_available
-	and factions.get_player_faction(meta:get_string("owner")) then
+	-- Display the checkbox only if the owner is member of at least 1 faction
+	if factions_available then
+
+		if factions.version == nil then
+
+			-- backward compatibility
+			if factions.get_player_faction(meta:get_string("owner")) then
+				checkbox_faction = true
+			end
+		else
+			local player_factions = factions.get_player_factions(meta:get_string("owner"))
+
+			if player_factions ~= nil and #player_factions >= 1 then
+				checkbox_faction = true
+			end
+		end
+	end
+	if checkbox_faction then
 
 		formspec = formspec .. "checkbox[0,5;faction_members;"
 			.. F(S("Allow faction access"))
@@ -209,6 +262,18 @@ local inside_spawn = function(pos, radius)
 end
 
 
+-- show protection message if enabled
+local show_msg = function(player, msg)
+
+	-- if messages disabled or no player name provided
+	if protector_msg == false or not player or player == "" then
+		return
+	end
+
+	minetest.chat_send_player(player, msg)
+end
+
+
 -- Infolevel:
 -- 0 for no info
 -- 1 for "This area is owned by <owner> !" if you can't dig
@@ -233,7 +298,7 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 	-- is spawn area protected ?
 	if inside_spawn(pos, protector_spawn) then
 
-		minetest.chat_send_player(digger,
+		show_msg(digger,
 			S("Spawn @1 has been protected up to a @2 block radius.",
 				minetest.pos_to_string(statspawn), protector_spawn))
 
@@ -260,7 +325,7 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 			-- and you aren't on the member list
 			if onlyowner or not is_member(meta, digger) then
 
-				minetest.chat_send_player(digger,
+				show_msg(digger,
 					S("This area is owned by @1", owner) .. "!")
 
 				return false
@@ -300,6 +365,53 @@ protector.can_dig = function(r, pos, digger, onlyowner, infolevel)
 end
 
 
+-- add protector hurt and flip to protection violation function
+minetest.register_on_protection_violation(function(pos, name)
+
+	local player = minetest.get_player_by_name(name)
+
+	if player and player:is_player() then
+
+		-- hurt player if protection violated
+		if protector_hurt > 0 and player:get_hp() > 0 then
+
+			-- This delay fixes item duplication bug (thanks luk3yx)
+			minetest.after(0.1, function(p)
+				p:set_hp(p:get_hp() - protector_hurt)
+			end, player)
+		end
+
+		-- flip player when protection violated
+		if protector_flip then
+
+			-- yaw + 180°
+			local yaw = player:get_look_horizontal() + math.pi
+
+			if yaw > 2 * math.pi then
+				yaw = yaw - 2 * math.pi
+			end
+
+			player:set_look_horizontal(yaw)
+
+			-- invert pitch
+			player:set_look_vertical(-player:get_look_vertical())
+
+			-- if digging below player, move up to avoid falling through hole
+			local pla_pos = player:get_pos()
+
+			if pos.y < pla_pos.y then
+
+				player:set_pos({
+					x = pla_pos.x,
+					y = pla_pos.y + 0.8,
+					z = pla_pos.z
+				})
+			end
+		end
+	end
+end)
+
+
 local old_is_protected = minetest.is_protected
 
 -- check for protected area, return true if protected and digger isn't on list
@@ -309,49 +421,6 @@ function minetest.is_protected(pos, digger)
 
 	-- is area protected against digger?
 	if not protector.can_dig(protector_radius, pos, digger, false, 1) then
-
-		local player = minetest.get_player_by_name(digger)
-
-		if player and player:is_player() then
-
-			-- hurt player if protection violated
-			if protector_hurt > 0 and player:get_hp() > 0 then
-
-				-- This delay fixes item duplication bug (thanks luk3yx)
-				minetest.after(0.1, function()
-					player:set_hp(player:get_hp() - protector_hurt)
-				end)
-			end
-
-			-- flip player when protection violated
-			if protector_flip then
-
-				-- yaw + 180°
-				local yaw = player:get_look_horizontal() + math.pi
-
-				if yaw > 2 * math.pi then
-					yaw = yaw - 2 * math.pi
-				end
-
-				player:set_look_horizontal(yaw)
-
-				-- invert pitch
-				player:set_look_vertical(-player:get_look_vertical())
-
-				-- if digging below player, move up to avoid falling through hole
-				local pla_pos = player:get_pos()
-
-				if pos.y < pla_pos.y then
-
-					player:set_pos({
-						x = pla_pos.x,
-						y = pla_pos.y + 0.8,
-						z = pla_pos.z
-					})
-				end
-			end
-		end
-
 		return true
 	end
 
@@ -394,6 +463,20 @@ local check_overlap = function(itemstack, placer, pointed_thing)
 end
 
 
+-- remove protector display entities
+local del_display = function(pos)
+
+	local objects = minetest.get_objects_inside_radius(pos, 0.5)
+
+	for _, v in ipairs(objects) do
+
+		if v and v:get_luaentity()
+		and v:get_luaentity().name == "protector:display" then
+			v:remove()
+		end
+	end
+end
+
 -- temporary pos store
 local player_pos = {}
 
@@ -415,7 +498,7 @@ minetest.register_node("protector:protect", {
 	node_box = {
 		type = "fixed",
 		fixed = {
-			{-0.5 ,-0.5, -0.5, 0.5, 0.5, 0.5},
+			{-0.499 ,-0.499, -0.499, 0.499, 0.499, 0.499}
 		}
 	},
 
@@ -426,8 +509,9 @@ minetest.register_node("protector:protect", {
 		local meta = minetest.get_meta(pos)
 
 		meta:set_string("owner", placer:get_player_name() or "")
-		meta:set_string("infotext", S("Protection (owned by @1)", meta:get_string("owner")))
 		meta:set_string("members", "")
+		meta:set_string("infotext",
+				S("Protection (owned by @1)", meta:get_string("owner")))
 	end,
 
 	on_use = function(itemstack, user, pointed_thing)
@@ -436,7 +520,8 @@ minetest.register_node("protector:protect", {
 			return
 		end
 
-		protector.can_dig(protector_radius, pointed_thing.under, user:get_player_name(), false, 2)
+		protector.can_dig(protector_radius, pointed_thing.under,
+				user:get_player_name(), false, 2)
 	end,
 
 	on_rightclick = function(pos, node, clicker, itemstack)
@@ -469,36 +554,33 @@ minetest.register_node("protector:protect", {
 
 	on_blast = function() end,
 
-	after_destruct = function(pos, oldnode)
-		local objects = minetest.get_objects_inside_radius(pos, 0.5)
-		for _, v in ipairs(objects) do
-			local ent = v:get_luaentity()
-			if ent and ent.name == "protector:display" then
-				v:remove()
-			end
-		end
-	end,
+	after_destruct = del_display
 })
 
 -- default recipe and alternative for MineClone2
-if minetest.registered_items["default:stone"] then
-minetest.register_craft({
-	output = "protector:protect",
-	recipe = {
-		{"default:stone", "default:stone", "default:stone"},
-		{"default:stone", "default:gold_ingot", "default:stone"},
-		{"default:stone", "default:stone", "default:stone"},
-	}
-})
-else
-minetest.register_craft({
-	output = "protector:protect",
-	recipe = {
-		{"mcl_core:stone", "mcl_core:stone", "mcl_core:stone"},
-		{"mcl_core:stone", "mcl_core:gold_ingot", "mcl_core:stone"},
-		{"mcl_core:stone", "mcl_core:stone", "mcl_core:stone"},
-	}
-})
+if protector_recipe then
+
+	if minetest.registered_items["default:stone"] then
+
+		minetest.register_craft({
+			output = "protector:protect",
+			recipe = {
+				{"default:stone", "default:stone", "default:stone"},
+				{"default:stone", "default:gold_ingot", "default:stone"},
+				{"default:stone", "default:stone", "default:stone"}
+			}
+		})
+	else
+
+		minetest.register_craft({
+			output = "protector:protect",
+			recipe = {
+				{"mcl_core:stone", "mcl_core:stone", "mcl_core:stone"},
+				{"mcl_core:stone", "mcl_core:gold_ingot", "mcl_core:stone"},
+				{"mcl_core:stone", "mcl_core:stone", "mcl_core:stone"}
+			}
+		})
+	end
 end
 
 -- protection logo
@@ -508,8 +590,8 @@ minetest.register_node("protector:protect2", {
 	wield_image = "protector_logo.png",
 	inventory_image = "protector_logo.png",
 	sounds = default.node_sound_stone_defaults(),
-	use_texture_alpha = "clip",
 	groups = {dig_immediate = 2, unbreakable = 1},
+	use_texture_alpha = "clip",
 	is_ground_content = false,
 	paramtype = "light",
 	paramtype2 = "wallmounted",
@@ -522,7 +604,7 @@ minetest.register_node("protector:protect2", {
 		type = "wallmounted",
 		wall_top    = {-0.375, 0.4375, -0.5, 0.375, 0.5, 0.5},
 		wall_bottom = {-0.375, -0.5, -0.5, 0.375, -0.4375, 0.5},
-		wall_side   = {-0.5, -0.5, -0.375, -0.4375, 0.5, 0.375},
+		wall_side   = {-0.5, -0.5, -0.375, -0.4375, 0.5, 0.375}
 	},
 	selection_box = {type = "wallmounted"},
 
@@ -533,8 +615,9 @@ minetest.register_node("protector:protect2", {
 		local meta = minetest.get_meta(pos)
 
 		meta:set_string("owner", placer:get_player_name() or "")
-		meta:set_string("infotext", S("Protection (owned by @1)", meta:get_string("owner")))
 		meta:set_string("members", "")
+		meta:set_string("infotext",
+				S("Protection (owned by @1)", meta:get_string("owner")))
 	end,
 
 	on_use = function(itemstack, user, pointed_thing)
@@ -543,7 +626,8 @@ minetest.register_node("protector:protect2", {
 			return
 		end
 
-		protector.can_dig(protector_radius, pointed_thing.under, user:get_player_name(), false, 2)
+		protector.can_dig(protector_radius, pointed_thing.under,
+				user:get_player_name(), false, 2)
 	end,
 
 	on_rightclick = function(pos, node, clicker, itemstack)
@@ -576,28 +660,18 @@ minetest.register_node("protector:protect2", {
 
 	on_blast = function() end,
 
-	after_destruct = function(pos, oldnode)
-		local objects = minetest.get_objects_inside_radius(pos, 0.5)
-		for _, v in ipairs(objects) do
-			local ent = v:get_luaentity()
-			if ent and ent.name == "protector:display" then
-				v:remove()
-			end
-		end
-	end,
+	after_destruct = del_display
 })
 
 -- recipes to switch between protectors
 minetest.register_craft({
-	type = "shapeless",
 	output = "protector:protect",
-	recipe = {"protector:protect2"}
+	recipe = {{"protector:protect2"}}
 })
 
 minetest.register_craft({
-	type = "shapeless",
 	output = "protector:protect2",
-	recipe = {"protector:protect"}
+	recipe = {{"protector:protect"}}
 })
 
 
@@ -645,7 +719,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 
 	-- add faction members
-	if factions_available then
+	if factions_available and fields.faction_members ~= nil then
 		meta:set_int("faction_members", fields.faction_members == "true" and 1 or 0)
 	end
 
@@ -674,14 +748,19 @@ end)
 
 -- display entity shown when protector node is punched
 minetest.register_entity("protector:display", {
-	physical = false,
-	collisionbox = {0, 0, 0, 0, 0, 0},
-	visual = "wielditem",
-	-- wielditem seems to be scaled to 1.5 times original node size
-	visual_size = {x = 0.67, y = 0.67},
-	textures = {"protector:display_node"},
+
+	initial_properties = {
+
+		physical = false,
+		collisionbox = {0, 0, 0, 0, 0, 0},
+		visual = "wielditem",
+		-- wielditem seems to be scaled to 1.5 times original node size
+		visual_size = {x = 0.67, y = 0.67},
+		textures = {"protector:display_node"},
+		glow = 10
+	},
+
 	timer = 0,
-	glow = 10,
 
 	on_step = function(self, dtime)
 
@@ -691,7 +770,7 @@ minetest.register_entity("protector:display", {
 		if self.timer > protector_show then
 			self.object:remove()
 		end
-	end,
+	end
 })
 
 
@@ -701,7 +780,7 @@ minetest.register_entity("protector:display", {
 local x = protector_radius
 minetest.register_node("protector:display_node", {
 	tiles = {"protector_display.png"},
-	use_texture_alpha = true,
+	use_texture_alpha = "clip",
 	walkable = false,
 	drawtype = "nodebox",
 	node_box = {
@@ -717,15 +796,15 @@ minetest.register_node("protector:display_node", {
 			-- bottom
 			{-(x+.55), -(x+.55), -(x+.55), (x+.55), -(x+.45), (x+.55)},
 			-- middle (surround protector)
-			{-.55,-.55,-.55, .55,.55,.55},
-		},
+			{-.55,-.55,-.55, .55,.55,.55}
+		}
 	},
 	selection_box = {
 		type = "regular",
 	},
 	paramtype = "light",
 	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
-	drop = "",
+	drop = ""
 })
 
 
@@ -734,7 +813,10 @@ dofile(MP .. "/pvp.lua")
 dofile(MP .. "/admin.lua")
 dofile(MP .. "/tool.lua")
 dofile(MP .. "/hud.lua")
-dofile(MP .. "/lucky_block.lua")
+
+if minetest.get_modpath("lucky_block") then
+	dofile(MP .. "/lucky_block.lua")
+end
 
 protector.tool:register_protector('protector:protect', {
 	nodes = {'protector:protect2'}, -- Compatible nodes for protector tool, uses same on_place, radius, etc.
@@ -764,4 +846,4 @@ if minetest.get_modpath("mesecons_mvps") then
 end
 
 
-print (S("[MOD] Protector Redo loaded"))
+print ("[MOD] Protector Redo loaded")
