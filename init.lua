@@ -189,7 +189,7 @@ local protector_formspec = function(meta)
 		else
 			local player_factions = factions.get_player_factions(meta:get_string("owner"))
 
-			if player_factions ~= nil and #player_factions >= 1 then
+			if player_factions and #player_factions >= 1 then
 				checkbox_faction = true
 			end
 		end
