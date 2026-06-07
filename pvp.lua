@@ -3,7 +3,7 @@ local S = protector.intllib
 
 -- get static spawn position
 local statspawn = minetest.string_to_pos(minetest.settings:get("static_spawnpoint"))
-		or {x = 0, y = 2, z = 0}
+		or vector.new(0,2,0)
 
 -- is spawn protected
 local protector_spawn = tonumber(minetest.settings:get("protector_spawn")
